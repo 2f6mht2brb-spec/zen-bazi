@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Zen 八字大师仪表盘</title>
+<style>
+:root{--gold:#c9a227;--gold2:#f5d77a;--fg:#f3e9cf;--muted:rgba(243,233,207,.66);--line:rgba(201,162,39,.26);--ok:#4cd38a;--bad:#ff6b6b;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:#0c0719;color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:14px;line-height:1.6}
+body{background-color:#0c0719;background-image:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.55),transparent 60%),radial-gradient(1px 1px at 68% 8%,rgba(255,255,255,.45),transparent 60%),radial-gradient(1.5px 1.5px at 85% 42%,rgba(245,215,122,.6),transparent 60%),radial-gradient(1px 1px at 35% 62%,rgba(255,255,255,.35),transparent 60%),radial-gradient(1px 1px at 52% 88%,rgba(255,255,255,.4),transparent 60%),radial-gradient(1.5px 1.5px at 6% 78%,rgba(245,215,122,.45),transparent 60%),radial-gradient(ellipse at 50% -10%,rgba(120,60,180,.35),transparent 60%),radial-gradient(ellipse at 100% 100%,rgba(155,27,31,.22),transparent 55%);background-size:320px 320px,320px 320px,320px 320px,320px 320px,320px 320px,320px 320px,100% 100%,100% 100%;background-attachment:fixed}
+.serif,.bz-title,.bz h2,.bz-big,.bz-namebig,.bz-gname,.bz-cname,.bz-quote,.bz-gzc,.bz-num4 b{font-family:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC",Georgia,serif}
+.bz{max-width:980px;margin:0 auto;padding:14px 10px 30px;display:flex;flex-direction:column;gap:14px}
+.bz-sec{display:flex;flex-direction:column;gap:12px}
+#bz-view{display:flex;flex-direction:column;gap:12px}
+.bz-card{background:linear-gradient(160deg,rgba(44,26,78,.92),rgba(22,14,42,.95));border:1px solid var(--line);border-top:2px solid rgba(245,215,122,.65);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.38);padding:14px 12px}
+.bz h2{color:var(--gold2);letter-spacing:.06em;font-size:16px;font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bz h2::before{content:'✦';color:var(--gold);font-size:13px}
+.bz-card>h2::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.5),transparent)}
+.bz p{margin:6px 0}
+.bz-muted,.bz-tip,.bz-sub{color:var(--muted);font-size:12.5px}
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.bz-grid2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.bz-good{color:var(--ok)}.bz-bad{color:var(--bad)}
+.e-wood{color:#6fd68f;font-weight:700}.e-fire{color:#ff6f61;font-weight:700}.e-earth{color:#e3ac72;font-weight:700}.e-metal{color:#f5d77a;font-weight:700}.e-water{color:#7fa8ff;font-weight:700}
+/* banner */
+.bz-banner{position:relative;overflow:hidden;border-radius:14px;padding:18px 14px 14px;background:radial-gradient(circle at 88% 18%,rgba(245,215,122,.28),transparent 42%),radial-gradient(circle at 8% 110%,rgba(180,40,60,.38),transparent 45%),linear-gradient(135deg,#140c2a 0%,#2a1846 50%,#3d1a2c 100%);border:1px solid rgba(212,175,55,.55);box-shadow:0 14px 40px rgba(0,0,0,.55)}
+.bz-banner>*{position:relative}
+.bz-banner>.bz-taiji{position:absolute;right:-28px;top:-28px;width:140px;height:140px;opacity:.18;pointer-events:none}
+@media (prefers-reduced-motion:no-preference){.bz-banner>.bz-taiji{animation:spin 90s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}}
+.bz-eyebrow{color:var(--gold);letter-spacing:.45em;font-size:12px;margin-bottom:4px}
+.bz-title{color:var(--gold2);font-size:clamp(22px,5.4vw,34px);letter-spacing:.05em;margin:6px 0 2px;font-weight:600;text-shadow:0 0 22px rgba(245,215,122,.45)}
+.bz-who{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:6px}
+.bz-cname{font-size:clamp(22px,5vw,30px);color:#fff3d1;letter-spacing:.2em}
+.bz-ename{color:var(--gold2);font-size:15px;letter-spacing:.08em}
+.bz-gender{border:1px solid rgba(245,215,122,.6);color:var(--gold2);border-radius:999px;padding:1px 9px;font-size:12px}
+.bz-edit{margin-left:auto;border:1px solid rgba(245,215,122,.6);background:rgba(0,0,0,.25);color:var(--gold2);border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;cursor:pointer}
+.bz-birth{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}
+.bz-birth>span{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;border:1px solid rgba(245,215,122,.45);background:rgba(0,0,0,.22);color:#fff3d1;font-size:13px}
+.bz-birth b{color:var(--gold2);font-weight:600;letter-spacing:.1em;font-size:11px}
+.bz-banner .bz-sub{color:rgba(243,231,201,.82)}
+.bz-take{color:#fff3d1;font-size:15px;line-height:1.6;margin-top:10px!important;padding-top:10px;border-top:1px dashed rgba(212,175,55,.45)}
+.bz-take b{font-size:1.4em}
+/* form */
+.bz-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.bz-form label{display:flex;flex-direction:column;gap:5px;color:var(--gold2);font-size:13px}
+.bz-form input,.bz-form select{background:rgba(12,7,25,.6);color:var(--fg);border:1px solid rgba(201,162,39,.5);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px}
+.bz-form input:focus,.bz-form select:focus{outline:2px solid var(--gold2);outline-offset:1px}
+.bz-seg{display:flex;align-items:center;gap:8px;color:var(--gold2);font-size:13px}
+.bz-seg>span{margin-right:4px}
+.bz-segbtn{flex-direction:row!important}
+.bz-segbtn input{position:absolute;opacity:0;width:1px;height:1px}
+.bz-segbtn span{display:inline-block;padding:8px 22px;border-radius:10px;border:1px solid rgba(201,162,39,.5);color:var(--fg);cursor:pointer}
+.bz-segbtn input:checked+span{background:linear-gradient(160deg,#f8e08e,#c9a227 60%,#9a760f);color:#2a1846;font-weight:700}
+.bz-segbtn input:focus-visible+span{outline:2px solid var(--gold2)}
+.bz-formbtns{display:flex;gap:10px;grid-column:1/-1}
+.bz-go{flex:1;padding:12px;border-radius:12px;border:1px solid #f5d77a;background:linear-gradient(160deg,#a8232a,#6b0f14);color:#ffe9a8;font:inherit;font-size:16px;font-weight:700;letter-spacing:.2em;cursor:pointer}
+.bz-cancel{padding:12px 18px;border-radius:12px;border:1px solid rgba(201,162,39,.5);background:transparent;color:var(--fg);font:inherit;cursor:pointer}
+.bz-form .bz-muted{grid-column:1/-1}
+/* tabs & nav */
+.bz-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (min-width:760px){.bz-tabs{grid-template-columns:repeat(9,minmax(0,1fr))}}
+.bz-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:10px;border:1px solid rgba(201,162,39,.4);background:linear-gradient(180deg,rgba(58,32,98,.9),rgba(27,18,51,.95));color:var(--fg);font:inherit;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.bz-tab i{font-style:normal;font-size:14px;color:var(--gold)}
+.bz-tab.bz-on{background:linear-gradient(160deg,#f8e08e,#c9a227 60%,#9a760f);color:#2a1846;border-color:#f5d77a;box-shadow:0 2px 10px rgba(201,162,39,.45)}
+.bz-tab.bz-on i{color:#2a1846}
+.bz-nav{display:grid;grid-template-columns:auto 1fr auto;gap:8px}
+.bz-nav .bz-today{grid-column:1/-1}
+@media (min-width:760px){.bz-nav{grid-template-columns:auto 1fr auto auto}.bz-nav .bz-today{grid-column:auto}}
+.bz-btn,.bz-date{padding:8px 12px;border-radius:12px;border:1px solid rgba(201,162,39,.5);background:rgba(27,18,51,.9);color:var(--fg);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.bz-prev,.bz-next{min-width:44px;font-size:18px;color:var(--gold)}
+.bz-date{text-align:center;color:var(--gold2);color-scheme:dark}
+.bz-today{background:linear-gradient(160deg,#a8232a,#6b0f14);color:#ffe9a8;border-color:#d4af37;letter-spacing:.15em}
+/* hero & cats */
+.bz-hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:radial-gradient(circle at 0% 0%,rgba(245,215,122,.22),transparent 45%),linear-gradient(160deg,rgba(58,32,98,.95),rgba(24,15,46,.96));border:1px solid rgba(245,215,122,.45)}
+.bz-hero>div:last-child{flex:1;min-width:220px}
+.bz-hero h2::after{display:none}
+.bz-big{font-size:clamp(46px,12vw,66px);line-height:1.05;text-shadow:0 0 24px currentColor}
+.bz-lvbig{font-size:18px;letter-spacing:.25em;font-weight:700}
+.bz-namebig{font-size:clamp(28px,7vw,42px);letter-spacing:.12em;color:var(--gold);text-shadow:0 0 18px rgba(245,215,122,.35)}
+.bz-solar{color:var(--gold2);margin:2px 0 6px!important}
+.bz-cat h3{margin:0;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline;letter-spacing:.1em}
+.bz-num{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:0}
+.bz-lvtag{font-size:11px;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px solid currentColor;vertical-align:middle;letter-spacing:.05em}
+.bz-track{height:6px;background:rgba(243,233,207,.1);border-radius:3px;margin:8px 0;overflow:hidden}
+.bz-fill{height:100%;border-radius:3px}
+.bz-long{font-size:14px;line-height:1.65}
+/* tables */
+.bz-tablewrap{overflow-x:auto}
+.bz-pan{width:100%;border-collapse:collapse;text-align:center;min-width:480px}
+.bz-pan th,.bz-pan td{padding:4px 3px;border-bottom:1px solid var(--line)}
+.bz-pan thead th{font-size:12px;color:var(--gold);font-weight:500}
+.bz-pan tbody th{font-size:12px;color:var(--muted);font-weight:400;text-align:left;white-space:nowrap}
+.bz-pan .bz-gzc{font-size:24px;line-height:1.1}
+.bz-pan .bz-dyn{background:rgba(245,215,122,.1)}
+.bz-pan small{display:block;font-size:10.5px;color:var(--muted)}
+.bz-table{width:100%;border-collapse:collapse}
+.bz-table th,.bz-table td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;white-space:nowrap}
+.bz-table th{color:var(--gold);font-weight:500}
+.bz-table tbody tr{cursor:pointer}
+.bz-table tbody tr:hover td{background:rgba(245,215,122,.06)}
+.bz-cur td{background:rgba(245,215,122,.14)}
+/* wx, gua */
+.bz-wx{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.bz-wxrow{display:grid;grid-template-columns:1.4em 3em 1fr 3em;align-items:center;gap:8px}
+.bz-wxel{font-size:17px;font-weight:700}
+.bz-wxtag{font-size:12px;color:var(--muted)}
+.bz-wxrow .bz-track{margin:0;height:8px}
+.bz-wxv{text-align:right;font-variant-numeric:tabular-nums}
+.bz-kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0}
+.bz-kv dt{color:var(--gold)}.bz-kv dd{margin:0}
+.bz-gua{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.bz-hex{font-size:52px;line-height:1;color:var(--gold2);text-shadow:0 0 16px rgba(201,162,39,.45)}
+.bz-gname{color:var(--gold2);font-size:21px;letter-spacing:.06em}
+.bz-help{margin-top:8px;font-size:12px;color:var(--muted)}
+.bz-help summary{cursor:pointer;color:var(--gold)}
+/* events & lucky */
+.bz-event{background:radial-gradient(circle at 100% 0,rgba(255,111,97,.2),transparent 50%),linear-gradient(160deg,rgba(58,32,98,.95),rgba(24,15,46,.96));border:2px solid rgba(245,215,122,.7)}
+.bz-ev{padding:10px 12px;border-radius:12px;border:1px solid var(--line);border-left:6px solid var(--gold);margin-top:10px;background:rgba(255,255,255,.03)}
+.bz-ev-main{border-left-color:#ff6f61;background:rgba(255,111,97,.12)}
+.bz-ev-tag{display:inline-block;font-size:11px;letter-spacing:.2em;color:#2a1846;background:var(--gold2);border-radius:999px;padding:1px 9px;margin-bottom:4px;font-weight:700}
+.bz-ev-main .bz-ev-tag{background:#ff6f61;color:#fff}
+.bz-ev-title{font-size:clamp(16px,4vw,20px);font-weight:800;line-height:1.35;color:#fff3d1}
+.bz-ev-main .bz-ev-title{font-size:clamp(18px,4.8vw,24px)}
+.bz-ev-tip{margin-top:4px;font-size:13px;color:var(--muted)}
+.bz-ev-tip::before{content:'化解：';color:var(--gold);font-weight:700}
+.bz-lucky{background:radial-gradient(circle at 50% 0,rgba(255,215,120,.28),transparent 60%),linear-gradient(160deg,#7a1218,#a3232a 55%,#5a0c10)!important;border:1px solid #f5d77a!important}
+.bz-lucky h2{color:#ffe9a8}
+.bz-lucky .bz-tip,.bz-lucky .bz-muted{color:rgba(255,233,168,.85)}
+.bz-nums{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0}
+.bz-num4{flex:1;min-width:130px;border:1px dashed rgba(255,216,107,.75);border-radius:12px;padding:8px 10px;text-align:center;background:rgba(0,0,0,.18)}
+.bz-num4-label{display:block;font-size:11px;letter-spacing:.3em;color:#ffd86b}
+.bz-num4 b{font-size:clamp(28px,7.5vw,40px);letter-spacing:.22em;color:#ffd86b;text-shadow:0 0 14px rgba(255,200,80,.6);font-variant-numeric:tabular-nums}
+/* nine grids */
+.bz-fly{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.bz-flycell{border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center;min-height:80px;background:rgba(255,255,255,.02)}
+.bz-flydir{font-size:12px;color:var(--muted)}
+.bz-flystar{font-size:18px;margin:2px 0;font-family:"Songti SC",serif}
+.bz-flymean{font-size:10.5px;color:var(--muted);line-height:1.35}
+.bz-fly-g2{background:radial-gradient(circle,rgba(245,215,122,.35),rgba(201,162,39,.12));border-color:#f5d77a;box-shadow:0 0 14px rgba(245,215,122,.35)}
+.bz-fly-g1{background:rgba(76,211,138,.12);border-color:rgba(76,211,138,.4)}
+.bz-fly-b1{background:rgba(255,177,92,.1);border-color:rgba(255,177,92,.4)}
+.bz-fly-b2{background:rgba(255,107,107,.16);border-color:#ff6b6b}
+/* charts, calendar, chips */
+.bz-chart{position:relative}
+.bz-chart svg{display:block}
+.bz-gridl{stroke:rgba(243,233,207,.12);stroke-dasharray:3 3}.bz-axis{stroke:rgba(243,233,207,.32)}
+.bz-bv{fill:var(--fg);font-size:13px;text-anchor:middle;font-variant-numeric:tabular-nums}
+.bz-bl{fill:var(--muted);font-size:13px;text-anchor:middle}.bz-bl2{fill:var(--muted);font-size:11px;text-anchor:middle}
+.bz-bar{cursor:pointer}
+.bz-tt{position:absolute;pointer-events:none;background:#221840;border:1px solid rgba(201,162,39,.45);box-shadow:0 8px 24px rgba(0,0,0,.5);border-radius:10px;padding:6px 8px;font-size:12px;max-width:220px;transform:translateY(-100%)}
+.bz-cal,.bz-wkh{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.bz-wkh{font-size:12px;color:var(--muted);text-align:center;margin-bottom:4px}
+.bz-cell{border:1px solid var(--line);border-radius:6px;padding:4px;min-height:44px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;color:var(--fg);font:inherit;text-align:left;overflow:hidden}
+.bz-cell small{font-size:10px;color:var(--muted);white-space:nowrap}
+.bz-cell b{font-variant-numeric:tabular-nums}
+.bz-cell.bz-sel{outline:2px solid var(--gold2)}
+.bz-list,.bz-list2{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.bz-list li{cursor:pointer}
+.bz-list2 b{color:var(--gold2)}
+.bz-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px}
+.bz-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:12px;border:1px solid rgba(201,162,39,.35);background:rgba(255,255,255,.03);color:var(--fg);font:inherit;cursor:pointer;min-width:58px}
+.bz-chip b{font-size:12px;font-variant-numeric:tabular-nums}
+.bz-chip small{font-size:15px;font-family:"Songti SC",serif}
+.bz-chip i{font-style:normal;font-size:11px;font-weight:700}
+.bz-chip.bz-on{background:linear-gradient(160deg,#f8e08e,#c9a227 60%,#9a760f);border-color:#f5d77a;color:#2a1846}
+.bz-chip.bz-on i,.bz-chip.bz-on small span{color:#2a1846}
+.bz-method{font-size:12px;color:var(--muted)}
+.bz-method summary{color:var(--gold);cursor:pointer}
+.bz-cb{all:unset;display:block;width:100%;cursor:pointer;border-radius:8px;padding:2px 0;text-align:center;box-sizing:border-box}
+.bz-cb:hover,.bz-cb:focus-visible{background:rgba(245,215,122,.14);outline:1px solid rgba(245,215,122,.5)}
+.bz-pan thead .bz-cb{color:var(--gold);text-decoration:underline dotted rgba(245,215,122,.6);text-underline-offset:3px}
+.bz-pan tbody td .bz-cb{border-bottom:1px dotted rgba(245,215,122,.25)}
+.bz-hint{font-size:12px;color:var(--gold2);text-align:center;margin:8px 0 0!important;letter-spacing:.05em}
+#bz-sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+#bz-sheet[hidden]{display:none}
+.bz-sheet-bg{position:absolute;inset:0;background:rgba(5,2,14,.65)}
+.bz-sheet-card{position:relative;width:100%;max-width:560px;max-height:82vh;overflow:auto;background:linear-gradient(160deg,#2c1a4e,#160e2a);border:1px solid rgba(245,215,122,.6);border-bottom:0;border-radius:18px 18px 0 0;padding:18px 16px 26px;box-shadow:0 -10px 40px rgba(0,0,0,.6)}
+@media (min-width:700px){#bz-sheet{align-items:center}.bz-sheet-card{border-radius:18px;border-bottom:1px solid rgba(245,215,122,.6)}}
+@media (prefers-reduced-motion:no-preference){.bz-sheet-card{animation:up .22s ease-out}@keyframes up{from{transform:translateY(30px);opacity:0}}}
+.bz-sheet-card h3{font-family:"Songti SC","STSong",serif;color:var(--gold2);font-size:20px;margin:0 30px 8px 0;letter-spacing:.06em}
+.bz-x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,215,122,.5);background:rgba(0,0,0,.3);color:var(--gold2);font-size:15px;cursor:pointer}
+.bz-chip2{display:inline-block;margin:0 6px 6px 0;padding:2px 10px;border-radius:999px;border:1px solid rgba(245,215,122,.5);color:var(--gold2);font-size:12px}
+.bz-sheet-card p{margin:8px 0;line-height:1.7}
+.bz-sheet-card .bz-kv{margin:8px 0}
+@media (min-width:760px){.bz-tabs{grid-template-columns:repeat(10,minmax(0,1fr))}}
+.bz-numform{display:flex;gap:8px}
+.bz-numform input{flex:1;min-width:0;background:rgba(12,7,25,.6);color:var(--fg);border:1px solid rgba(201,162,39,.6);border-radius:12px;padding:12px;font:inherit;font-size:18px;letter-spacing:.08em}
+.bz-numform .bz-go{flex:0 0 auto;padding:12px 22px}
+.bz-div{display:flex;flex-direction:column;gap:6px}
+.bz-divrow{all:unset;display:grid;grid-template-columns:6.2em 1fr 1fr 1.6em;align-items:center;gap:0;cursor:pointer;padding:3px 0;border-radius:6px}
+.bz-divrow:hover,.bz-divrow:focus-visible{background:rgba(245,215,122,.08)}
+.bz-divn b{font-size:15px}.bz-divn small{margin-left:4px;color:var(--muted);font-size:11px}
+.bz-divl{display:flex;justify-content:flex-end;border-right:1px solid rgba(243,233,207,.4);height:14px}
+.bz-divr{display:flex;height:14px}
+.bz-divl i,.bz-divr i{display:block;height:100%;border-radius:4px}
+.bz-dneg{background:#ff6b6b}.bz-dpos{background:#4cd38a}.bz-dmid{background:#a99bd6}
+.bz-divc{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.bz-nchain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px}
+.bz-arrow{color:var(--muted);font-size:12px}
+.bz-ng{display:flex;flex-direction:column;align-items:center;min-width:58px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--fg);font:inherit;cursor:pointer}
+.bz-ng b{font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:.05em}.bz-ng span{font-size:13px;font-weight:700}.bz-ng small{font-size:10.5px;color:var(--muted)}
+.bz-ngg span{color:#4cd38a}.bz-ngb span{color:#ff6b6b}
+.bz-ngon{border-color:#f5d77a;box-shadow:0 0 12px rgba(245,215,122,.45);background:rgba(245,215,122,.12)}
+.bz-deepcard{border:2px solid rgba(245,215,122,.6)}
+.bz-dsec h3{font-family:"Songti SC","STSong",serif;color:var(--gold2);font-size:16px;margin:14px 0 6px;padding-left:8px;border-left:3px solid var(--gold)}
+.bz-dsec:first-of-type h3{margin-top:2px}
+.bz-dlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.bz-dlist li{padding:8px 10px 8px 12px;border-radius:10px;background:rgba(255,255,255,.03);border-left:4px solid var(--gold)}
+.bz-dlist li b{display:block;font-size:14.5px;color:#fff3d1;margin-bottom:2px}
+.bz-dlist li span{font-size:13.5px;color:var(--fg);line-height:1.65}
+.bz-dlist .bz-d-good{border-left-color:#4cd38a}.bz-dlist .bz-d-bad{border-left-color:#ff6b6b;background:rgba(255,107,107,.06)}
+.bz-comfort{margin:6px 0 12px;padding:14px;border-radius:14px;background:linear-gradient(160deg,rgba(76,211,138,.14),rgba(245,215,122,.10));border:1px solid rgba(143,217,173,.55)}
+.bz-cf-h{color:#8fd9ad;font-weight:700;letter-spacing:.2em;font-size:13px}
+.bz-cf-t{font-family:"Songti SC","STSong",serif;font-size:18px!important;line-height:1.7;color:#fff3d1;margin:6px 0!important}
+.bz-cf-a{font-size:13.5px;color:var(--fg)}.bz-cf-a b{color:var(--gold2)}
+.bz-scene{border:2px solid rgba(245,215,122,.45)}
+.bz-emo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:700px){.bz-emo{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.bz-emot{border-radius:12px;padding:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:4px}
+.bz-emot b{font-family:"Songti SC",serif;font-size:26px;line-height:1}
+.bz-emot span{font-size:13px;line-height:1.55}
+.bz-e-joy b,.bz-sb.bz-e-joy{color:#4cd38a}.bz-e-anger b,.bz-sb.bz-e-anger{color:#ff6b6b}.bz-e-sad b,.bz-sb.bz-e-sad{color:#7fa8ff}.bz-e-fun b,.bz-sb.bz-e-fun{color:#f5d77a}.bz-sb.bz-e-calm{color:var(--muted)}
+.bz-emot.bz-e-joy{border-color:rgba(76,211,138,.45)}.bz-emot.bz-e-anger{border-color:rgba(255,107,107,.45)}.bz-emot.bz-e-sad{border-color:rgba(127,168,255,.45)}.bz-emot.bz-e-fun{border-color:rgba(245,215,122,.5)}
+.bz-lihe{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.bz-lihe>div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
+.bz-lihe b{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:"Songti SC",serif}
+.bz-he{background:rgba(76,211,138,.18);color:#4cd38a}.bz-li{background:rgba(127,168,255,.18);color:#7fa8ff}
+.bz-scenes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.bz-scenes li{display:grid;grid-template-columns:3em 1.8em 1fr;gap:8px;align-items:start;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.03);font-size:13.5px}
+.bz-sn{color:var(--gold2);font-weight:700}
+.bz-sb{font-family:"Songti SC",serif;font-size:18px;font-weight:700;line-height:1.2}
+.bz-st{color:var(--muted);font-size:12.5px;margin-top:2px}
+.bz-mprog{height:8px;border-radius:4px;background:rgba(243,233,207,.1);overflow:hidden;margin-top:6px}.bz-mprog div{height:100%;background:linear-gradient(90deg,#c9a227,#f5d77a)}
+.bz-mq{margin:10px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+.bz-mqt{font-weight:600;margin-bottom:6px}
+.bz-mqo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bz-mopt{padding:10px 8px;border-radius:10px;border:1px solid rgba(201,162,39,.4);background:rgba(255,255,255,.03);color:var(--fg);font:inherit;font-size:13.5px;cursor:pointer;text-align:left;line-height:1.45}
+.bz-mopt.bz-on{background:linear-gradient(160deg,#f8e08e,#c9a227 60%,#9a760f);color:#2a1846;font-weight:700;border-color:#f5d77a}
+.bz-mgo{width:100%;margin-top:14px}.bz-mgo:disabled{opacity:.5;cursor:not-allowed}
+.bz-mdim{display:grid;grid-template-columns:5.5em 1fr 5.5em;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--muted)}
+.bz-mdim span:last-child{text-align:right}.bz-mdim .bz-on{color:var(--gold2);font-weight:700}
+.bz-mbar{height:10px;border-radius:5px;background:rgba(127,168,255,.35);overflow:hidden}.bz-mbar i{display:block;height:100%;background:#f5d77a}
+.bz-mre{width:100%}
+.bz-kycard{border:2px solid rgba(255,107,107,.45)}
+.bz-kys{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.bz-kys li{display:grid;grid-template-columns:4.2em 1fr;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.03);cursor:pointer}
+.bz-kys li:hover{background:rgba(245,215,122,.07)}
+.bz-kynow{outline:2px solid #f5d77a}
+.bz-kyy{display:flex;flex-direction:column;align-items:center}.bz-kyy b{font-size:16px;font-variant-numeric:tabular-nums}.bz-kyy small{font-size:15px;font-family:"Songti SC",serif}.bz-kyy i{font-style:normal;font-size:11px;font-weight:700}
+.bz-kyt{border-left:3px solid var(--gold);padding:2px 0 2px 8px;margin:2px 0;font-size:13.5px}
+.bz-kyt b{display:block}.bz-kyt span{display:block;color:var(--muted);font-size:12.5px}
+.bz-kyt.bz-d-good{border-left-color:#4cd38a}.bz-kyt.bz-d-good b{color:#8fe3b3}.bz-kyt.bz-d-bad{border-left-color:#ff6b6b}.bz-kyt.bz-d-bad b{color:#ff8a80}
+button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="bz" id="zen">
+  <header class="bz-banner" id="bz-banner"></header>
+  <section class="bz-card" id="bz-formwrap" hidden></section>
+  <div id="bz-main" hidden>
+    <div class="bz-sec">
+      <nav class="bz-tabs" id="bz-tabs" role="tablist" aria-label="视图"></nav>
+      <div class="bz-nav" id="bz-nav"><button class="bz-btn bz-prev" aria-label="上一个">‹</button><input type="date" class="bz-date" aria-label="选择日期"><button class="bz-btn bz-next" aria-label="下一个">›</button><button class="bz-btn bz-today">☼ 回到今天</button></div>
+      <main id="bz-view"></main>
+    </div>
+  </div>
+  <details class="bz-card bz-method"><summary>分数和推算是怎么来的</summary>
+    <p>排盘：按太阳黄经计算节气，以立春换年、节令换月；日柱按儒略日推算；夜子时可选换日或不换日。大运按年干阴阳与性别定顺逆，以出生到节令的天数折算起运岁数（三天为一年）。</p>
+    <p>喜用神：先看出生月份，冬月以火调候、夏月以水调候；再按日主强弱扶抑（身弱取印比，身强取财官食伤）。这是简化的自动规则，复杂命局建议再请人细看。</p>
+    <p>分数：每个干支按五行喜忌与十神对各方面的作用打分，并计入与原局的冲合刑害和天乙贵人。每日 = 日柱 + 0.35×流月 + 0.2×流年 + 0.15×大运；每月 = 流月 + 0.4×流年 + 0.2×大运；每年 = 流年 + 0.5×大运。换算成 0–100 分：76–100 大吉，56–75 吉，51–55 小吉，21–50 小凶，6–20 凶，0–5 大凶。</p>
+    <p>易经：日、周用汉代卦气值日，月用十二消息卦，年用干支起卦；与本命卦（八宅命卦）按梅花易数体用论生克。九宫飞星按每年入中宫之星沿洛书顺序排布。命理仅供参考，不能代替你自己的判断。</p>
+  </details>
+</div>
+<div id="bz-sheet" hidden><div class="bz-sheet-bg" data-act="close"></div><div class="bz-sheet-card" role="dialog" aria-modal="true" aria-label="解读"><button class="bz-x" data-act="close" aria-label="关闭">✕</button><div id="bz-sheet-body"></div></div></div>
+<script>
+window.ZEN_GUA={"hex":{"乾":{"i":1,"u":"乾","l":"乾","full":"乾为天","text":"元亨利贞。","plain":"天道刚健，运行不息。纯阳之卦，代表开创与领导，时机正强；但阳极易亢，宜自强而不自傲。","mean":"刚健自强，宜主动进取，但忌过亢"},"坤":{"i":2,"u":"坤","l":"坤","full":"坤为地","text":"元亨，利牝马之贞。君子有攸往，先迷后得主。安贞吉。","plain":"大地厚重，承载万物。代表柔顺、包容与配合：跟随正确的方向和领导就有收获，抢先反而迷失。","mean":"厚德载物，宜顺势配合，不宜抢先"},"屯":{"i":3,"u":"坎","l":"震","full":"水雷屯","text":"元亨利贞，勿用有攸往，利建侯。","plain":"草木破土初生之难。事情刚起步、阻碍多，不宜冒进，适合先打根基、找可靠的帮手。","mean":"万事起头难，宜打基础、找帮手"},"蒙":{"i":4,"u":"艮","l":"坎","full":"山水蒙","text":"亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。","plain":"山下出泉，蒙昧未开。代表学习与启蒙：虚心专一地求教才有收获，反复怀疑则得不到指点。","mean":"启蒙求教，宜学习请教，忌自以为是"},"需":{"i":5,"u":"坎","l":"乾","full":"水天需","text":"有孚，光亨，贞吉，利涉大川。","plain":"云上于天，等待降雨。时机未到，要耐心等待，同时保持诚信、做好准备，时机一到就能渡过难关。","mean":"等待时机，宜耐心准备，不宜冒进"},"讼":{"i":6,"u":"乾","l":"坎","full":"天水讼","text":"有孚，窒惕，中吉，终凶。利见大人，不利涉大川。","plain":"天往上、水往下，彼此相背而起争执。适可而止则吉，争到底则凶，宜找有德望的人调解。","mean":"易起争执，宜退让和解，忌硬碰硬"},"师":{"i":7,"u":"坤","l":"坎","full":"地水师","text":"贞，丈人吉，无咎。","plain":"地中藏水，聚众成军。代表组织与带队，目标要正当、领导要有经验，纪律严明才能成事。","mean":"统众行事，宜组织协作，讲章法"},"比":{"i":8,"u":"坎","l":"坤","full":"水地比","text":"吉。原筮元永贞，无咎。不宁方来，后夫凶。","plain":"水在地上，亲密无间。代表亲近与团结，宜主动结盟、拉近关系，迟疑观望会错过机会。","mean":"亲近相辅，宜结盟合作、拉近关系"},"小畜":{"i":9,"u":"巽","l":"乾","full":"风天小畜","text":"亨。密云不雨，自我西郊。","plain":"风行天上，云聚而未雨。力量有所积累但还不够，事情有进展却未到收成，宜继续蓄积，不要急。","mean":"小有积蓄，力量未足，宜蓄势"},"履":{"i":10,"u":"乾","l":"兑","full":"天泽履","text":"履虎尾，不咥人，亨。","plain":"上天下泽，尊卑有序。像踩在老虎尾巴后面走路，有风险，但谨慎守礼、按规矩办事就能平安亨通。","mean":"如履虎尾，谨慎守礼则亨通"},"泰":{"i":11,"u":"坤","l":"乾","full":"地天泰","text":"小往大来，吉亨。","plain":"地气上升、天气下降，天地相交。上下沟通顺畅，付出小、收获大，诸事顺遂，但要居安思危。","mean":"天地交泰，上下通达，诸事顺遂"},"否":{"i":12,"u":"乾","l":"坤","full":"天地否","text":"否之匪人，不利君子贞，大往小来。","plain":"天地不交，上下隔绝。沟通不畅、付出多回报少，宜收敛守正，不与小人纠缠，等待转机。","mean":"上下不通，宜守正待时，少作为"},"同人":{"i":13,"u":"乾","l":"离","full":"天火同人","text":"同人于野，亨。利涉大川，利君子贞。","plain":"天与火同向上。代表志同道合、公开合作，以公心团结众人，可以共渡难关。","mean":"志同道合，宜合作、团队协力"},"大有":{"i":14,"u":"离","l":"乾","full":"火天大有","text":"元亨。","plain":"火在天上，普照万物。代表大丰收、拥有很多，宜与人分享、行善积德，戒骄满。","mean":"收获丰盛，宜分享，戒骄满"},"谦":{"i":15,"u":"坤","l":"艮","full":"地山谦","text":"亨，君子有终。","plain":"高山藏于地下。越有实力越懂得低调退让，谦虚的人最终有好结果。","mean":"谦虚受益，低调做事得人心"},"豫":{"i":16,"u":"震","l":"坤","full":"雷地豫","text":"利建侯行师。","plain":"雷出地上，万物奋发。代表愉悦、顺势而动，适合筹划行动、调动人力，但要防安逸懈怠。","mean":"安乐愉悦，宜筹划行动，防懈怠"},"随":{"i":17,"u":"兑","l":"震","full":"泽雷随","text":"元亨利贞，无咎。","plain":"泽中有雷，随时而动。代表顺应形势、择善而从，跟对人、走对方向就没有过错。","mean":"随时而动，宜顺应变化、择善而从"},"蛊":{"i":18,"u":"艮","l":"巽","full":"山风蛊","text":"元亨，利涉大川。先甲三日，后甲三日。","plain":"山下有风，器物生虫腐坏。积弊需要整治，宜下决心改革、处理旧问题，事前事后都要考虑周全。","mean":"积弊待整，宜整顿革新、处理旧账"},"临":{"i":19,"u":"坤","l":"兑","full":"地泽临","text":"元亨利贞。至于八月有凶。","plain":"泽上有地，居高临下。好运正在来临，适合主动推进、管理指导；但盛运有期限，要提早防备转弱。","mean":"居上临下，宜主动推进，好景要把握"},"观":{"i":20,"u":"巽","l":"坤","full":"风地观","text":"盥而不荐，有孚颙若。","plain":"风行地上，周遍观察。先看清形势、端正自己，以诚意感化他人，不急于行动。","mean":"观察审视，宜看清形势再行动"},"噬嗑":{"i":21,"u":"离","l":"震","full":"火雷噬嗑","text":"亨，利用狱。","plain":"雷电交加，口中有物须咬断。代表排除障碍、明辨是非，适合果断处理问题、订立规矩。","mean":"排除障碍，宜果断处理、立规矩"},"贲":{"i":22,"u":"艮","l":"离","full":"山火贲","text":"亨，小利有攸往。","plain":"山下有火，光照山色。代表修饰与美化，适合打理形象、包装作品；但外表只是小助力，实质更重要。","mean":"修饰打理，宜注重形象，更重实质"},"剥":{"i":23,"u":"艮","l":"坤","full":"山地剥","text":"不利有攸往。","plain":"山附于地，层层剥落。形势在消退，不宜主动出击，宜保存实力、等待转机。","mean":"剥落衰退，宜守不宜进，保存实力"},"复":{"i":24,"u":"坤","l":"震","full":"地雷复","text":"亨。出入无疾，朋来无咎。反复其道，七日来复，利有攸往。","plain":"雷在地中，一阳复生。低谷后的转机，事情开始回暖，适合重新开始、回到正道。","mean":"一阳来复，转机初现，宜重新开始"},"无妄":{"i":25,"u":"乾","l":"震","full":"天雷无妄","text":"元亨利贞。其匪正有眚，不利有攸往。","plain":"天下雷行，万物不敢妄动。守正就亨通，心存侥幸、投机取巧则有灾，宜踏实做事。","mean":"不妄为则吉，宜守正，忌投机"},"大畜":{"i":26,"u":"艮","l":"乾","full":"山天大畜","text":"利贞，不家食吉，利涉大川。","plain":"天藏山中，蓄积宏大。适合大量积累学识与实力、进修储备，出外发展有利。","mean":"大有积蓄，宜进修储备，待时而发"},"颐":{"i":27,"u":"艮","l":"震","full":"山雷颐","text":"贞吉。观颐，自求口实。","plain":"山下有雷，像张开的口。代表颐养：注意饮食和言语，靠正当努力养活自己，修身养性。","mean":"颐养之道，注意饮食言语，养精蓄锐"},"大过":{"i":28,"u":"兑","l":"巽","full":"泽风大过","text":"栋桡，利有攸往，亨。","plain":"泽水淹没树木，栋梁弯曲。负担过重、处于非常时期，需要非常手段，果断行动反而能化解。","mean":"负担过重，宜减压，非常时用非常法"},"坎":{"i":29,"u":"坎","l":"坎","full":"坎为水","text":"习坎，有孚，维心亨，行有尚。","plain":"水流重重，险上加险。处境艰难，但保持诚信和内心坚定，像水一样持续流动不放弃，就能走出困境。","mean":"重重险阻，宜守信沉着，步步为营"},"离":{"i":30,"u":"离","l":"离","full":"离为火","text":"利贞，亨。畜牝牛吉。","plain":"火光明亮，依附而生。代表光明与才华，宜依靠正道和可靠的人展现能力，同时保持柔顺。","mean":"光明依附，宜展现才华，走正道"},"咸":{"i":31,"u":"兑","l":"艮","full":"泽山咸","text":"亨，利贞，取女吉。","plain":"山上有泽，彼此感应。代表感应与沟通，利人际、感情和婚恋，以真诚打动人。","mean":"感应相通，宜沟通交流，利感情"},"恒":{"i":32,"u":"震","l":"巽","full":"雷风恒","text":"亨，无咎，利贞，利有攸往。","plain":"雷风相随，恒久不变。守住正确方向、长期经营，就会亨通。","mean":"持之以恒，宜坚持原有方向"},"遁":{"i":33,"u":"乾","l":"艮","full":"天山遁","text":"亨，小利贞。","plain":"天下有山，适时退避。形势对你不利，宜主动退让、韬光养晦，这是策略而不是失败。","mean":"适时退避，宜韬光养晦"},"大壮":{"i":34,"u":"震","l":"乾","full":"雷天大壮","text":"利贞。","plain":"雷在天上，声势浩大。实力强盛，正是进取之时，但要守正，不可恃强逞能。","mean":"声势强盛，宜正当进取，忌逞强"},"晋":{"i":35,"u":"离","l":"坤","full":"火地晋","text":"康侯用锡马蕃庶，昼日三接。","plain":"太阳升出地面。代表上进与晋升，容易得到上级赏识和提拔，宜积极表现。","mean":"光明上进，利升迁、表现"},"明夷":{"i":36,"u":"坤","l":"离","full":"地火明夷","text":"利艰贞。","plain":"太阳没入地下，光明受伤。才华不被看见、处境不利，宜隐忍藏锋，在艰难中坚守。","mean":"光明受伤，宜隐忍藏锋"},"家人":{"i":37,"u":"巽","l":"离","full":"风火家人","text":"利女贞。","plain":"风自火出，家道和睦。代表家庭与内部秩序，宜各守本分，经营家庭和团队内部。","mean":"家庭和睦，宜顾家、理顺内部"},"睽":{"i":38,"u":"离","l":"兑","full":"火泽睽","text":"小事吉。","plain":"火往上、泽往下，彼此背离。意见不合、关系疏离，大事难成，宜求同存异，从小事着手。","mean":"意见相左，求同存异，小事吉"},"蹇":{"i":39,"u":"坎","l":"艮","full":"水山蹇","text":"利西南，不利东北。利见大人，贞吉。","plain":"山上有水，前路艰难。行动受阻，宜停下反省、寻求贵人帮助，不要硬闯。","mean":"行路艰难，宜止步求援"},"解":{"i":40,"u":"震","l":"坎","full":"雷水解","text":"利西南。无所往，其来复吉；有攸往，夙吉。","plain":"雷雨交作，冰雪消融。困难开始化解，有事尽快处理，没事就回归平常。","mean":"困难缓解，宜把握时机解决问题"},"损":{"i":41,"u":"艮","l":"兑","full":"山泽损","text":"有孚，元吉，无咎，可贞，利有攸往。","plain":"山下有泽，减下益上。有舍才有得，适度减少欲望和投入，诚心付出反而带来好结果。","mean":"有舍才有得，宜节制投入"},"益":{"i":42,"u":"巽","l":"震","full":"风雷益","text":"利有攸往，利涉大川。","plain":"风雷相助。增益之时，适合行动、投资自己、帮助别人，可以大展拳脚。","mean":"增益之时，宜行动，助人亦助己"},"夬":{"i":43,"u":"兑","l":"乾","full":"泽天夬","text":"扬于王庭，孚号有厉。告自邑，不利即戎，利有攸往。","plain":"泽水上天，即将决堤。代表决断，宜光明正大地清除障碍，但不宜硬拼。","mean":"决断之时，宜果断清障，忌急躁"},"姤":{"i":44,"u":"乾","l":"巽","full":"天风姤","text":"女壮，勿用取女。","plain":"天下有风，不期而遇。一阴初生，代表偶遇与诱惑，要防小人和不当关系，不宜轻易承诺。","mean":"不期而遇，宜防诱惑与小人"},"萃":{"i":45,"u":"兑","l":"坤","full":"泽地萃","text":"亨。王假有庙，利见大人，亨，利贞。用大牲吉，利有攸往。","plain":"泽在地上，万物汇聚。利聚会、整合资源、团结人心，有贵人可依。","mean":"人才汇聚，利聚会、整合资源"},"升":{"i":46,"u":"坤","l":"巽","full":"地风升","text":"元亨，用见大人，勿恤，南征吉。","plain":"地中生木，逐渐长高。代表稳步上升，宜循序渐进、主动求见贵人，往南发展吉。","mean":"稳步上升，宜循序渐进"},"困":{"i":47,"u":"兑","l":"坎","full":"泽水困","text":"亨，贞，大人吉，无咎。有言不信。","plain":"泽中无水，处境困乏。困境中说话没人信，宜少说多做、坚守志向，等待转机。","mean":"处境受困，宜守口守志，等待转机"},"井":{"i":48,"u":"坎","l":"巽","full":"水风井","text":"改邑不改井，无丧无得，往来井井。汔至亦未繘井，羸其瓶，凶。","plain":"木上有水，汲水之井。代表稳定的资源和持续付出，宜修养自己、稳定输出，半途而废则前功尽弃。","mean":"源源不绝，宜修德养才、稳定输出"},"革":{"i":49,"u":"兑","l":"离","full":"泽火革","text":"巳日乃孚，元亨利贞，悔亡。","plain":"泽中有火，水火相息。代表变革：时机成熟再改，改得正当就能消除悔恨。","mean":"变革之时，宜除旧布新"},"鼎":{"i":50,"u":"离","l":"巽","full":"火风鼎","text":"元吉，亨。","plain":"木上有火，烹煮食物。代表鼎新立业，适合开创新局面、任用贤才。","mean":"鼎新立业，利开创新局面"},"震":{"i":51,"u":"震","l":"震","full":"震为雷","text":"亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。","plain":"雷声重重。突发变动令人惊惧，但镇定不乱，事后反能谈笑自若。","mean":"雷动惊变，临变不乱则吉"},"艮":{"i":52,"u":"艮","l":"艮","full":"艮为山","text":"艮其背，不获其身；行其庭，不见其人，无咎。","plain":"两山相重，静止不动。代表适可而止，宜冷静思考、控制欲望，不宜躁动。","mean":"适可而止，宜静思，不宜躁动"},"渐":{"i":53,"u":"巽","l":"艮","full":"风山渐","text":"女归吉，利贞。","plain":"山上有木，逐渐成长。按步骤推进就会顺利，利婚嫁。","mean":"循序渐进，稳中有进"},"归妹":{"i":54,"u":"震","l":"兑","full":"雷泽归妹","text":"征凶，无攸利。","plain":"泽上有雷，少女随长男。名分不正或时机不当，贸然行动不利，宜守本分。","mean":"名分不正易生悔，宜守本分"},"丰":{"i":55,"u":"震","l":"离","full":"雷火丰","text":"亨，王假之。勿忧，宜日中。","plain":"雷电皆至，盛大丰满。正处高峰，要把握当下，也要明白盛极必衰。","mean":"盛大丰满，把握当下，防盛极而衰"},"旅":{"i":56,"u":"离","l":"艮","full":"火山旅","text":"小亨，旅贞吉。","plain":"山上有火，如行旅在外。奔波在外、处境不稳，宜谨慎低调，小事可成。","mean":"在外奔波，宜谨慎低调，利出行"},"巽":{"i":57,"u":"巽","l":"巽","full":"巽为风","text":"小亨，利有攸往，利见大人。","plain":"风行相随，无孔不入。代表柔顺渗透，适合沟通协调、以柔克刚，跟随贵人。","mean":"柔顺渗透，宜沟通协调、以柔克刚"},"兑":{"i":58,"u":"兑","l":"兑","full":"兑为泽","text":"亨，利贞。","plain":"两泽相连，喜悦和顺。利交际、谈判、讲学，但要守正，不可巧言取悦。","mean":"喜悦和顺，利交际、谈判"},"涣":{"i":59,"u":"巽","l":"坎","full":"风水涣","text":"亨。王假有庙，利涉大川，利贞。","plain":"风行水上，水波离散。人心涣散时要凝聚人心、化解隔阂，可以渡过难关。","mean":"涣散需聚，宜凝聚人心、化解隔阂"},"节":{"i":60,"u":"坎","l":"兑","full":"水泽节","text":"亨。苦节不可贞。","plain":"泽上有水，满则溢出。代表节制：适度控制开支和情绪，但过分苛刻也不行。","mean":"节制有度，宜控制开支与情绪"},"中孚":{"i":61,"u":"巽","l":"兑","full":"风泽中孚","text":"豚鱼吉，利涉大川，利贞。","plain":"泽上有风，诚信感物。以真诚待人能感动他人，可以渡过难关。","mean":"诚信感人，宜以诚相待"},"小过":{"i":62,"u":"震","l":"艮","full":"雷山小过","text":"亨，利贞。可小事，不可大事。飞鸟遗之音，不宜上宜下，大吉。","plain":"山上有雷，略有过度。小事可做，大事不宜，宜低调向下，不宜好高骛远。","mean":"小事可为，大事不宜，谨小慎微"},"既济":{"i":63,"u":"坎","l":"离","full":"水火既济","text":"亨小，利贞。初吉终乱。","plain":"水在火上，事已办成。各方面都已到位，但成功后容易松懈，宜守成防乱。","mean":"已成之局，宜守成，防初吉终乱"},"未济":{"i":64,"u":"离","l":"坎","full":"火水未济","text":"亨。小狐汔济，濡其尾，无攸利。","plain":"火在水上，事未完成。还没到终点，宜谨慎坚持，不可在最后关头松懈。","mean":"事未完成，宜继续努力，慎终如始"}},"tri":{"乾":{"sym":"☰","img":"天","el":"金","num":1},"兑":{"sym":"☱","img":"泽","el":"金","num":2},"离":{"sym":"☲","img":"火","el":"火","num":3},"震":{"sym":"☳","img":"雷","el":"木","num":4},"巽":{"sym":"☴","img":"风","el":"木","num":5},"坎":{"sym":"☵","img":"水","el":"水","num":6},"艮":{"sym":"☶","img":"山","el":"土","num":7},"坤":{"sym":"☷","img":"地","el":"土","num":8}},"qigua":["中孚","复","屯","谦","睽","升","临","小过","蒙","益","渐","泰","需","随","晋","解","大壮","豫","讼","蛊","革","夬","旅","师","比","小畜","乾","大有","家人","井","咸","姤","鼎","丰","涣","履","遁","恒","节","同人","损","否","巽","萃","大畜","贲","观","归妹","无妄","明夷","困","剥","艮","既济","噬嗑","大过","坤","未济","蹇","颐"],"bigua":{"子":"复","丑":"临","寅":"泰","卯":"大壮","辰":"夬","巳":"乾","午":"姤","未":"遁","申":"否","酉":"观","戌":"剥","亥":"坤"}};
+</script>
+<script>
+// ===== Zen BaZi engine (pure, no DOM) =====
+const G = '甲乙丙丁戊己庚辛壬癸', Z = '子丑寅卯辰巳午未申酉戌亥';
+const GE = '木木火火土土金金水水', ZE = '水土木木土火火土金金土水';
+const ELS = ['木', '火', '土', '金', '水'];
+const AN = '鼠牛虎兔龙蛇马羊猴鸡狗猪';
+const HID = { 子: '癸', 丑: '己癸辛', 寅: '甲丙戊', 卯: '乙', 辰: '戊乙癸', 巳: '丙戊庚', 午: '丁己', 未: '己丁乙', 申: '庚壬戊', 酉: '辛', 戌: '戊辛丁', 亥: '壬甲' };
+const HW = { 1: [1], 2: [0.7, 0.3], 3: [0.6, 0.3, 0.1] };
+const GEN = { 木: '火', 火: '土', 土: '金', 金: '水', 水: '木' };
+const CTL = { 木: '土', 土: '水', 水: '火', 火: '金', 金: '木' };
+const mod = (a, n) => ((a % n) + n) % n;
+const gzIdx = (s, b) => mod(6 * s - 5 * b, 60);
+const gzOf = n => G[mod(n, 10)] + Z[mod(n, 12)];
+const elOf = c => G.includes(c) ? GE[G.indexOf(c)] : ZE[Z.indexOf(c)];
+
+// ---- astronomy ----
+function jd(y, m, d, h) { if (m <= 2) { y -= 1; m += 12; } const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4); return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + h / 24 + B - 1524.5; }
+function sunLon(j) {
+  const T = (j - 2451545) / 36525, r = Math.PI / 180;
+  const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+  const M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * r;
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M) + (0.019993 - 0.000101 * T) * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+  return mod(L0 + C - 0.00569 - 0.00478 * Math.sin((125.04 - 1934.136 * T) * r), 360);
+}
+function findLon(target, guess) { let j = guess; for (let i = 0; i < 10; i++) { const d = mod(target - sunLon(j) + 180, 360) - 180; j += d * 365.2422 / 360; } return j; }
+function prevJie(j) { const l = sunLon(j); const t = l - mod(l - 15, 30); return findLon(mod(t, 360), j - mod(l - t, 360) * 365.2422 / 360); }
+function nextJie(j) { const p = prevJie(j); return findLon(mod(sunLon(p) + 30, 360), p + 30.4); }
+function jdn(y, m, d) { return Math.floor(jd(y, m, d, 0) + 0.5); }
+function ymdFromJdn(n) { // civil date from JDN
+  let a = n + 32044, b = Math.floor((4 * a + 3) / 146097), c = a - Math.floor(146097 * b / 4);
+  let d = Math.floor((4 * c + 3) / 1461), e = c - Math.floor(1461 * d / 4), m = Math.floor((5 * e + 2) / 153);
+  return [100 * b + d - 4800 + Math.floor(m / 10), m + 3 - 12 * Math.floor(m / 10), e - Math.floor((153 * m + 2) / 5) + 1];
+}
+const lichun = y => findLon(315, jd(y, 2, 4, 0));
+const dongzhi = y => findLon(270, jd(y, 12, 21, 0));
+
+// ---- pillars for an instant (UT jd) and local civil date ----
+function yearPillarAt(j, civilYear) { const y = j >= lichun(civilYear) ? civilYear : civilYear - 1; return { y, n: mod(y - 4, 60) }; }
+function monthPillarAt(j, yearN) {
+  const l = sunLon(j), k = Math.floor(mod(l - 315, 360) / 30); // 0 = 寅
+  const first = mod((yearN % 10 % 5) * 2 + 2, 10);
+  return gzIdx(mod(first + k, 10), mod(k + 2, 12));
+}
+const dayPillarJdn = n => mod(n + 49, 60);
+function hourPillar(dayN, h) { const b = Math.floor((h + 1) / 2) % 12; return gzIdx(mod((dayN % 10 % 5) * 2 + b, 10), b); }
+
+// ---- ten gods ----
+function tenGod(dm, c) {
+  const de = GE[G.indexOf(dm)], e = elOf(c);
+  const dy = G.indexOf(dm) % 2, cy = G.includes(c) ? G.indexOf(c) % 2 : yinOfBranch(c);
+  const same = dy === cy;
+  if (e === de) return same ? '比肩' : '劫财';
+  if (GEN[de] === e) return same ? '食神' : '伤官';
+  if (CTL[de] === e) return same ? '偏财' : '正财';
+  if (CTL[e] === de) return same ? '七杀' : '正官';
+  return same ? '偏印' : '正印';
+}
+function yinOfBranch(b) { return G.indexOf(HID[b][0]) % 2; }
+const GRP = { 正官: '官', 七杀: '官', 正印: '印', 偏印: '印', 正财: '财', 偏财: '财', 比肩: '比', 劫财: '比', 食神: '食', 伤官: '食' };
+function relEl(de, e) { if (e === de) return '比'; if (GEN[de] === e) return '食'; if (CTL[de] === e) return '财'; if (CTL[e] === de) return '官'; return '印'; }
+
+// ---- 12 长生 ----
+const CS = ['长生', '沐浴', '冠带', '临官', '帝旺', '衰', '病', '死', '墓', '绝', '胎', '养'];
+const CS0 = { 甲: '亥', 乙: '午', 丙: '寅', 丁: '酉', 戊: '寅', 己: '酉', 庚: '巳', 辛: '子', 壬: '申', 癸: '卯' };
+function changsheng(dm, b) { const s = Z.indexOf(CS0[dm]), i = Z.indexOf(b); return CS[mod(G.indexOf(dm) % 2 === 0 ? i - s : s - i, 12)]; }
+
+// ---- branch relations ----
+const LIUHE = {}; ['子丑', '寅亥', '卯戌', '辰酉', '巳申', '午未'].forEach(p => { LIUHE[p[0]] = p[1]; LIUHE[p[1]] = p[0]; });
+const HAI = {}; ['子未', '丑午', '寅巳', '卯辰', '申亥', '酉戌'].forEach(p => { HAI[p[0]] = p[1]; HAI[p[1]] = p[0]; });
+const PO = {}; ['子酉', '午卯', '申巳', '寅亥', '辰丑', '戌未'].forEach(p => { PO[p[0]] = p[1]; PO[p[1]] = p[0]; });
+const SANHE = ['申子辰', '亥卯未', '寅午戌', '巳酉丑'];
+const XING = { 子: ['卯'], 卯: ['子'], 寅: ['巳', '申'], 巳: ['寅', '申'], 申: ['寅', '巳'], 丑: ['戌', '未'], 戌: ['丑', '未'], 未: ['丑', '戌'], 辰: ['辰'], 午: ['午'], 酉: ['酉'], 亥: ['亥'] };
+const chong = (a, b) => mod(Z.indexOf(a) - Z.indexOf(b), 12) === 6;
+const GUIREN = { 甲: '丑未', 戊: '丑未', 庚: '丑未', 乙: '子申', 己: '子申', 丙: '亥酉', 丁: '亥酉', 壬: '卯巳', 癸: '卯巳', 辛: '寅午' };
+
+// ---- chart ----
+function makeChart(inp) {
+  // inp: {name, en, gender:'男'|'女', y,m,d, hour (decimal local, or null), tz (hours), zishi:'换日'|'不换日'}
+  const tz = inp.tz ?? 8;
+  const hourKnown = inp.hour != null;
+  const h = hourKnown ? inp.hour : 12;
+  const jUT = jd(inp.y, inp.m, inp.d, h - tz);
+  const YP = yearPillarAt(jUT, inp.y);
+  const MPn = monthPillarAt(jUT, YP.n);
+  let dn = jdn(inp.y, inp.m, inp.d);
+  if (hourKnown && h >= 23 && inp.zishi !== '不换日') dn += 1;
+  const DPn = dayPillarJdn(dn);
+  const HPn = hourKnown ? hourPillar(DPn, h) : null;
+  const P = { y: gzOf(YP.n), m: gzOf(MPn), d: gzOf(DPn), h: HPn == null ? null : gzOf(HPn) };
+  const dm = P.d[0], de = GE[G.indexOf(dm)];
+  // strength
+  const s = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
+  const addP = (gz, w, mw) => { if (!gz) return; s[elOf(gz[0])] += w; const hs = HID[gz[1]]; HW[hs.length].forEach((k, i) => s[elOf(hs[i])] += 1.2 * w * k * mw); };
+  addP(P.y, 1, 1); addP(P.m, 1, 2.2); addP(P.d, 1, 1.3); addP(P.h, 1, 1);
+  const tot = ELS.reduce((a, e) => a + s[e], 0);
+  const share = {}; ELS.forEach(e => share[e] = s[e] / tot);
+  const byRel = { 比: 0, 印: 0, 食: 0, 财: 0, 官: 0 }; ELS.forEach(e => byRel[relEl(de, e)] += s[e]);
+  const support = (byRel.比 + byRel.印) / tot;
+  const weak = support < 0.48;
+  const fav = { 比: 0, 印: 0, 食: 0, 财: 0, 官: 0 };
+  let yongWhy = '';
+  if (weak) {
+    Object.assign(fav, { 印: 1.5, 比: 1, 食: -1.5, 财: -1, 官: -1 });
+    const drains = ['食', '财', '官'].sort((a, b) => byRel[b] - byRel[a]);
+    if (drains[0] === '财') { fav.比 = 2; yongWhy = '身弱财多，取比劫帮身'; } else { fav.印 = 2; yongWhy = drains[0] === '官' ? '身弱官杀旺，取印化杀生身' : '身弱食伤泄气，取印制食伤生身'; }
+  } else {
+    Object.assign(fav, { 食: 1, 财: 1.5, 官: 1, 印: -1.5, 比: -1 });
+    if (byRel.比 >= byRel.印) { fav.官 = 2; yongWhy = '身强比劫旺，取官杀制身'; } else { fav.财 = 2; yongWhy = '身强印旺，取财破印'; }
+  }
+  const favE = {}; ELS.forEach(e => favE[e] = fav[relEl(de, e)]);
+  const mb = P.m[1]; let tiaohou = '';
+  if ('亥子丑'.includes(mb) && share['火'] < 0.3) { favE['火'] = 2; favE['水'] = Math.min(favE['水'], -1.5); favE['木'] = Math.max(favE['木'], 0) + 0.6; tiaohou = '生于冬月，寒气重，以火调候为急'; }
+  if ('巳午未'.includes(mb) && share['水'] < 0.3) { favE['水'] = 2; favE['火'] = Math.min(favE['火'], -1.5); favE['金'] = Math.max(favE['金'], 0) + 0.6; tiaohou = '生于夏月，燥热重，以水调候为急'; }
+  if (tiaohou) { ELS.forEach(e => { if (e !== (tiaohou.includes('火') ? '火' : '水') && favE[e] >= 2) favE[e] = 1.5; }); }
+  const yong = ELS.slice().sort((a, b) => favE[b] - favE[a])[0];
+  const label = e => e === yong ? '用' : favE[e] >= 0.5 ? '喜' : favE[e] <= -0.5 ? '忌' : '平';
+  // 格局
+  const mt = tenGod(dm, HID[mb][0]);
+  const geju = mt === '比肩' ? '建禄格' : mt === '劫财' ? '月刃格' : mt + '格';
+  // 大运
+  const yang = G.indexOf(P.y[0]) % 2 === 0;
+  const fwd = yang === (inp.gender === '男');
+  const days = fwd ? nextJie(jUT) - jUT : jUT - prevJie(jUT);
+  const startAge = days / 3;
+  const birthYearF = inp.y + (jd(inp.y, inp.m, inp.d, h - tz) - jd(inp.y, 1, 1, 0)) / 365.2422;
+  const dayun = [];
+  for (let i = 1; i <= 9; i++) {
+    const n = MPn + (fwd ? i : -i), a0 = startAge + 10 * (i - 1);
+    dayun.push({ gz: gzOf(n), ageFrom: Math.floor(a0), ageTo: Math.floor(a0) + 9, yearFrom: Math.floor(birthYearF + a0), yearTo: Math.floor(birthYearF + a0) + 9 });
+  }
+  // 命卦
+  const yy = YP.y % 100; let kua;
+  if (inp.gender === '男') { kua = YP.y < 2000 ? mod(100 - yy, 9) : mod(99 - yy, 9); if (kua === 0) kua = 9; if (kua === 5) kua = 2; }
+  else { kua = YP.y < 2000 ? mod(yy - 4, 9) : mod(yy + 6, 9); if (kua === 0) kua = 9; if (kua === 5) kua = 8; }
+  const KUA = { 1: '坎', 2: '坤', 3: '震', 4: '巽', 6: '乾', 7: '兑', 8: '艮', 9: '离' };
+  return { inp, P, dm, de, share, byRel, support, weak, favE, yong, label, yongWhy, tiaohou, geju, mt, fwd, startAge, dayun, kua: KUA[kua], kuaN: kua, hourKnown, solarYear: YP.y, birthYearF };
+}
+
+// ---- scoring of a period pillar against chart ----
+const REL = { 官: { career: 1.5, social: .4, wealth: .3, health: .3, love: [.3, 1.2] }, 印: { career: .8, social: .5, wealth: .2, health: 1, love: [.3, .3] },
+  财: { career: .4, social: .3, wealth: 1.5, health: .2, love: [1.2, .4] }, 比: { career: .3, social: .9, wealth: .3, health: .6, love: [.2, .2] }, 食: { career: .4, social: .7, wealth: .8, health: .4, love: [.4, .4] } };
+const CATS = ['career', 'social', 'wealth', 'health', 'love'];
+function pillarRaw(ch, gz) {
+  const f = ch.favE, s = gz[0], b = gz[1];
+  const hs = HID[b]; let bf = 0; HW[hs.length].forEach((k, i) => bf += k * f[elOf(hs[i])]);
+  const base = f[elOf(s)] + 1.2 * bf;
+  const cat = { career: 0, social: 0, wealth: 0, health: 0, love: 0 };
+  const gi = ch.inp.gender === '男' ? 0 : 1;
+  [[s, 1], [hs[0], 1.2]].forEach(([c, w]) => {
+    const g = GRP[tenGod(ch.dm, c)], fe = f[elOf(c)];
+    CATS.forEach(k => { const r = k === 'love' ? REL[g].love[gi] : REL[g][k]; cat[k] += w * r * fe / 1.5; });
+    if (g === '比') { cat.wealth -= 0.5 * w; if (gi === 0) cat.love -= 0.3 * w; }
+  });
+  let inter = 0; const nb = [ch.P.y[1], ch.P.m[1], ch.P.d[1], ch.P.h ? ch.P.h[1] : null];
+  const notes = [];
+  if (chong(b, nb[2])) { inter -= .8; cat.health -= 1; cat.love -= 1; notes.push('冲日支'); }
+  if (chong(b, nb[0])) { inter -= .5; cat.social -= .5; notes.push('冲年支'); }
+  if (chong(b, nb[1])) { inter -= .4; cat.career -= .5; notes.push('冲月支'); }
+  if (nb[3] && chong(b, nb[3])) { inter -= .3; notes.push('冲时支'); }
+  if (LIUHE[b] === nb[2]) { inter += .4; cat.love += .8; notes.push('合日支'); }
+  else if (nb.includes(LIUHE[b])) { inter += .2; cat.social += .3; notes.push('六合'); }
+  if (nb.includes(HAI[b])) { inter -= .3; cat.social -= .6; notes.push('相害'); }
+  if (nb.some(x => x && (XING[b] || []).includes(x))) { inter -= .3; cat.social -= .3; notes.push(XING[b].includes(b) && nb.includes(b) ? '自刑' : '相刑'); }
+  if (GUIREN[ch.dm].includes(b)) { inter += .8; cat.social += 1; cat.career += .3; notes.push('贵人'); }
+  const overall = base + inter;
+  CATS.forEach(k => cat[k] += 0.3 * base);
+  return { v: [overall, ...CATS.map(k => cat[k])], notes };
+}
+const addV = (a, b, w) => a.map((x, i) => x + w * b[i]);
+function dayunAt(ch, yearF) { let d = null; ch.dayun.forEach(x => { if (yearF >= ch.birthYearF + x.ageFrom + (ch.startAge % 1)) d = x; }); return d; }
+
+window.ZEN_E = { G, Z, GE, ZE, ELS, AN, HID, HW, GEN, CTL, mod, gzIdx, gzOf, elOf, jd, sunLon, findLon, prevJie, nextJie, jdn, ymdFromJdn, lichun, dongzhi,
+  yearPillarAt, monthPillarAt, dayPillarJdn, hourPillar, tenGod, GRP, relEl, changsheng, LIUHE, HAI, PO, SANHE, XING, chong, GUIREN, makeChart, pillarRaw, CATS, addV, dayunAt };
+
+</script>
+<script>
+// ===== analysis layer: scores, texts, views =====
+const ZEN_A = (function (E, GUA) {
+  const { G, Z, GE, ELS, AN, HID, HW, GEN, CTL, mod, gzIdx, gzOf, elOf, jd, sunLon, findLon, prevJie, nextJie, jdn, ymdFromJdn, lichun, dongzhi,
+    yearPillarAt, monthPillarAt, dayPillarJdn, tenGod, GRP, relEl, changsheng, LIUHE, HAI, PO, SANHE, XING, chong, GUIREN, pillarRaw, CATS } = E;
+  const CN = { overall: '整体', career: '事业', social: '人缘', wealth: '财富', health: '健康', love: '感情家庭' };
+  const pad = n => String(n).padStart(2, '0');
+  const iso = (y, m, d) => y + '-' + pad(m) + '-' + pad(d);
+  const parse = s => s.split('-').map(Number);
+  const addDays = (s, n) => { const [y, m, d] = parse(s); const r = ymdFromJdn(jdn(y, m, d) + n); return iso(r[0], r[1], r[2]); };
+  const wd = s => { const [y, m, d] = parse(s); return '一二三四五六日'[mod(jdn(y, m, d), 7)]; };
+  const monday = s => { const [y, m, d] = parse(s); return addDays(s, -mod(jdn(y, m, d), 7)); };
+  const md = s => { const [, m, d] = parse(s); return m + '/' + d; };
+  const jdToLocal = (j, tz) => { const r = ymdFromJdn(Math.floor(j + 0.5 + tz / 24)); return iso(r[0], r[1], r[2]); };
+  const level = x => x >= 76 ? '大吉' : x >= 56 ? '吉' : x >= 51 ? '小吉' : x >= 21 ? '小凶' : x >= 6 ? '凶' : '大凶';
+  const good = x => x >= 51;
+  const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const rng = seed => () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+
+  // ---------- phrase banks ----------
+  const PH = {
+    career: { 官: ['官星得用，利升职、面试、汇报', '官杀为忌，上司压力大、易受约束'], 印: ['印星护身，利学习、考证、文书', '印多身懒，计划多、行动少'], 财: ['财星生官，推进业务顺手', '为财奔忙，精力分散'], 比: ['同辈助力，适合团队合作', '同辈竞争多，各守本分'], 食: ['才华得展，利创作、表达、提案', '锋芒太露，防说错话、顶撞上级'] },
+    social: { 官: ['有贵人赏识，与上级关系好', '规矩多，人际拘束'], 印: ['长辈照应，适合拜访请教', '依赖心重，少麻烦别人'], 财: ['人际活络，利拓展人脉', '应酬花钱，量力而为'], 比: ['朋友多助力', '防朋友借钱、合伙分歧'], 食: ['人缘好，聚会开心', '口快易得罪人'] },
+    wealth: { 官: ['名带利，靠职位得财', '为责任破费'], 印: ['财来得慢但稳', '财路偏慢，守成为主'], 财: ['财星得用，有进账机会', '见财难守，忌贪'], 比: ['合作得财', '比劫夺财，忌借贷、合伙'], 食: ['食伤生财，副业、技艺可变现', '开销大，防冲动消费'] },
+    health: { 官: ['精神集中、状态佳', '压力大，注意休息'], 印: ['身体得养，体力稳', '久坐少动，注意代谢'], 财: ['精力充沛', '劳碌奔波易疲累'], 比: ['体力好，适合运动', '防运动损伤'], 食: ['胃口好、心情佳', '泄气耗神，易疲倦'] },
+    love: { 官: ['关系稳定，适合谈规划', '感情有压力、互相约束'], 印: ['家中长辈关心多', '多倾听，少说教'], 财: ['异性缘佳，感情升温', '为感情花钱，防第三者'], 比: ['相处轻松，像朋友', '感情有竞争或冷淡'], 食: ['浪漫有情趣，适合约会', '言语伤人，注意语气'] }
+  };
+  const LV = { career: ['压力大，避免重大变动，先守住位置。', '阻力较多，宜守不宜攻，先巩固现有工作。', '平稳偏好，守住本分即可。', '整体顺，可以主动表现、争取机会。', '事业运强，适合争取升职、转换更好的平台。'],
+    wealth: ['破财风险高，不投资、不借贷。', '财运偏弱，开支要收紧，不做高风险投资。', '收支平衡，以正财为主。', '财运不错，正当收入有增长。', '财运旺，有加薪或额外收入的机会，但不贪。'],
+    love: ['感情和家庭压力大，多体谅、少争执。', '感情易起摩擦，多沟通、少翻旧账。', '感情平稳，多陪伴家人。', '感情和顺，单身者有好机缘。', '感情运佳，适合求婚、成家。'],
+    health: ['身体是重点，定期体检、规律作息。', '精力偏弱，注意休息和保暖。', '健康平稳，保持运动。', '精神状态不错。', '身体状态好，精力充沛。'],
+    social: ['人际是非多，慎言、少卷入纷争。', '防小人和误会，重要的事留书面记录。', '人际平稳。', '人缘好，容易得到帮助。', '贵人运强，多出去走动、结交人脉。'] };
+  const band = x => x >= 76 ? 4 : x >= 56 ? 3 : x >= 51 ? 2 : x >= 21 ? 1 : 0;
+  const STEMEV = { 正官: [['上司或长辈找你谈话', '会议上可能被点名，提前准备两句重点。'], ['收到正式通知或规定变更', '看清条款再回复。']],
+    七杀: [['临时被加派任务或被催进度', '先排优先顺序，别同时接太多。'], ['路上或工作中遇到小冲突', '深呼吸，不和人硬碰。']],
+    正印: [['收到文件、包裹或好消息', '留意邮件和信箱，别漏签收。'], ['长辈或前辈主动关心你', '适合趁机请教问题。']],
+    偏印: [['计划被打乱，需要临时改方案', '预留一个备案。'], ['突然冒出新点子，想学新东西', '先记下来，晚上再评估。']],
+    正财: [['有小进账或收到付款', '顺手记账。'], ['遇到优惠，忍不住想买东西', '买前想一想是不是真的需要。']],
+    偏财: [['意外小财，或有人请客', '见好就收，不要加码。'], ['朋友找你合作或介绍机会', '先了解清楚再答应。']],
+    比肩: [['老同学或朋友突然联系、邀约', '可以叙旧，但不必答应所有请求。'], ['同事和你抢同一个资源', '把分工讲清楚。']],
+    劫财: [['有人开口借钱或要你请客', '量力而为，礼貌拒绝也可以。'], ['容易冲动消费或弄丢小东西', '钱包、手机放固定位置。']],
+    食神: [['有饭局，或吃到好吃的', '别吃太撑，少喝冰的。'], ['心情松懈，想偷懒拖延', '先完成一件要紧事再休息。']],
+    伤官: [['容易说错话或发错讯息', '发送前再看一遍收件人和内容。'], ['忍不住想吐槽上司或制度', '有意见留到私下说。']] };
+  const NOTEEV = { 冲日支: ['家里或身体有小状况，易磕碰（冲日支）', '走路开车慢一点，少搬重物。'], 冲年支: ['行程变动、出门匆忙易忘东西（冲年支）', '提早出发，前一晚备好要带的东西。'],
+    冲月支: ['工作安排临时变动（冲月支）', '预留缓冲时间。'], 自刑: ['丢三落四：钥匙、钱包、充电器（自刑）', '出门前检查钥匙、钱包、手机三样。'], 相刑: ['和熟人有小误会（相刑）', '说话语气放软一点。'],
+    相害: ['被人误会或背后议论（相害）', '重要的事留书面记录。'], 合日支: ['感情升温，伴侣特别贴心（合日支）', '安排一点两人时间。'], 六合: ['合作顺利，有人主动配合（六合）', '把需要别人配合的事排在今天。'], 贵人: ['有贵人出手帮忙（天乙贵人）', '主动开口求助，会有回应。'] };
+  const WXEV = { 水: ['可能下雨，容易被雨淋或着凉', '出门带伞，多穿一件。'], 火: ['天气闷热，情绪容易急躁', '多补水，说话慢半拍。'], 木: ['肩颈紧、眼睛累', '每小时起身伸展一下。'], 金: ['皮肤、喉咙干燥不适', '多喝水，少吃煎炸。'], 土: ['肠胃胀、饭后犯困', '少吃油腻，饭后走一走。'] };
+  const YI = { 官: '面试、升职、汇报、签约', 印: '学习、考证、置业、拜访长辈', 财: '谈业务、收款、理财', 比: '团队合作、运动健身、聚会', 食: '创作、表达、学新技能' };
+  const JI = { 官: '顶撞上级、违规', 印: '拖延、空想', 财: '贪心投资、借钱给人', 比: '合伙投资、替人担保', 食: '口舌争执、冲动辞职' };
+  const COLOR = { 木: '绿、青', 火: '红、紫、橙', 土: '黄、啡', 金: '白、金、银', 水: '黑、蓝' };
+  const NUM = { 木: [3, 8], 火: [2, 7], 土: [5, 0], 金: [4, 9], 水: [1, 6] };
+  const DIR = { 木: '东', 火: '南', 土: '中', 金: '西', 水: '北' };
+  const XI = { 甲: '东北', 己: '东北', 乙: '西北', 庚: '西北', 丙: '西南', 辛: '西南', 丁: '南', 壬: '南', 戊: '东南', 癸: '东南' };
+  const CAI = { 甲: '东北', 乙: '东北', 丙: '西南', 丁: '西南', 戊: '北', 己: '北', 庚: '东', 辛: '东', 壬: '南', 癸: '南' };
+  const SHA = {}; '申子辰'.split('').forEach(b => SHA[b] = '南'); '寅午戌'.split('').forEach(b => SHA[b] = '北'); '亥卯未'.split('').forEach(b => SHA[b] = '西'); '巳酉丑'.split('').forEach(b => SHA[b] = '东');
+  const DIREL = { 东: '木', 南: '火', 中: '土', 西: '金', 北: '水', 东南: '木', 西南: '土', 东北: '土', 西北: '金' };
+
+  function reasonFor(ch, cat, gz) {
+    const out = [];
+    [gz[0], HID[gz[1]][0]].forEach(c => { const g = GRP[tenGod(ch.dm, c)], ok = ch.favE[elOf(c)] >= 0; const p = PH[cat][g][ok ? 0 : 1]; if (!out.includes(p)) out.push(p); });
+    return out.join('；');
+  }
+
+  // ---------- core: compute everything for a chart ----------
+  function build(ch, todayIso) {
+    const tz = ch.inp.tz ?? 8;
+    const lcCache = {};
+    const LC = y => lcCache[y] ?? (lcCache[y] = lichun(y));
+    function pillarsOf(dIso) {
+      const [y, m, d] = parse(dIso); const j = jd(y, m, d, 12 - tz);
+      const sy = j >= LC(y) ? y : y - 1; const yn = mod(sy - 4, 60);
+      return { y: gzOf(yn), m: gzOf(monthPillarAt(j, yn)), d: gzOf(dayPillarJdn(jdn(y, m, d))), sy, yF: y + (m - 1) / 12 + d / 365 };
+    }
+    function dayunOf(yF) { const i = Math.floor((yF - ch.birthYearF - ch.startAge) / 10); return i >= 0 && i < ch.dayun.length ? ch.dayun[i] : null; }
+    const R = gz => pillarRaw(ch, gz);
+    // stats
+    const stat = arr => { const n = arr.length, k = arr[0].length; const m = [], s = []; for (let i = 0; i < k; i++) { const c = arr.map(a => a[i]); const mu = c.reduce((a, b) => a + b, 0) / n; m.push(mu); s.push(Math.sqrt(c.reduce((a, b) => a + (b - mu) ** 2, 0) / n) || 1); } return { m, s }; };
+    const norm = (v, st) => v.map((x, i) => Math.max(0, Math.min(100, Math.round(60 + 17 * (x - st.m[i]) / st.s[i]))));
+    function dayRaw(dIso) {
+      const p = pillarsOf(dIso), dy = dayunOf(p.yF);
+      let v = R(p.d).v.map(x => x); v = E.addV(v, R(p.m).v, .35); v = E.addV(v, R(p.y).v, .2); if (dy) v = E.addV(v, R(dy.gz).v, .15);
+      return { v, p, dy };
+    }
+    const dStats = stat(Array.from({ length: 1461 }, (_, i) => dayRaw(addDays(todayIso, i - 730)).v));
+    // months & years over life
+    const by = Math.floor(ch.birthYearF);
+    const months = []; let j = LC(by);
+    while (true) {
+      const nj = nextJie(j + 1); const yn = yearPillarAt(j + 0.5, ymdFromJdn(Math.floor(j + 0.5 + tz / 24))[0]).n;
+      const mg = gzOf(monthPillarAt(j + 0.5, yn)); const yg = gzOf(yn);
+      const start = jdToLocal(j, tz), end = addDays(jdToLocal(nj, tz), -1);
+      const yF = parse(start)[0] + (parse(start)[1] - 1) / 12; const dy = dayunOf(yF);
+      let v = R(mg).v.map(x => x); v = E.addV(v, R(yg).v, .4); if (dy) v = E.addV(v, R(dy.gz).v, .2);
+      months.push({ start, end, gz: mg, ygz: yg, sy: mod(yn - (by - 4), 60) + by, v, dy });
+      j = nj; if (parse(start)[0] > by + 95) break;
+    }
+    months.forEach(m => { const [y] = parse(m.start); m.sy = (m.gz[1] === '丑' || m.gz[1] === '子' && parse(m.start)[1] <= 2) ? y - 1 : y; });
+    const mStats = stat(months.map(m => m.v)); months.forEach(m => m.s = norm(m.v, mStats));
+    const years = [];
+    for (let y = by; y <= by + 95; y++) { const yg = gzOf(mod(y - 4, 60)); const dy = dayunOf(y + 0.5); let v = R(yg).v.map(x => x); if (dy) v = E.addV(v, R(dy.gz).v, .5); years.push({ y, gz: yg, dy, v }); }
+    const yStats = stat(years.map(x => x.v)); years.forEach(x => x.s = norm(x.v, yStats));
+    ch.dayun.forEach(d => { const yrs = years.filter(x => x.y >= d.yearFrom && x.y <= d.yearTo); d.s = norm(R(d.gz).v.map((x, i) => x * 1.5), yStats); d.years = yrs; });
+    const cache = {};
+    function day(dIso) {
+      if (cache[dIso]) return cache[dIso];
+      const { v, p, dy } = dayRaw(dIso); const s = norm(v, dStats); const r = R(p.d);
+      const info = { date: dIso, wd: wd(dIso), p, dy, s, lv: s.map(level), notes: r.notes };
+      cache[dIso] = info; return info;
+    }
+    const monthOf = dIso => months.find(m => m.start <= dIso && dIso <= m.end);
+    const yearOf = y => years.find(x => x.y === y);
+    const syOf = dIso => pillarsOf(dIso).sy;
+    return { ch, day, months, years, monthOf, yearOf, syOf, pillarsOf, dayunOf, LC };
+  }
+
+  // ---------- texts ----------
+  function favTag(ch, c) { return ch.label(elOf(c)); }
+  function cats(ch, gz, s) { const o = {}; CATS.forEach((k, i) => o[k] = { s: s[i + 1], lv: level(s[i + 1]), t: reasonFor(ch, k, gz) }); return o; }
+  function wxShare(pairs) { const s = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 }; pairs.forEach(([gz, w]) => { if (!gz) return; s[elOf(gz[0])] += w; const hs = HID[gz[1]]; HW[hs.length].forEach((k, i) => s[elOf(hs[i])] += 1.2 * w * k); }); const t = ELS.reduce((a, e) => a + s[e], 0); const o = {}; ELS.forEach(e => o[e] = Math.round(100 * s[e] / t)); return o; }
+  function wxNote(ch, sh) { const top = ELS.slice().sort((a, b) => sh[b] - sh[a])[0]; const lb = ch.label(top); const y = ch.yong;
+    return `${top}气最旺（${lb === '用' ? '用神' : lb}）。` + (lb === '忌' ? `宜用${y}来调和：多用${COLOR[y]}色，往${DIR[y]}方走动。` : lb === '用' || lb === '喜' ? '正合你的喜用，宜主动把握。' : `平稳，可借${y}（用神）助运：${COLOR[y]}色。`); }
+  function ssInfo(ch, gz) { const s = gz[0], b = gz[1]; const ts = tenGod(ch.dm, s);
+    return { stem: `${s} · ${ts}（${favTag(ch, s)}）`, branch: `${b} 藏 ` + HID[b].split('').map(h => h + tenGod(ch.dm, h)).join('、'), grp: GRP[ts], bgrp: GRP[tenGod(ch.dm, HID[b][0])] }; }
+  const SSM = { 正官: '规矩、职位、上司、名誉', 七杀: '压力、挑战、魄力、权威', 正印: '贵人、长辈、学历、证书、房产', 偏印: '偏门学问、策划、灵感、庇护', 正财: '稳定收入、工资、务实', 偏财: '额外收入、投资、人脉', 比肩: '同辈、朋友、自信、竞争', 劫财: '竞争、破财、冲动', 食神: '才艺、口福、享受、表达', 伤官: '才华、口才、创新、叛逆' };
+  function ssNote(ch, c) { const t = tenGod(ch.dm, c), l = favTag(ch, c); return `${t}：${SSM[t]}。对你${l === '用' ? '是用神，最有帮助' : l === '喜' ? '是喜神，有帮助' : l === '忌' ? '是忌神，需小心应对' : '影响平平'}。`; }
+  function zodiacRel(ch, b, isYear) {
+    const yb = ch.P.y[1]; let r, t = '';
+    if (b === yb) { r = `与你同属${AN[Z.indexOf(b)]}（伏吟），好坏都会放大，宜稳。`; t = '值太岁'; }
+    else if (LIUHE[b] === yb) r = `${b}${yb}六合：最亲近的合，人缘好、贵人运旺。`;
+    else if (SANHE.some(g => g.includes(b) && g.includes(yb))) r = `三合：有助力，合作顺利。`;
+    else if (chong(b, yb)) { r = `${b}${yb}相冲：变动、奔波，易起冲突，凡事多留余地。`; t = '冲太岁'; }
+    else if (HAI[b] === yb) { r = `${b}${yb}相害：防小人暗损、背后议论。`; t = '害太岁'; }
+    else if ((XING[b] || []).includes(yb)) { r = `${b}${yb}相刑：防人际误会和言语失礼。`; t = '刑太岁'; }
+    else if (PO[b] === yb) { r = `${b}${yb}相破：小破耗，计划易有小变卦。`; t = '破太岁'; }
+    else r = '与你的生肖无特殊冲合，平稳。';
+    if (isYear) r = (t ? `【${t}】` : '【不犯太岁】') + r + (t ? '宜低调稳守，可依习俗拜太岁、多行善。' : '');
+    const good = [LIUHE[b], ...SANHE.filter(g => g.includes(b))[0].split('').filter(x => x !== b)].map(x => AN[Z.indexOf(x)]).join('、');
+    const bad = [...new Set([Z[mod(Z.indexOf(b) + 6, 12)], HAI[b], ...((XING[b] || []).filter(x => x !== b))].map(x => AN[Z.indexOf(x)]))].join('、');
+    return { animal: AN[Z.indexOf(b)], rel: r, good, bad, chong: `冲${AN[mod(Z.indexOf(b) + 6, 12)]}，煞${SHA[b]}` };
+  }
+  // gua
+  const BYPAIR = {}; Object.entries(GUA.hex).forEach(([n, h]) => BYPAIR[h.u + h.l] = n);
+  const XT = { 1: '乾', 2: '兑', 3: '离', 4: '震', 5: '巽', 6: '坎', 7: '艮', 0: '坤' };
+  const DE = { 乾: '刚健', 坤: '柔顺', 震: '动', 巽: '入', 坎: '险', 离: '明', 艮: '止', 兑: '悦' };
+  function guaInfo(ch, n, how) {
+    const h = GUA.hex[n]; const T = GUA.tri; const ke = T[ch.kua].el;
+    const relOf = e => e === ke ? ['比和', 1] : GEN[e] === ke ? ['生体', 2] : CTL[ke] === e ? ['体克为财', .5] : GEN[ke] === e ? ['泄体', -.5] : ['克体', -1.5];
+    const a = relOf(T[h.u].el), b = relOf(T[h.l].el), sc = a[1] + b[1];
+    return { name: n, full: h.full, sym: String.fromCodePoint(0x4DC0 + h.i - 1), up: `${h.u}${T[h.u].sym}（${T[h.u].el}）`, lo: `${h.l}${T[h.l].sym}（${T[h.l].el}）`,
+      image: `上${h.u}为${T[h.u].img}（${DE[h.u]}），下${h.l}为${T[h.l].img}（${DE[h.l]}）：外在环境${DE[h.u]}，自身状态${DE[h.l]}。`,
+      text: h.text, plain: h.plain, mean: h.mean, how, sc, ua: `上卦${T[h.u].el}${a[0]}，下卦${T[h.l].el}${b[0]}`,
+      rel: `上卦${T[h.u].el}${a[0]}，下卦${T[h.l].el}${b[0]} → ${sc >= 2 ? '吉' : sc >= .5 ? '小吉' : sc >= -.5 ? '平' : '有压力，谨慎'}` };
+  }
+  function qiGua(B, dIso) { const [y, m, d] = parse(dIso); const j = jd(y, m, d, 12); const dz = j >= dongzhi(y) ? dongzhi(y) : dongzhi(y - 1); return GUA.qigua[Math.min(59, Math.floor((j - dz) * 60 / 365.2422))]; }
+  const yearGua = gz => BYPAIR[XT[(G.indexOf(gz[0]) + 1) % 8] + XT[(Z.indexOf(gz[1]) + 1) % 8]];
+  // fly stars
+  const SN = ['', '一白', '二黑', '三碧', '四绿', '五黄', '六白', '七赤', '八白', '九紫'];
+  const SM = ['', ['生气星：利官运、人缘、桃花', '吉'], ['病符星：主疾病，宜静', '凶'], ['是非星：主口舌争执', '凶'], ['文昌星：利学习、考试、文书', '吉'], ['五黄煞：主灾祸，忌动土装修', '大凶'], ['武曲星：利权力、偏财', '吉'], ['破军星：防破财、盗窃、口舌', '凶'], ['左辅财星：九运退气，财运平稳', '小吉'], ['当运旺星：主喜庆、名声、好事', '大吉']];
+  function flyStars(y) {
+    const c = mod(11 - mod(y, 9) - 1, 9) + 1; const order = ['中', '西北', '西', '东北', '南', '北', '西南', '东', '东南'];
+    const pos = {}; order.forEach((dname, o) => { const n = mod(c - 1 + o, 9) + 1; pos[dname] = { n, name: SN[n], m: SM[n][0], lv: SM[n][1] }; });
+    const where = n => order.find(k => pos[k].n === n);
+    return { pos, note: `${y}年${SN[c]}入中宫。九紫旺星在${where(9)}，宜多活动；一白在${where(1)}、六白在${where(6)}、四绿在${where(4)}也吉。五黄煞在${where(5)}，忌动土装修；二黑病符在${where(2)}，宜静。` };
+  }
+  function lucky(ch, key, gz) {
+    const r = rng(hash(key + (ch.inp.name || '')));
+    const xi = ELS.filter(e => ch.label(e) === '喜').sort((a, b) => ch.favE[b] - ch.favE[a]);
+    const y = ch.yong, x = xi[0] || y, x2 = xi[1] || x;
+    const pick = e => NUM[e][Math.floor(r() * 2)];
+    const a = [pick(y), pick(y), pick(x), pick(y)]; for (let i = 3; i > 0; i--) { const k = Math.floor(r() * (i + 1)); [a[i], a[k]] = [a[k], a[i]]; }
+    const mother = ELS.find(e => GEN[e] === y);
+    const chain = [ch.label(mother) !== '忌' ? mother : x2, y, GEN[y] && ch.label(GEN[y]) !== '忌' ? GEN[y] : x, ch.label(elOf(gz[0])) !== '忌' ? elOf(gz[0]) : y];
+    const b = chain.map(pick);
+    return { a: a.join(''), b: b.join(''), note: `用神组取${y}数（${NUM[y].join('、')}）为主、${x}数为辅；相生组按${chain.slice(0, 3).join('→')}的顺序相生排列。` };
+  }
+  function compass(ch, gz) {
+    const s = gz[0], b = gz[1]; const out = {};
+    Object.keys(DIREL).forEach(d => { let v = ch.favE[DIREL[d]]; const fl = []; if (XI[s] === d) { v += 1; fl.push('喜神'); } if (CAI[s] === d) { v += 1; fl.push('财神'); } if (SHA[b] === d) { v -= 2; fl.push('煞方'); }
+      out[d] = { lv: v >= 2.5 ? '大吉' : v >= 1.5 ? '吉' : v >= .5 ? '小吉' : v > -.5 ? '平' : v > -1.5 ? '小凶' : '凶', el: `${DIREL[d]} · ${ch.label(DIREL[d])}`, fl: fl.join('、') }; });
+    return { dirs: out, note: `今日喜神在${XI[s]}，财神在${CAI[s]}，煞在${SHA[b]}。重要的事面向${DIR[ch.yong]}方或喜神、财神方，避免朝${SHA[b]}方动土、搬重物。` };
+  }
+  function events(ch, dIso, gz, notes) {
+    const h = hash(dIso); const st = STEMEV[tenGod(ch.dm, gz[0])][h % 2];
+    const nn = notes.find(n => NOTEEV[n] && !['六合', '贵人', '合日支'].includes(n)) || notes.find(n => NOTEEV[n]);
+    const ne = nn ? NOTEEV[nn] : null;
+    const sh = wxShare([[gz, 1]]); const top = ELS.slice().sort((a, b) => sh[b] - sh[a])[0]; let w = WXEV[top];
+    let main = st, sec = ne || STEMEV[tenGod(ch.dm, gz[0])][(h + 1) % 2];
+    if (ne && nn !== '六合' && nn !== '贵人' && nn !== '合日支') { main = ne; sec = st; }
+    if (w[0] === sec[0] || w[0] === main[0]) w = STEMEV[tenGod(ch.dm, HID[gz[1]][0])][h % 2];
+    return [main, sec, w];
+  }
+  function yiji(gz, ch) { const g1 = GRP[tenGod(ch.dm, gz[0])], g2 = GRP[tenGod(ch.dm, HID[gz[1]][0])]; const u = (a, b) => [...new Set((a + (b !== a ? '、' + b : '')).split('、'))].join('、');
+    return { yi: u(YI[g1], YI[g2]), ji: u(JI[g1], JI[g2]) }; }
+  function inter(ch, gz, dy) {
+    const n = []; const yb = gz[1];
+    if (dy) { const db = dy.gz[1];
+      if (gz === dy.gz) n.push('岁运并临：流年和大运相同，吉凶都会被放大');
+      if (['甲己', '乙庚', '丙辛', '丁壬', '戊癸'].some(p => p.includes(gz[0]) && p.includes(dy.gz[0]) && gz[0] !== dy.gz[0])) n.push(`流年${gz[0]}与大运${dy.gz[0]}天干相合：外援多，但易被人情牵绊`);
+      if (['甲庚', '乙辛', '丙壬', '丁癸'].some(p => p.includes(gz[0]) && p.includes(dy.gz[0]) && gz[0] !== dy.gz[0])) n.push(`流年${gz[0]}与大运${dy.gz[0]}天干相冲：计划容易被打乱`);
+      if (chong(yb, db)) n.push(`流年${yb}与大运${db}相冲：工作、居所容易变动`);
+      if (LIUHE[yb] === db) n.push(`流年${yb}与大运${db}六合：合作和人际顺`);
+      if (HAI[yb] === db) n.push(`流年${yb}与大运${db}相害：防暗中阻碍`); }
+    const r = pillarRaw(ch, gz).notes; const M = { 冲日支: '冲日支（夫妻宫），家庭、居所、身体易有变动', 冲年支: '冲年支，外出奔波多', 冲月支: '冲月支，工作环境有变', 冲时支: '冲时支，子女或下属之事要多关心', 合日支: '合日支，感情、人缘佳', 相害: '与原局相害，防小人', 自刑: '与原局自刑，事情易反复、丢三落四', 相刑: '与原局相刑，人际易有摩擦', 贵人: '逢天乙贵人，有贵人相助', 六合: '与原局六合，合作顺' };
+    r.forEach(x => M[x] && n.push(M[x])); return n;
+  }
+
+  return { CN, iso, parse, addDays, wd, monday, md, level, good, build, cats, wxShare, wxNote, ssInfo, ssNote, zodiacRel, guaInfo, qiGua, yearGua, flyStars, lucky, compass, events, yiji, inter, LV, band, COLOR, NUM, DIR, reasonFor, PH };
+});
+if (typeof module !== 'undefined') module.exports = ZEN_A;
+
+</script>
+<script>
+// ===== 数字能量（八星磁场） =====
+const ZEN_N = (function () {
+  const STAR = {
+    天医: { good: 1, nick: '财富星', pairs: ['13', '31', '68', '86', '49', '94', '27', '72'], 性格: '聪明善良、心地单纯、乐于助人', 财运: '正财旺，赚钱顺，付出容易有回报', 事业: '贵人相助，适合服务、医疗、咨询、教育', 感情: '婚姻和睦，容易遇到好对象', 健康: '整体不错；太多时容易轻信他人、心太软', more: '天医太多：心软、容易被骗' },
+    生气: { good: 1, nick: '贵人星', pairs: ['14', '41', '67', '76', '39', '93', '28', '82'], 性格: '乐观开朗、随和、不记仇', 财运: '财来得轻松，但不太计较、不善守财', 事业: '人缘好、贵人多，适合需要人际的工作', 感情: '好相处，异性缘佳', 健康: '心情好，少病痛', more: '生气太多：随遇而安、缺少斗志' },
+    延年: { good: 1, nick: '能力星', pairs: ['19', '91', '78', '87', '34', '43', '26', '62'], 性格: '有责任感、领导力强、专业可靠', 财运: '靠能力稳定赚钱', 事业: '适合主管、专业技术、管理岗位', 感情: '偏强势，易成“大男人”或“女强人”', 健康: '操劳，注意肩颈和心脏', more: '延年太多：固执、事事亲力亲为' },
+    伏位: { good: 0.2, nick: '等待星', pairs: ['11', '22', '33', '44', '66', '77', '88', '99'], 性格: '稳定、耐心、保守', 财运: '稳中求财，不冒进', 事业: '适合稳定的工作，善于等待时机', 感情: '慢热、专一', 健康: '久坐少动，注意血液循环', more: '伏位太多：犹豫不决、容易错失机会' },
+    绝命: { good: -1, nick: '投资星', pairs: ['12', '21', '69', '96', '48', '84', '37', '73'], 性格: '豪爽、敢冲、重义气，也容易冲动', 财运: '大进大出，敢投资，起落大', 事业: '适合业务、创业、投资，但风险高', 感情: '热烈，也容易争执', 健康: '注意肝、肾和意外', more: '' },
+    五鬼: { good: -1, nick: '才华星', pairs: ['18', '81', '79', '97', '36', '63', '24', '42'], 性格: '聪明、反应快、点子多、不按常理', 财运: '有偏财，也容易意外破财', 事业: '适合创意、策划、技术，工作多变动', 感情: '多疑、难捉摸', 健康: '注意失眠、心血管和意外', more: '' },
+    六煞: { good: -1, nick: '情绪星', pairs: ['16', '61', '47', '74', '38', '83', '29', '92'], 性格: '细腻温柔、重感情、情绪化', 财运: '容易因人情、感情花钱', 事业: '适合服务、美业、设计、公关', 感情: '桃花多，感情烦恼也多', 健康: '注意皮肤、肠胃和情绪', more: '' },
+    祸害: { good: -1, nick: '口舌星', pairs: ['17', '71', '89', '98', '46', '64', '23', '32'], 性格: '口才好、能言善辩、爱面子', 财运: '靠嘴赚钱，也容易因口舌破财', 事业: '适合销售、讲师、律师、主持', 感情: '容易吵架、计较', 健康: '注意呼吸道和慢性小病', more: '' }
+  };
+  const ORDER = ['天医', '生气', '延年', '伏位', '绝命', '五鬼', '六煞', '祸害'];
+  const LOOK = {}; ORDER.forEach(s => STAR[s].pairs.forEach((p, i) => LOOK[p] = { star: s, lv: Math.floor(i / 2) + 1 }));
+  const LVW = [0, 1, 0.85, 0.7, 0.55];
+  const COMBO = { '绝命天医': '敢投资，而且投得出回报', '天医延年': '能赚钱也守得住钱', '生气天医': '贵人带财，靠人脉赚钱', '延年生气': '能力强又得人认可', '五鬼天医': '偏财运，靠创意或副业赚钱', '六煞天医': '因人缘、感情或服务业得财', '天医绝命': '有钱后容易冲动投资，宜守', '绝命五鬼': '投资失利或意外破财，需谨慎', '祸害绝命': '口舌是非引起破财或冲突', '五鬼绝命': '冲动决定容易出事', '六煞祸害': '情绪化导致口舌争执', '延年绝命': '有能力也敢冲，适合创业但要控风险', '天医生气': '财来人旺，运势顺', '生气延年': '人缘带来机会，能力把握住机会', '祸害天医': '靠口才赚钱', '六煞五鬼': '情绪起伏大，易失眠多虑', '伏位天医': '耐心等待后有收获', '绝命延年': '冲劲之后能稳住局面' };
+  const toDigits = s => [...String(s).toUpperCase()].map(c => /[0-9]/.test(c) ? c : /[A-Z]/.test(c) ? String((c.charCodeAt(0) - 65) % 9 + 1) : '').join('');
+  function analyse(raw) {
+    const d = toDigits(raw); if (d.replace(/[05]/g, '').length < 2) return null;
+    const groups = []; let i = 0;
+    while (i < d.length && '05'.includes(d[i])) i++;
+    while (i < d.length) {
+      let j = i + 1, mid = ''; while (j < d.length && '05'.includes(d[j])) { mid += d[j]; j++; }
+      if (j >= d.length) break;
+      const p = d[i] + d[j]; const L = LOOK[p];
+      if (L) groups.push({ p, raw: d.slice(i, j + 1), star: L.star, lv: L.lv, mode: mid.includes('0') ? '隐' : mid.includes('5') ? '显' : '' });
+      i = j;
+    }
+    const n = groups.length; let sum = 0, wsum = 0; const cnt = {}; ORDER.forEach(s => cnt[s] = 0); const wcnt = {}; ORDER.forEach(s => wcnt[s] = 0);
+    groups.forEach((g, k) => { let w = LVW[g.lv] * (g.mode === '显' ? 1.3 : g.mode === '隐' ? 0.5 : 1) * (k >= n - 3 ? 1.4 : 1); g.w = w; sum += w * STAR[g.star].good; wsum += w; cnt[g.star]++; wcnt[g.star] += w; });
+    const score = Math.max(0, Math.min(100, Math.round(50 + 48 * sum / (wsum || 1))));
+    const combos = []; for (let k = 0; k + 1 < n; k++) { const key = groups[k].star + groups[k + 1].star; if (COMBO[key] && !combos.some(c => c[0] === key)) combos.push([key, groups[k].star, groups[k + 1].star, COMBO[key]]); }
+    const rank = ORDER.filter(s => cnt[s]).sort((a, b) => wcnt[b] - wcnt[a]);
+    const aspects = {}; ['性格', '财运', '事业', '感情', '健康'].forEach(a => aspects[a] = rank.slice(0, 2).map(s => `${s}：${STAR[s][a]}`));
+    const extra = ORDER.filter(s => cnt[s] >= 3 && STAR[s].more).map(s => STAR[s].more);
+    const last = d.replace(/[05]+$/, '').slice(-1);
+    const fix = ['天医', '生气', '延年'].map(s => { const ps = STAR[s].pairs.filter(p => p[0] === last); return ps.length ? `${s}：接 ${ps.map(p => p[1]).join(' 或 ')}` : ''; }).filter(Boolean);
+    const wx = { 水: 0, 火: 0, 木: 0, 金: 0, 土: 0 }; const WX = { 1: '水', 6: '水', 2: '火', 7: '火', 3: '木', 8: '木', 4: '金', 9: '金', 5: '土', 0: '土' }; [...d].forEach(c => wx[WX[c]]++);
+    return { digits: d, groups, score, cnt, wcnt, combos, aspects, extra, last, fix, wx, len: d.length };
+  }
+  function birthLuck(y, m, d, ageNow) {
+    const s = String(y) + String(m).padStart(2, '0') + String(d).padStart(2, '0');
+    const r = analyse(s); if (!r) return null;
+    const segs = r.groups.map((g, k) => ({ ...g, from: k * 6, to: k * 6 + 5 }));
+    const cur = segs.find(x => ageNow >= x.from && ageNow <= x.to) || null;
+    return { s, segs, cur };
+  }
+  return { STAR, ORDER, analyse, birthLuck, toDigits };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_N;
+
+</script>
+<script>
+// ===== 全盘十神解析 =====
+const ZEN_D = (function (E) {
+  const { G, Z, HID, GEN, CTL, elOf, tenGod, GRP, chong, LIUHE, HAI, PO, XING } = E;
+  const GN = { 官: '官杀', 印: '印星', 财: '财星', 食: '食伤', 比: '比劫' };
+  const POSG = {
+    年: { 官: '出身家教严，长辈有地位或规矩多', 印: '早年得长辈照顾，家里重视读书', 财: '祖上或父辈有财，早年家境影响大', 食: '童年较无忧，有才艺天分', 比: '兄弟姐妹多，或早年就有竞争' },
+    月: { 官: '工作环境规矩多、上司管束强，事业心重', 印: '父母照顾多，适合专业、学术或体制内', 财: '青年时期就有赚钱机会，做事务实', 食: '工作上靠才华和表达，点子多', 比: '同事同辈竞争多，适合合作或自立门户' },
+    日: { 官: ['配偶管得多，家庭讲规矩', '夫星坐夫妻宫，丈夫有能力'], 印: ['配偶顾家，会照顾你', '配偶顾家，会照顾你'], 财: ['妻星坐夫妻宫，妻子贤惠、会理财', '配偶务实、重经济'], 食: ['家庭生活重享受，配偶温和有才', '子女缘深，家庭生活重享受'], 比: ['夫妻像朋友，但容易各有主张', '夫妻像朋友，但容易各有主张'] },
+    时: { 官: ['子女有出息，晚年仍有责任和压力', '晚年和丈夫的关系很重要'], 印: ['晚年有依靠，喜欢学习', '晚年有依靠，喜欢学习'], 财: ['晚年有财，子女或下属能带财', '晚年有财，下属能带财'], 食: ['晚年享福、有雅兴', '子女缘深，子女有才'], 比: ['晚年朋友多，子女独立', '晚年朋友多，子女独立'] }
+  };
+  const SIT = { 官官: '官杀坐官杀：权力或压力都很集中', 官印: '官印相生：有地位又有贵人，适合体制内发展', 官财: '坐下财星生官：财力撑起地位', 官比: '官杀坐比劫：能管住同辈，适合带团队',
+    印官: '印坐官杀：官生印，名誉和贵人相辅', 印印: '印星重叠：贵人多，但依赖心重', 印财: '印坐财星：财坏印，钱财与读书或长辈有冲突', 印比: '印坐比劫：自信，又有支持',
+    财官: '财坐官杀：财生官，赚钱为事业铺路', 财印: '财坐印星：财印交战，常在钱和名之间取舍', 财财: '财星重叠：财来财去', 财食: '财坐食伤：食伤生财，靠才华和技能赚钱', 财比: '财坐比劫：钱财易被同辈分夺，忌合伙',
+    食印: '食伤坐印：印制食伤，才华内敛、思虑周全', 食财: '食伤坐财：才艺能变现', 食食: '食伤重叠：表达欲强、点子多，也易口舌', 食比: '食伤坐比劫：有朋友支持的才华',
+    比官: '比劫坐官杀：竞争在规则下进行', 比印: '比劫坐印：自身力量足', 比财: '比劫坐财：有赚钱能力，但朋友兄弟易分财', 比食: '比劫坐食伤：把自身力量化为才华输出', 比比: '比劫坐比劫：个性强、独立，竞争多' };
+  function sitText(st, bt, weak) {
+    const a = GRP[st], b = GRP[bt];
+    if (a === '官' && b === '食') return st === '七杀' ? (bt === '食神' ? '七杀坐食神：食神制杀，能把压力化为权力和本事（吉）' : '七杀坐伤官：伤官驾杀，才华和魄力并用，敢闯敢拼，但锋芒太露易冲撞') : '正官坐食伤：伤官见官，才华与规矩冲突，容易和上司意见不合';
+    if (a === '食' && b === '官') return st === '伤官' && bt === '正官' ? '伤官坐正官：伤官见官，言语容易冒犯上级' : st === '食神' && bt === '七杀' ? '食神坐七杀：食神制杀，化压力为成就（吉）' : '食伤坐官杀：才华和压力互相牵制';
+    if (a === '印' && b === '食') return st === '偏印' && bt === '食神' ? '偏印坐食神：枭神夺食，计划和才华容易被打断' : st === '正印' && bt === '伤官' ? '正印坐伤官：伤官配印，才华有修养（吉）' : '印坐食伤：印制食伤，做事有分寸';
+    if (a === '财' && b === '官' && st === '偏财' || a === '财' && b === '官' && bt === '七杀') return weak ? '财坐七杀：财滋杀，身弱时压力更大，为钱为事业劳累' : '财坐官杀：财生官，赚钱为事业铺路';
+    return SIT[a + b] || '';
+  }
+  const LINK = { 财官: ['财生官杀', '钱财带动事业，也可能为权位付出代价'], 官印: ['官杀生印', '压力转化为名誉、学历或贵人'], 印比: ['印生比劫', '贵人支持自己'], 比食: ['比劫生食伤', '自身力量化为才华'], 食财: ['食伤生财', '才华能变成钱'],
+    官比: ['官杀制比劫', '规则约束竞争'], 比财: ['比劫夺财', '钱财容易被分走，忌合伙'], 财印: ['财坏印', '为了钱牺牲学习或贵人'], 印食: ['印制食伤', '才华受约束'], 食官: ['食伤制官杀', '才华与规则对抗'] };
+  function linkText(x, y) { // x, y ten god names; returns relation from x to y
+    const ex = GRP[x], ey = GRP[y]; let k = ex + ey, r = LINK[k];
+    if (!r) { k = ey + ex; r = LINK[k]; if (!r) return null; [x, y] = [y, x]; }
+    let [n, m] = r;
+    if (k === '财官') { n = x === '偏财' || y === '七杀' ? `${x}生${y}（财滋杀）` : `${x}生${y}`; }
+    if (k === '印食') { if (x === '偏印' && y === '食神') { n = '枭神夺食'; m = '计划和才华容易被打断'; } else if (x === '正印' && y === '伤官') { n = '伤官配印'; m = '才华有修养，是好组合'; } }
+    if (k === '食官') { if (x === '伤官' && y === '正官') { n = '伤官见官'; m = '言语或做法冒犯上级、规则'; } else if (x === '食神' && y === '七杀') { n = '食神制杀'; m = '化压力为权力，是好组合'; } else if (y === '七杀') { n = '伤官驾杀'; m = '以才华驾驭压力，敢闯但易冲撞'; } }
+    return { from: x, to: y, n, m };
+  }
+  function deep(ch) {
+    const female = ch.inp.gender === '女' ? 1 : 0;
+    const P = [['年', ch.P.y], ['月', ch.P.m], ['日', ch.P.d], ['时', ch.P.h]].filter(x => x[1]);
+    const S = []; const push = (title, items) => items.length && S.push({ title, items });
+    const fav = c => ch.label(elOf(c)); const tone = c => ({ 用: 'good', 喜: 'good', 忌: 'bad' }[fav(c)] || 'mid');
+    const pg = (pos, g) => { const v = POSG[pos][g]; return Array.isArray(v) ? v[female] : v; };
+    // 1 天干透出
+    push('天干透出', P.filter(([p]) => p !== '日').map(([p, gz]) => { const t = tenGod(ch.dm, gz[0]); return { tone: tone(gz[0]), h: `${p}干 ${gz[0]} · ${t}（${fav(gz[0])}）`, t: `${pg(p, GRP[t])}。${{ 用: '这是用神透出，助力明显。', 喜: '这是喜神，有帮助。', 忌: '这是忌神透出，这方面容易带来压力或消耗。', 平: '' }[fav(gz[0])]}` }; }));
+    // 2 各柱干支
+    push('各柱干支组合', P.map(([p, gz]) => { const bt = tenGod(ch.dm, HID[gz[1]][0]);
+      if (p === '日') return { tone: tone(gz[1]), h: `日柱 ${gz} · 日主坐${bt}`, t: `日支是夫妻宫，坐${bt}：${pg('日', GRP[bt])}。` + (GRP[bt] === '比' || GRP[bt] === '印' ? '日主自坐有根，自身较有底气。' : '') };
+      const st = tenGod(ch.dm, gz[0]); const es = elOf(gz[0]), eb = elOf(gz[1]);
+      const root = es === eb ? '天干在地支有根（同五行）' : GEN[eb] === es ? '地支生天干，天干力量足' : GEN[es] === eb ? '天干生地支，力量往下泄' : CTL[es] === eb ? '天干克地支（盖头），地支受压' : '地支克天干（截脚），天干无力';
+      return { tone: 'mid', h: `${p}柱 ${gz} · ${st}坐${bt}`, t: `${sitText(st, bt, ch.weak) || st + '坐' + bt}。${root}。` }; }));
+    // 3 天干之间
+    const st = P.map(([p, gz]) => [p, gz[0], p === '日' ? '日主' : tenGod(ch.dm, gz[0])]);
+    const links = [];
+    for (let i = 0; i + 1 < st.length; i++) { const [pa, ca, ta] = st[i], [pb, cb, tb] = st[i + 1];
+      if (ta === '日主' || tb === '日主') { const [po, co, to] = ta === '日主' ? st[i + 1] : st[i];
+        links.push({ tone: tone(co), h: `${po}干${to}紧贴日主`, t: { 官: `${to}贴身克日主：压力直接来自${po === '月' ? '工作和上司' : po === '时' ? '子女、下属或晚年' : '长辈'}${ch.weak ? '，身弱时感受特别明显' : '，身强能扛，反成魄力'}。`, 印: `${to}贴身生日主：${po === '月' ? '父母和贵人' : '晚辈或晚年'}支持你。`, 财: `${to}贴身被日主所克：${po === '月' ? '工作中就有赚钱机会' : '晚年或下属带财'}${ch.weak ? '，但身弱时财多反累' : ''}。`, 食: `${to}贴身泄日主：${po === '月' ? '工作靠才华表达' : '晚年喜欢表达和享受'}，${ch.weak ? '身弱时耗神' : '才华得以发挥'}。`, 比: `${to}贴身帮日主：同辈助力，也有竞争。` }[GRP[to]] });
+        continue; }
+      if (ca === cb) { links.push({ tone: 'mid', h: `${pa}干、${pb}干同为${ta}`, t: `同类相叠，${GN[GRP[ta]]}的力量加倍。` }); continue; }
+      const l = linkText(ta, tb); const toC = l && (l.to === ta ? ca : cb); if (l) links.push({ tone: /好组合|吉/.test(l.m) ? 'good' : l.n.includes('生') ? tone(toC) : /夺|坏|冒犯|冲撞|打断|代价|分走/.test(l.m) ? 'bad' : 'mid', h: `${pa}干${ta} × ${pb}干${tb}：${l.n}`, t: `${l.m}。` });
+      if (frozenset(ca, cb)) links.push({ tone: 'mid', h: `${pa}干${ca}与${pb}干${cb}天干相合`, t: '两干相合，彼此牵绊，力量会被绑住一部分。' });
+      if (ca !== cb && ['甲庚', '乙辛', '丙壬', '丁癸'].some(q => q.includes(ca) && q.includes(cb))) links.push({ tone: 'bad', h: `${pa}干${ca}与${pb}干${cb}天干相冲`, t: '两干相冲，这两方面容易矛盾。' });
+    }
+    // 隔柱同类 / 相冲
+    for (let i = 0; i + 2 < st.length; i++) { const [pa, ca, ta] = st[i], [pb, cb, tb] = st[i + 2]; if (ta !== '日主' && tb !== '日主' && ta === tb) links.push({ tone: 'mid', h: `${pa}干、${pb}干同为${ta}（隔柱）`, t: `${GN[GRP[ta]]}力量加倍。` }); }
+    for (let i = 0; i < st.length; i++) for (let j = i + 2; j < st.length; j++) { const [pa, ca] = st[i], [pb, cb] = st[j]; if (ca !== cb && ['甲庚', '乙辛', '丙壬', '丁癸'].some(q => q.includes(ca) && q.includes(cb))) links.push({ tone: 'bad', h: `${pa}干${ca}与${pb}干${cb}隔柱相冲`, t: '冲力较弱，但两方面仍有拉扯。' }); }
+    push('天干之间的生克', links);
+    // 4 十神数量
+    const cntS = {}, cntM = {}, cntH = {}; const add = (o, k) => o[k] = (o[k] || 0) + 1;
+    P.forEach(([p, gz]) => { if (p !== '日') add(cntS, tenGod(ch.dm, gz[0])); add(cntM, tenGod(ch.dm, HID[gz[1]][0])); HID[gz[1]].split('').forEach(h => add(cntH, tenGod(ch.dm, h))); });
+    const tot = t => (cntS[t] || 0) + (cntH[t] || 0); const grpTot = g => Object.keys(cntH).concat(Object.keys(cntS)).filter((v, i, a) => a.indexOf(v) === i && GRP[v] === g).reduce((a, t) => a + tot(t), 0);
+    const yinEl = Object.keys(GRP).find(t => GRP[t] === '印') && [...'木火土金水'].find(e => { const de = ch.de; return GEN[e] === de; });
+    const feats = [];
+    ['七杀', '正官', '伤官', '食神', '偏财', '正财', '偏印', '正印', '比肩', '劫财'].forEach(t => { if ((cntS[t] || 0) >= 2) feats.push({ tone: tone([...G].find(c => tenGod(ch.dm, c) === t)), h: `${cntS[t]} 个${t}透干`, t: t === '七杀' ? (ch.weak ? `七杀重而日主弱，压力大、容易被人或环境压着走，需要印星（${yinEl}）化杀。` : '杀重而身强，能任杀，有魄力，适合掌权、带队。') : `${t}的力量明显，${{ 官: '受规则、上司影响大', 印: '贵人、学习的力量强', 财: '财星显露，重视钱财', 食: '才华外露、表达欲强', 比: '自我意识强、竞争多' }[GRP[t]]}。` }); });
+    if (tot('正官') && tot('七杀')) feats.push({ tone: 'bad', h: '官杀混杂', t: '正官和七杀同时出现，规则和压力来自多方，做事易左右为难；女命则感情选择较复杂。' });
+    const sh = tot('伤官'); if (sh >= 3) feats.push({ tone: tone([...G].find(c => tenGod(ch.dm, c) === '伤官')), h: `地支藏干共有 ${sh} 个伤官（伤官旺）`, t: '才华、口才和叛逆心都很强，不喜被管。' + (tot('正官') ? '又见正官，易“伤官见官”，与上司规则冲突。' : '') + (tot('七杀') ? '有七杀可配，成“伤官配杀”，以才华驾驭压力，适合有挑战的专业工作。' : '') + (tot('正印') ? '有正印可配，成“伤官配印”，才华得到修养。' : '') });
+    const fs = tot('食神'); if (fs >= 3) feats.push({ tone: 'mid', h: `食神多（${fs} 个）`, t: '有口福、懂享受、人缘好，太多则偏懒散。' });
+    if (grpTot('财') >= 3 && ch.weak) feats.push({ tone: 'bad', h: '财多身弱', t: '机会多但扛不住，钱来钱去，宜先强身（印比运）再求财。' });
+    if (grpTot('印') >= 3) feats.push({ tone: 'mid', h: '印星重', t: '贵人多、爱学习，但依赖心重、行动偏慢。' });
+    if (grpTot('比') >= 3) feats.push({ tone: 'mid', h: '比劫重', t: '自我意识强，同辈竞争多，钱财易被分。' });
+    ['官', '印', '财', '食', '比'].forEach(g => { if (!grpTot(g)) feats.push({ tone: 'mid', h: `原局无${GN[g]}`, t: { 官: '官杀不显，较自由，不喜受约束；事业名位多靠大运补。', 印: '印星不显，贵人少，凡事靠自己打拼。', 财: '财星不显，赚钱靠后天经营或大运带动。', 食: '食伤不显，表达较含蓄，才华不易外露。', 比: '比劫不显，兄弟朋友助力少，凡事靠自己。' }[g] }); else if (!Object.keys(cntS).some(t => GRP[t] === g) && g !== '比') feats.push({ tone: 'mid', h: `${GN[g]}只藏不透`, t: `${GN[g]}藏在地支里，作用较含蓄、来得慢。` }); });
+    push('十神数量与格局特征', feats);
+    // 5 地支关系
+    const PP = { 年月: '早年家庭与父母', 年日: '家庭背景与自身婚姻', 年时: '祖上与晚辈', 月日: '工作与家庭', 月时: '事业与子女晚年', 日时: '婚姻与子女' };
+    const br = []; const SANHE = [['申子辰', '水'], ['亥卯未', '木'], ['寅午戌', '火'], ['巳酉丑', '金']];
+    for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) { const [pa, a] = P[i], [pb, b] = P[j]; const a1 = a[1], b1 = b[1], k = PP[pa + pb];
+      if (a1 === b1) br.push({ tone: 'mid', h: `${pa}支、${pb}支同为${a1}（伏吟）`, t: `${k}方面，同类事情容易重复出现。${'辰午酉亥'.includes(a1) ? `${a1}${a1}自刑，易自我纠结。` : ''}` });
+      if (chong(a1, b1)) br.push({ tone: 'bad', h: `${pa}支${a1}冲${pb}支${b1}`, t: `${k}之间有冲突、变动或聚少离多。` });
+      if (LIUHE[a1] === b1) br.push({ tone: 'good', h: `${pa}支${a1}合${pb}支${b1}（六合）`, t: `${k}关系融洽、互相牵绊。` });
+      if (HAI[a1] === b1) br.push({ tone: 'bad', h: `${pa}支${a1}害${pb}支${b1}`, t: `${k}之间容易暗中不和。` });
+      if (a1 !== b1 && (XING[a1] || []).includes(b1)) br.push({ tone: 'bad', h: `${pa}支${a1}刑${pb}支${b1}`, t: `${k}之间有摩擦。` });
+      if (PO[a1] === b1) br.push({ tone: 'mid', h: `${pa}支${a1}破${pb}支${b1}`, t: `${k}方面有小破耗。` });
+    }
+    const bs = P.map(x => x[1][1]);
+    SANHE.forEach(([g, e]) => { const has = [...g].filter(c => bs.includes(c)); if (has.length === 3) br.push({ tone: ch.label(e) === '忌' ? 'bad' : 'good', h: `${g}三合${e}局`, t: `地支合成${e}局，${e}的力量很大，对你${{ 用: '是用神，大吉', 喜: '是喜神，有利', 平: '影响中性', 忌: '是忌神，要多留意' }[ch.label(e)]}。` });
+      else if (has.length === 2 && has.includes(g[1])) br.push({ tone: ch.label(e) === '忌' ? 'bad' : 'good', h: `${has.join('')}半合${e}局`, t: `半合成${e}，${e}的力量加强，对你${{ 用: '是用神，有利', 喜: '是喜神，有利', 平: '影响中性', 忌: '是忌神，这股力量会加重负担' }[ch.label(e)]}。` }); });
+    push('地支关系', br);
+    // 6 总论
+    const tags = feats.filter(f => !/原局无|只藏/.test(f.h)).map(f => f.h.replace(/（.+?）/g, '')).slice(0, 3);
+    const sum = [{ tone: 'good', h: `${ch.geju} · ${ch.weak ? '身弱' : '身强'} · 用神${ch.yong}`, t: `日主${ch.dm}${ch.de}${ch.weak ? '偏弱' : '偏强'}，${ch.tiaohou || ch.yongWhy}。${tags.length ? '全盘最突出的特征：' + tags.join('、') + '。' : ''}遇到${ch.yong}和喜神的大运、流年，是你发力的时机；忌神当令的时候，宜守不宜攻。` }];
+    S.unshift({ title: '总论', items: sum });
+    return S;
+  }
+  function frozenset(a, b) { return ['甲己', '乙庚', '丙辛', '丁壬', '戊癸'].some(q => q.includes(a) && q.includes(b) && a !== b); }
+  return { deep };
+});
+if (typeof module !== 'undefined') module.exports = ZEN_D;
+
+</script>
+<script>
+// ===== 易经安心话 & 人间百态 =====
+const ZEN_C = (function () {
+  const T = `乾|你的力量正在上升，相信自己，一步一步往上走。|定下一个小目标，今天就开始。
+坤|不必事事争先，柔软也是一种力量，跟着对的方向走就好。|今天多支持身边的人一次。
+屯|万事起头难，难不代表错，你正走在开始的路上。|把大事拆成三小步，先完成第一步。
+蒙|不懂不丢人，愿意学的人走得最远。|向一个比你懂的人请教一个问题。
+需|时机还没到，不是你不够好；耐心本身就是准备。|趁等待的时间，把基本功练扎实。
+讼|争赢道理不如守住关系，退一步海阔天空。|对一件小争执，主动说一句缓和的话。
+师|你不是一个人在战斗，好的团队会让你更强。|把任务分出去，信任别人一次。
+比|靠近对的人，好运会跟着来。|主动联系一位许久没聊的朋友。
+小畜|积累不会白费，小小的进步正在变成大改变。|记下今天做成的一件小事。
+履|谨慎不是胆小，是聪明；按规矩走，路就是安全的。|重要的事再确认一次细节。
+泰|天地相通，正是顺的时候，好好享受，也记得感恩。|把好运分享给身边的人。
+否|暂时不通，是为了让你停下来想清楚；冬天过后一定是春天。|今天不硬推，做好分内事就够了。
+同人|志同道合的人就在身边，合作会让事情更顺。|找一个伙伴一起完成一件事。
+大有|你拥有的比你想的多，满足和分享会让福气更大。|写下三件值得感谢的事。
+谦|低调的人最有福气，越谦虚越被尊重。|今天真诚地称赞一个人。
+豫|心情愉快的时候做事最顺，也别忘了留点余力。|给自己安排一件开心的小事。
+随|顺着变化走，不是放弃，是聪明。|对一个新的建议说一次“好，试试看”。
+蛊|旧问题浮出来，是改善的好机会，不必自责。|整理一个拖了很久的角落或旧账。
+临|好运正在靠近，准备好迎接它。|主动推进一件你一直想做的事。
+观|先看清楚再行动，静下来，答案自己会出现。|给自己十分钟安静独处。
+噬嗑|问题再硬也咬得断，果断处理反而轻松。|今天解决一个卡住你的小问题。
+贲|打理好外在会让心情变好，但你本来的样子已经很好。|换一件喜欢的衣服，整理一下桌面。
+剥|有些东西在离开，是为了腾出空间给更好的。|放下一件不再需要的东西。
+复|低谷已经过去，转机正在回来，重新开始永远不晚。|重新拾起一个你曾放下的好习惯。
+无妄|不必想捷径，踏实做好眼前的事就是最好的运。|专心做完一件事，不分心。
+大畜|你在蓄积力量，现在的努力都会在将来开花。|读几页书，或学一样新东西。
+颐|照顾好身体和言语，福气从好好吃饭开始。|今天好好吃一顿饭，少说一句抱怨。
+大过|担子重的时候可以放下一些，不必一个人扛全部。|请人帮你分担一件事。
+坎|难关一层一层，但水总能找到出路，你也会。|把担心的事写下来，逐一想办法。
+离|你的光芒值得被看见，大方展现自己。|分享一个你的作品或想法。
+咸|用心感受，真诚会打动人心。|对重要的人说一句心里话。
+恒|坚持本身就是答案，你走的路是对的。|继续昨天的好习惯，不要断。
+遁|退一步不是输，是保存实力，等更好的时机。|今天远离一件消耗你的事。
+大壮|你的实力正强，大步向前，只要不逞强就好。|做一件需要勇气的事。
+晋|你的努力会被看见，好机会正在来。|在团队里主动表现一次。
+明夷|暂时不被看见没关系，金子在暗处也是金子。|默默做好一件事，不急着证明。
+家人|家是你的根，经营好家，外面的事也会顺。|和家人吃顿饭或打个电话。
+睽|意见不同很正常，求同存异，关系反而更稳。|先找到你和对方的一个共同点。
+蹇|路难走就停一停，求助不丢人，贵人就在身边。|开口向一个可信的人求助。
+解|困难正在松开，压力会慢慢退去。|把一件拖着的事今天处理掉。
+损|少一点，反而得到更多；舍得，才有得。|减少一项不必要的开销或应酬。
+益|帮别人也是帮自己，好运会互相流动。|做一件对别人有帮助的小事。
+夬|该决定就决定，果断会让你轻松。|对一件犹豫很久的事做出决定。
+姤|新的相遇会带来新的可能，用平常心看待。|对陌生人保持友善，也守好分寸。
+萃|人聚在一起力量就大，你身边有支持你的人。|参加一次聚会或团队活动。
+升|一步一个脚印，你正在稳稳往上走。|今天比昨天多做一点点就好。
+困|被困住只是暂时的，守住心，转机会来。|少说多做，先照顾好自己的情绪。
+井|你的价值像一口井，源源不绝，慢慢来。|把一项技能再磨练一次。
+革|改变让人不安，但改变之后是新生。|改掉一个小坏习惯。
+鼎|新局面正在成形，你有能力撑起它。|规划一个新的开始或新计划。
+震|意外来时先稳住，惊过之后会笑着回头看。|深呼吸三次，再处理突发的事。
+艮|停下来不是落后，是为了看得更清楚。|今天少安排一件事，留点空白。
+渐|慢慢来比较快，你正在对的节奏上。|按计划完成今天的那一步。
+归妹|不急着求结果，先把自己的位置站稳。|做好本分，不越界。
+丰|好运正盛，好好享受，也为将来存一点。|把一部分收获存起来。
+旅|在外奔波辛苦了，低调谨慎，处处都有好人。|出门前检查行程和随身物品。
+巽|温和的方式往往最有力量。|用商量的语气提出一个请求。
+兑|开心是最好的运气，笑容会带来好人缘。|和朋友聊聊天，分享一件开心的事。
+涣|心散了就把它收回来，人散了就把它聚起来。|整理思绪，或约大家聚一聚。
+节|适度就好，节制会让你更自由。|给今天的花费或手机时间设个上限。
+中孚|真诚是最强的力量，别人感受得到。|信守一个小承诺。
+小过|小事做好就是大成就，不必急于求大。|把一件小事做到最好。
+既济|你已经做到了，接下来守住成果就好。|回顾成果，检查有没有遗漏。
+未济|还差一点点，坚持到底，终点就在前面。|把最后一步踏实做完。`;
+  const GUA = {}; T.split('\n').forEach(l => { const [n, a, b] = l.split('|'); GUA[n] = { comfort: a, act: b }; });
+  const REL = sc => sc >= 2 ? '吉：顺势而为，可以大胆去做。' : sc >= .5 ? '小吉：有助力，稳步前进就好。' : sc >= -.5 ? '平：平平稳稳，按自己的节奏走。' : '有些压力：压力也在推你成长，放慢一步，就能稳稳走过。';
+  // 人间百态
+  const JOY = { 官: '努力被上司或长辈肯定，有升职、加薪或好评的消息', 印: '收到关心、好消息，或考试、申请顺利', 财: '有进账，买到心仪的东西，或省下一笔钱', 食: '吃到好吃的，作品被称赞，和朋友玩得开心', 比: '老朋友相聚，得到同伴支持' };
+  const ANGER = { 官: '被规矩卡住，或被上司误解、催逼', 印: '被长辈唠叨，计划被否定', 财: '为钱和人计较，觉得被占便宜', 食: '直话被误会，看不惯不公平的事', 比: '同事朋友争资源、抢功劳' };
+  const SORROW = { 官: '努力没被看见的委屈', 印: '想念长辈、老家或过去的日子', 财: '破财的心疼，或为钱发愁', 食: '才华没人懂的失落', 比: '朋友疏远的落寞' };
+  const PLEASE = { 火: '晒太阳、聚餐、拍照、看展', 土: '登山、整理家居、喝杯热茶', 木: '公园散步、看书、种花草', 金: '运动流汗、听音乐、整理收藏', 水: '游泳、旅行、听雨、泡个澡' };
+  const DOM = [['家庭', 'love', '家人团聚，饭桌上笑声多', '家人观念不同，为小事拌嘴', '怒', '先听完再说，家人不是对手。'], ['感情', 'love', '伴侣贴心，单身者有心动的相遇', '感情冷淡或有误会，想说的话说不出口', '哀', '把感受说出来，不要等对方猜。'],
+    ['工作', 'career', '努力被看见，任务顺利完成', '被加压或被挑错，觉得委屈', '怒', '把事实列清楚，情绪留到下班再消化。'], ['朋友', 'social', '老朋友联络，有人雪中送炭', '朋友借钱或疏远，人情难处理', '哀', '帮得到就帮，帮不到就温和说明。'],
+    ['金钱', 'wealth', '有进账，或省下一笔钱', '意外开销，为钱发愁', '哀', '先记账再决定，不冲动消费。'], ['健康', 'health', '精神好、睡得香', '疲累，小病小痛', '哀', '早点睡，给身体留点余地。']];
+  const CI = ['career', 'social', 'wealth', 'health', 'love'];
+  function scenes(ch, E, gz, s, notes) {
+    const { tenGod, GRP, HID, elOf, ELS } = E;
+    const gs = [gz[0], HID[gz[1]][0]].map(c => ({ g: GRP[tenGod(ch.dm, c)], ok: ch.favE[elOf(c)] >= 0 }));
+    const goodG = gs.filter(x => x.ok).map(x => x.g), badG = gs.filter(x => !x.ok).map(x => x.g);
+    const pick = (arr, fb) => arr.length ? arr[0] : fb;
+    const emo = {
+      喜: JOY[pick(goodG, gs[0].g)], 怒: badG.length ? ANGER[badG[0]] : `机会不大；偶尔可能${ANGER[gs[1].g]}，很快会过去`, 哀: badG.length ? SORROW[badG[0]] : `机会不大；若有一点${SORROW[gs[0].g]}，和人聊聊就好`,
+      乐: `做些让你舒服的事：${PLEASE[ch.yong]}（${ch.yong}是你的用神）`
+    };
+    const meet = notes.some(n => /合|贵人/.test(n)) ? '有人主动靠近，可能是久别重逢、贵人相助或合作谈成' : s[2] >= 60 ? '和朋友、同事的互动多，容易结下新缘分' : '人际平淡，适合和亲近的人好好相处';
+    const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
+    const doms = DOM.map(([n, k, g, b, be, tip]) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
+      return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '珍惜这份好，记得道谢或分享。' : mid ? '保持平常心。' : tip }; });
+    return { emo, meet, part, doms };
+  }
+  return { GUA, REL, scenes };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_C;
+
+</script>
+<script>
+// ===== 16 型性格测试（非官方 MBTI）& 人生重要年份 =====
+const ZEN_M = (function () {
+  const Q = [
+    ['E', '周末有空，你更想：', '约朋友出去，热热闹闹', '在家充电，做自己的事'],
+    ['E', '参加完聚会，你通常：', '越聊越有精神', '需要独处一阵子恢复体力'],
+    ['E', '遇到烦恼，你倾向：', '先找人聊聊，边说边理清', '先自己想清楚，再跟人说'],
+    ['E', '到了新环境，你会：', '很快主动认识人', '先观察，等别人来搭话'],
+    ['E', '你的朋友圈：', '认识的人多，范围广', '少而精，几个知心的就够'],
+    ['S', '你更相信：', '亲眼看到的事实和经验', '直觉和各种可能性'],
+    ['S', '学新东西时，你喜欢：', '一步一步照着步骤来', '先了解整体概念再动手'],
+    ['S', '朋友常说你：', '务实、脚踏实地', '有想象力、点子多'],
+    ['S', '讲一件事时，你会：', '讲细节，按顺序说', '讲重点和意义，常常跳着说'],
+    ['S', '你更感兴趣的是：', '现在能做什么', '将来可能变成什么'],
+    ['T', '做决定时，你更看重：', '合不合逻辑、公不公平', '大家的感受、关系是否和谐'],
+    ['T', '朋友向你诉苦，你会：', '帮他分析问题、给办法', '先安慰他、陪着他'],
+    ['T', '你更受不了：', '做事没效率、不讲道理', '冷漠、不顾别人感受'],
+    ['T', '需要指出别人的错时，你：', '直接说出问题', '委婉一点，照顾对方面子'],
+    ['T', '别人对你的评价比较像：', '冷静、客观', '温暖、体贴'],
+    ['J', '去旅行之前，你：', '先把行程排好', '到了再看心情'],
+    ['J', '你的桌面或房间通常：', '整齐有条理', '有点乱，但自己找得到'],
+    ['J', '面对截止日期，你：', '提早完成才安心', '最后关头效率最高'],
+    ['J', '计划被打乱时，你：', '有点不舒服，想尽快重新安排', '无所谓，随机应变'],
+    ['J', '你更喜欢：', '事情有结论、定下来', '保持开放，多留选择']
+  ];
+  const PAIR = { E: 'I', S: 'N', T: 'F', J: 'P' };
+  const TY = {
+    INTJ: ['策略规划型', '独立、有远见、重视效率与逻辑', '擅长长期规划和解决复杂问题', '容易显得冷淡、对人要求高', '战略规划、研究、工程、系统架构'],
+    INTP: ['思考分析型', '好奇、爱钻研原理、思维灵活', '分析力强，能想出独到的解法', '容易拖延、忽略生活细节', '研究、程序开发、数据分析、学术'],
+    ENTJ: ['统帅决断型', '果断、有魄力、目标导向', '善于组织资源、带领团队', '急躁、听不进不同意见', '管理、创业、咨询、项目统筹'],
+    ENTP: ['创意辩论型', '机智、反应快、爱挑战常规', '点子多，善于说服和创新', '三分钟热度，难以坚持细节', '创业、市场策划、产品、媒体'],
+    INFJ: ['洞察理想型', '敏锐、有理想、重视意义', '能看透人心，给人深刻的启发', '容易过度付出、内心疲惫', '咨询辅导、写作、教育、公益'],
+    INFP: ['温柔理想型', '真诚、有同理心、富想象力', '创意丰富，能打动人心', '容易理想化、逃避冲突', '写作、设计、心理、艺术创作'],
+    ENFJ: ['鼓舞引导型', '热情、有感染力、关心他人', '善于激励和凝聚团队', '容易忽略自己的需要', '培训、人力资源、教育、公关'],
+    ENFP: ['热情创意型', '乐观、好奇、充满活力', '能带动气氛，发现新机会', '注意力分散、不爱例行公事', '传媒、营销、创意、活动策划'],
+    ISTJ: ['踏实负责型', '可靠、守规矩、重细节', '执行力强，做事有始有终', '不喜欢变化，显得固执', '财务、行政、工程、法务、监管'],
+    ISFJ: ['细心守护型', '体贴、负责、默默付出', '照顾周到，值得信赖', '不懂拒绝，委屈自己', '医护、行政、教育、客服'],
+    ESTJ: ['管理执行型', '务实、果断、讲效率', '善于建立制度、推动执行', '容易强势、缺少弹性', '管理、营运、执法、项目管理'],
+    ESFJ: ['热心照顾型', '热情、合群、重人情', '善于维系关系，照顾大家', '太在意别人的看法', '服务业、人事、教育、销售'],
+    ISTP: ['冷静实干型', '冷静、动手能力强、随机应变', '擅长解决眼前的实际问题', '不爱表达感受，容易冷场', '技术维修、工程、IT、运动'],
+    ISFP: ['温和艺术型', '温和、敏感、有审美', '善于用作品和行动表达', '回避冲突，不擅长规划', '设计、摄影、手作、艺术'],
+    ESTP: ['行动冒险型', '大胆、务实、享受当下', '临场反应快，敢于行动', '容易冲动、缺乏长远计划', '销售、创业、谈判、运动'],
+    ESFP: ['活力表演型', '开朗、爱热闹、有亲和力', '能带给周围人快乐', '不爱长期规划，容易花钱', '表演、活动、餐饮、零售、娱乐']
+  };
+  function score(ans) { const c = { E: 0, S: 0, T: 0, J: 0 }; Q.forEach((q, i) => { if (ans[i] === 'A') c[q[0]]++; }); return c; }
+  function type(ans) { const c = score(ans); return ['E', 'S', 'T', 'J'].map(k => c[k] >= 3 ? k : PAIR[k]).join(''); }
+  function fromChart(ch, E) {
+    const { tenGod, HID, GRP } = E; const w = {}; const add = (t, v) => w[t] = (w[t] || 0) + v;
+    [ch.P.y, ch.P.m, ch.P.d, ch.P.h].filter(Boolean).forEach((gz, i) => { if (i !== 2) add(tenGod(ch.dm, gz[0]), 1); HID[gz[1]].split('').forEach((h, k) => add(tenGod(ch.dm, h), k ? .3 : 1)); });
+    const g = t => w[t] || 0; const grp = x => Object.keys(w).filter(t => GRP[t] === x).reduce((a, t) => a + w[t], 0);
+    const dims = [['E', 'I', grp('比') + grp('食') + grp('财') * .5, grp('印') + g('正官')], ['S', 'N', grp('财') + g('正官') + grp('比') * .5, g('偏印') * 1.2 + g('伤官') + g('正印') * .5],
+      ['T', 'F', g('七杀') + grp('比') + g('偏财') * .5 + g('伤官') * .5, grp('印') + g('食神') + g('正财') * .3], ['J', 'P', g('正官') + g('正印') + g('正财'), g('伤官') + g('偏印') + g('偏财') + g('食神')]];
+    return dims.map(([a, b, x, y]) => ({ a, b, pick: x >= y ? a : b, x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 }));
+  }
+  // ---- 人生重要年份 ----
+  const TKC = ['甲庚', '乙辛', '丙壬', '丁癸'];
+  function keyYears(ch, B, E, from, to) {
+    const { chong, LIUHE, SANHE, tenGod, GRP, elOf } = E; const out = [];
+    const db = ch.P.d[1], ds = ch.P.d[0], yb = ch.P.y[1]; const male = ch.inp.gender === '男';
+    B.years.filter(x => x.y >= from && x.y <= to).forEach(x => {
+      const tags = []; const s = x.gz[0], b = x.gz[1]; const t = (tone, h, d) => tags.push({ tone, h, d });
+      const dy = ch.dayun.find(d => d.yearFrom === x.y); if (dy) t('mid', `交大运（进入${dy.gz}运）`, '人生换季，工作、居所、心态容易转变；提前规划，顺势调整。');
+      if (x.dy && x.gz === x.dy.gz) t('bad', '岁运并临', '流年和大运相同，好坏都会放大；重大决定多想一步。');
+      const tk = TKC.some(p => p.includes(s) && p.includes(ds) && s !== ds) && chong(b, db);
+      if (tk) t('bad', '天克地冲日柱', '自身、婚姻、健康容易有大变动；避免冒险投资，注意身体与出行安全。');
+      else if (chong(b, db)) t('bad', '冲日支（夫妻宫）', '家宅、婚姻或身体易有变动，常见搬家、换工作、感情起伏；多体谅伴侣，留意健康。');
+      if (b === yb) t('mid', '本命年（值太岁）', '心情和环境容易起伏，宜稳不宜冒进，可依习俗拜太岁、多行善。');
+      else if (chong(b, yb)) t('bad', '冲太岁', '变动、奔波多，人际易起冲突；凡事多留余地，出行注意安全。');
+      if (LIUHE[b] === db || SANHE.some(g => g.includes(b) && g.includes(db) && b !== db)) t('good', '合夫妻宫', '感情、婚姻、合作的好机会：单身者易遇对象，已婚者家庭和睦。');
+      const sg = GRP[tenGod(ch.dm, s)];
+      if ((male && sg === '财' || !male && sg === '官') && ch.label(elOf(s)) !== '忌') t('good', male ? '妻星透出' : '夫星透出', '配偶星出现在流年天干，利恋爱、结婚。');
+      const [ov, ca, so, we, he] = x.s;
+      if (ca >= 76) t('good', '事业年', '利升职、转换平台、考证或创业，主动争取。');
+      if (we >= 76) t('good', '财运年', '收入有机会增长，可做理财规划，但不贪不赌。');
+      if (he <= 30 || ov <= 20) t('bad', ov <= 20 ? '运势低谷年' : '健康留意年', '放慢脚步、定期体检、规律作息；重大决定延后。');
+      if (tags.length) out.push({ y: x.y, gz: x.gz, s: ov, tags });
+    });
+    return out;
+  }
+  return { Q, TY, type, score, fromChart, keyYears };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_M;
+
+</script>
+<script>
+(function () {
+  const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
+  const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ELC = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
+  const isGZ = c => G.includes(c) || Z.includes(c);
+  const gzc = s => [...String(s)].map(c => isGZ(c) ? `<span class="e-${ELC[elOf(c)]}">${c}</span>` : (ELC[c] ? `<span class="e-${ELC[c]}">${c}</span>` : esc(c))).join('');
+  const lvc = lv => String(lv).includes('凶') ? 'bz-bad' : 'bz-good';
+  const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
+  const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
+  const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
+  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
+  const S = { tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
+  const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
+
+  // ---------- storage ----------
+  const KEY = 'zen-bazi-input-v1';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
+  const save = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { } };
+
+  // ---------- small renderers ----------
+  const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${title}</h2>` : ''}${body}</div>`;
+  const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
+  const hero = (small, s, lv, title, lines) => `<div class="bz-card bz-hero"><div><div class="bz-muted">${small}</div><div class="bz-big ${lvc(lv)}">${s}</div><div class="bz-lvbig ${lvc(lv)}">${lv}</div></div><div>${title}${lines.join('')}</div></div>`;
+  const catsGrid = (gz, s, longFn) => `<div class="bz-grid">${CATS.map((k, i) => scoreCat(CATN[i], s[i + 1], A.level(s[i + 1]), longFn ? longFn(k, s[i + 1]) : A.reasonFor(S.ch, k, gz), !!longFn)).join('')}</div>`;
+  function summary(gz, s) { const pairs = CATS.map((k, i) => [CATN[i], s[i + 1]]); const b = pairs.slice().sort((a, c) => c[1] - a[1])[0][0], w = pairs.slice().sort((a, c) => a[1] - c[1])[0][0];
+    return `${gzc(gz)}（${tenGod(S.ch.dm, gz[0])}·${tenGod(S.ch.dm, HID[gz[1]][0])}），${A.level(s[0])}。${b}最顺，${w}要留意。`; }
+  function pan(cols) {
+    const ch = S.ch; const B = (a, inner) => `<button class="bz-cb" data-act="info:${a}">${inner}</button>`;
+    const head = cols.map(c => `<th class="${c[2] ? 'bz-dyn' : ''}">${c[1] ? B(`pos|${c[0]}|${c[1]}`, c[0]) : c[0]}</th>`).join('');
+    const row = (label, f) => `<tr><th>${label}</th>${cols.map(c => `<td class="${c[2] ? 'bz-dyn' : ''}">${c[1] ? f(c) : '—'}</td>`).join('')}</tr>`;
+    return `<div class="bz-tablewrap"><table class="bz-pan"><thead><tr><th></th>${head}</tr></thead><tbody>
+      ${row('十神', c => c[3] ? B(`dm|${c[0]}|${c[1]}`, '日主') : B(`ss|${c[0]}|${c[1]}`, tenGod(ch.dm, c[1][0])))}
+      ${row('天干', c => B(`stem|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzc(c[1][0])}</div>`))}
+      ${row('地支', c => B(`branch|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzc(c[1][1])}</div>`))}
+      ${row('藏干', c => HID[c[1][1]].split('').map((h, i) => B(`hid|${c[0]}|${c[1]}|${h}|${i}`, `${gzc(h)}<small>${tenGod(ch.dm, h)}</small>`)).join(''))}
+      ${row('星运', c => B(`cs|${c[0]}|${c[1]}`, changsheng(ch.dm, c[1][1])))}</tbody></table></div><p class="bz-hint">☝ 点表里任何一格，看详细解读</p>`;
+  }
+  // ---------- 点格解读 ----------
+  const POS = { 年柱: '年柱代表祖上、长辈、童年（约 1–16 岁），也是你在社会上的大背景。', 月柱: '月柱代表父母、兄弟、工作环境，主青年（约 17–32 岁）。月令是全盘力量最强的一支，决定格局。', 日柱: '日柱代表你自己（天干）和配偶、家庭（地支，称夫妻宫），主中年（约 33–48 岁）。', 时柱: '时柱代表子女、下属、晚年（约 49 岁后），也代表你内心的想法和计划。', 大运: '大运管十年的大环境，好比一段时期的“天气”。原局是你的房子，大运是外面的季节。', 流年: '流年管这一年的运势，是大运之中每年的变化。', 流月: '流月管这一个月的节奏。', 流日: '流日管今天的小气候。' };
+  const SSD = { 比肩: ['同辈、兄弟、朋友、合作伙伴', '自立、有主见、讲义气', '独立、有毅力、朋友多', '固执、易与人竞争、分财'], 劫财: ['竞争者、同辈中的对手', '敢冲敢拼、好胜心强', '行动力强、敢于争取', '冲动、破财、易被借钱'], 食神: ['才艺、口福、享受、子女（女命）', '温和、乐观、有品味', '有才华、人缘好、懂享受', '懒散、贪图安逸'], 伤官: ['才华、口才、创新、叛逆', '聪明、表达力强、不服管', '创意多、能言善辩、点子多', '锋芒太露、易顶撞上级、口舌是非'], 偏财: ['额外收入、投资、生意、人脉、父亲', '慷慨、灵活、善交际', '机会多、会赚钱、有人缘', '花钱快、投机、不专一'], 正财: ['稳定收入、工资、妻子（男命）', '务实、勤俭、负责任', '踏实赚钱、守财、顾家', '保守、太计较、缺冒险精神'], 七杀: ['压力、挑战、权威、魄力，也是丈夫（女命）', '果断、有魄力、敢担当', '能扛压力、有领导力、执行力强', '压力大、急躁、易受欺压或与人冲突'], 正官: ['规矩、职位、上司、名誉，也是丈夫（女命）', '正直、守规矩、有责任感', '受上级器重、名声好、做事有分寸', '拘谨、怕犯错、压力来自制度'], 偏印: ['偏门学问、策划、灵感、庇护', '机敏、独立思考、有直觉', '学东西快、有创意、有贵人暗中相助', '想太多、孤僻、做事半途而废'], 正印: ['贵人、长辈、母亲、学历、证书、房产', '仁慈、宽厚、好学', '有贵人、学历好、心态稳', '依赖心重、懒散、不够果断'] };
+  const STEMX = { 甲: '参天大树（阳木）：正直、有担当、向上发展', 乙: '花草藤蔓（阴木）：柔韧、适应力强、善于借力', 丙: '太阳（阳火）：热情、光明、外向大方', 丁: '烛火灯火（阴火）：细腻、温暖、有洞察力', 戊: '高山城墙（阳土）：稳重、守信、包容', 己: '田园沃土（阴土）：务实、细心、善于培养', 庚: '刀剑矿石（阳金）：刚毅、果断、讲义气', 辛: '珠宝首饰（阴金）：精致、爱面子、有品味', 壬: '江河大海（阳水）：聪明、奔放、有远见', 癸: '雨露泉水（阴水）：温柔、敏感、有灵性' };
+  const BR = { 子: ['十一月（大雪起）', '23–1 点', '冬'], 丑: ['十二月（小寒起）', '1–3 点', '冬末'], 寅: ['正月（立春起）', '3–5 点', '春'], 卯: ['二月（惊蛰起）', '5–7 点', '春'], 辰: ['三月（清明起）', '7–9 点', '春末'], 巳: ['四月（立夏起）', '9–11 点', '夏'], 午: ['五月（芒种起）', '11–13 点', '夏'], 未: ['六月（小暑起）', '13–15 点', '夏末'], 申: ['七月（立秋起）', '15–17 点', '秋'], 酉: ['八月（白露起）', '17–19 点', '秋'], 戌: ['九月（寒露起）', '19–21 点', '秋末'], 亥: ['十月（立冬起）', '21–23 点', '冬'] };
+  const CSD = { 长生: '如婴儿出生，生机初现：有成长潜力，容易得人照顾。', 沐浴: '如婴儿沐浴，易受外界影响：主桃花、浪漫、爱美，也主不够稳定。', 冠带: '如少年穿衣戴冠，开始成形：重形象、有上进心。', 临官: '如成年就业，能力成熟：自立、有事业心（又叫建禄）。', 帝旺: '如人到壮年，力量最强：自信、主导欲强；太旺则刚愎、听不进意见。', 衰: '如人过了壮年，力量渐退：稳重、保守、经验足。', 病: '如人生病，力量偏弱：多思虑、敏感、同理心强。', 死: '如生命停止，气力最弱：主静、专注、不喜张扬（并不代表凶事）。', 墓: '如入库收藏：主收敛、储藏、念旧，也主能积蓄。', 绝: '如断绝，旧的结束、新的未生：主变化与转折。', 胎: '如受孕，新事物在孕育：主计划萌芽、想法多。', 养: '如胎儿在母体成长：主被照顾、积蓄力量、慢慢发展。' };
+  const HIDN = ['本气（力量最强）', '中气（力量次之）', '余气（力量最弱）'];
+  const favTxt = e => ({ 用: '是用神，对命局最有帮助', 喜: '是喜神，有帮助', 平: '影响平平', 忌: '是忌神，需要小心' }[S.ch.label(e)]);
+  function branchRel(col, b) {
+    const ch = S.ch, nat = [['年支', ch.P.y], ['月支', ch.P.m], ['日支', ch.P.d], ['时支', ch.P.h]].filter(x => x[1]);
+    const own = { 年柱: '年支', 月柱: '月支', 日柱: '日支', 时柱: '时支' }[col]; const out = [];
+    nat.forEach(([n, gz]) => { if (n === own) return; const o = gz[1];
+      if (E.chong(b, o)) out.push(`与${n}${o}相冲：主变动、冲突`); if (E.LIUHE[b] === o) out.push(`与${n}${o}六合：主和合、助力`);
+      if (E.HAI[b] === o) out.push(`与${n}${o}相害：主暗中阻碍、误会`); if ((E.XING[b] || []).includes(o)) out.push(b === o ? `与${n}${o}自刑：主自我纠结、事情反复` : `与${n}${o}相刑：主摩擦、是非`);
+      if (E.PO[b] === o) out.push(`与${n}${o}相破：主小破耗`); if (b !== o && E.SANHE.some(g => g.includes(b) && g.includes(o))) out.push(`与${n}${o}半合：力量相聚`); });
+    return out;
+  }
+  function explain(a) {
+    const ch = S.ch, [t, col, gz, h, hi] = a.split('|'); const s = gz[0], b = gz[1];
+    const posLine = `<p class="bz-tip">${POS[col] || ''}</p>`;
+    const chip = x => `<span class="bz-chip2">${x}</span>`;
+    if (t === 'nstar') { const N = ZEN_N, st = N.STAR[col]; const [, , raw, lv, mode] = a.split('|');
+      return `<h3>${col} · ${st.nick}</h3><div>${chip(st.good > 0.5 ? '吉星' : st.good > 0 ? '中性' : '凶星')}${raw ? chip('号码 ' + esc(raw)) : ''}${lv ? chip('能量 L' + lv + (lv === '1' ? '（最强）' : lv === '4' ? '（最弱）' : '')) : ''}${mode ? chip(mode === '显' ? '显：遇 5 加强' : '隐：遇 0 减弱') : ''}</div><p class="bz-muted">组合：${st.pairs.join('、')}（前两组能量最强，后两组最弱）</p><dl class="bz-kv"><dt>性格</dt><dd>${st.性格}</dd><dt>财运</dt><dd>${st.财运}</dd><dt>事业</dt><dd>${st.事业}</dd><dt>感情</dt><dd>${st.感情}</dd><dt>健康</dt><dd>${st.健康}</dd></dl>${st.more ? `<p class="bz-tip">${st.more}。</p>` : ''}`; }
+    if (t === 'pos') return `<h3>${col} · ${gzc(gz)}</h3>${posLine}<p>天干 ${gzc(s)} 为${col === '日柱' ? '日主（你自己）' : tenGod(ch.dm, s)}，地支 ${gzc(b)} 本气为${tenGod(ch.dm, HID[b][0])}。点表中的格子可以看每一项的详细解读。</p>`;
+    if (t === 'dm') return `<h3>日主 ${gzc(s)}（${ch.de}）</h3><div>${chip(G.indexOf(s) % 2 === 0 ? '阳干' : '阴干')}${chip(ch.weak ? '身弱' : '身强')}${chip('用神 ' + ch.yong)}</div><p><b>${STEMX[s]}</b></p><p>日主就是你自己，八字里其他七个字都以它为中心来定十神。你的日主${ch.weak ? '偏弱，需要印星生扶或比劫帮身' : '偏强，需要食伤、财星或官杀来疏导'}。</p><p>用神是${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}。</p>${posLine}`;
+    if (t === 'ss') { const g = tenGod(ch.dm, s), d = SSD[g]; return `<h3>${g} · ${col}天干 ${gzc(s)}</h3><div>${chip(s + ' 属' + elOf(s))}${chip('对你：' + ch.label(elOf(s)))}</div><dl class="bz-kv"><dt>代表</dt><dd>${d[0]}</dd><dt>性格</dt><dd>${d[1]}</dd><dt>好的一面</dt><dd>${d[2]}</dd><dt>要留意</dt><dd>${d[3]}</dd></dl><p>以日主${gzc(ch.dm)}来看，${gzc(s)}是${g}。${elOf(s)}对你${favTxt(elOf(s))}，所以这股“${d[0].split('、')[0]}”的力量${['用', '喜'].includes(ch.label(elOf(s))) ? '多半带来帮助' : ch.label(elOf(s)) === '忌' ? '容易带来压力或消耗' : '作用中性'}。</p>${posLine}`; }
+    if (t === 'stem') return `<h3>天干 ${gzc(s)} · ${col}</h3><div>${chip(G.indexOf(s) % 2 === 0 ? '阳干' : '阴干')}${chip('五行 ' + elOf(s))}${chip(col === '日柱' ? '日主' : tenGod(ch.dm, s))}</div><p><b>${STEMX[s]}</b></p><p>天干代表显露在外、看得见的力量。${col === '日柱' ? '这是日主本身。' : `它对日主是${tenGod(ch.dm, s)}，${elOf(s)}对你${favTxt(elOf(s))}。`}</p>${posLine}`;
+    if (t === 'branch') { const r = branchRel(col, b); return `<h3>地支 ${gzc(b)} · ${col}</h3><div>${chip('生肖 ' + AN[Z.indexOf(b)])}${chip('五行 ' + elOf(b))}${chip(BR[b][2])}</div><dl class="bz-kv"><dt>月份</dt><dd>${BR[b][0]}</dd><dt>时辰</dt><dd>${BR[b][1]}</dd><dt>藏干</dt><dd>${HID[b].split('').map(x => gzc(x) + tenGod(ch.dm, x)).join('、')}</dd><dt>与原局</dt><dd>${r.length ? r.join('；') : '与原局其他地支没有明显冲合'}</dd></dl><p>地支代表根基和暗中的力量，藏干是它里面含的天干。本气${gzc(HID[b][0])}为${tenGod(ch.dm, HID[b][0])}，${elOf(b)}对你${favTxt(elOf(b))}。${col === '日柱' ? '日支是夫妻宫，和这里的冲合直接影响感情和家庭。' : ''}</p>${posLine}`; }
+    if (t === 'hid') { const g = tenGod(ch.dm, h), d = SSD[g]; return `<h3>藏干 ${gzc(h)} · ${g}</h3><div>${chip(col + '地支 ' + b)}${chip(HIDN[+hi])}${chip('对你：' + ch.label(elOf(h)))}</div><p>${gzc(b)}里藏着${HID[b].split('').map(gzc).join('、')}。${gzc(h)}是其中的${HIDN[+hi]}，代表暗中、持续的${g}力量：${d[0]}。</p><dl class="bz-kv"><dt>好的一面</dt><dd>${d[2]}</dd><dt>要留意</dt><dd>${d[3]}</dd></dl>${posLine}`; }
+    if (t === 'cs') { const c = changsheng(ch.dm, b); return `<h3>星运 · ${c}</h3><div>${chip('日主 ' + ch.dm)}${chip(col + '地支 ' + b)}</div><p><b>${CSD[c]}</b></p><p>星运（十二长生）看的是日主${gzc(ch.dm)}走到${gzc(b)}这个位置时的力量状态，像人的一生从出生到入墓的十二个阶段。${col === '日柱' ? `你的日主坐${c}，这是“自坐”，最能反映你本人的性格底色和夫妻宫的状态。` : (['大运', '流年', '流月', '流日'].includes(col) ? `日主在${col}遇${c}，代表这段时间你的状态像“${c}”这个阶段。` : `日主在${col}遇${c}，说明在“${POS[col].split('代表')[1].split('，')[0]}”这方面，你的力量处于${c}的状态。`)}</p>${posLine}`; }
+    return '';
+  }
+  function openSheet(a) { const s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = explain(a); s.hidden = false; S.lastFocus = document.activeElement; s.querySelector('.bz-x').focus(); }
+  function closeSheet() { const s = $('#bz-sheet'); if (s.hidden) return; s.hidden = true; if (S.lastFocus) S.lastFocus.focus(); }
+  const natalCols = () => [['时柱', S.ch.P.h], ['日柱', S.ch.P.d, false, true], ['月柱', S.ch.P.m], ['年柱', S.ch.P.y]];
+  function wxCard(id, title, sh) {
+    const mx = Math.max(...ELS.map(e => sh[e])) || 1; const hexc = { 木: '#6fd68f', 火: '#ff6f61', 土: '#e3ac72', 金: '#f5d77a', 水: '#7fa8ff' };
+    const lab = e => ({ 用: '用神', 喜: '喜', 平: '平', 忌: '忌' }[S.ch.label(e)]);
+    return card(id, title, `<div class="bz-wx">${ELS.map(e => `<div class="bz-wxrow"><span class="bz-wxel" style="color:${hexc[e]}">${e}</span><span class="bz-wxtag">${lab(e)}</span><div class="bz-track"><div class="bz-fill" style="width:${sh[e] / mx * 100}%;background:${hexc[e]}"></div></div><span class="bz-wxv">${sh[e]}%</span></div>`).join('')}</div><p class="bz-tip">${A.wxNote(S.ch, sh)}</p>`);
+  }
+  function ssCard(id, title, gz) { const i = A.ssInfo(S.ch, gz);
+    return card(id, title, `<dl class="bz-kv"><dt>天干</dt><dd>${gzc(i.stem)}</dd><dt>地支</dt><dd>${gzc(i.branch)}</dd></dl><p>${A.ssNote(S.ch, gz[0])}</p><p class="bz-tip">地支本气 ${A.ssNote(S.ch, HID[gz[1]][0])}</p>`); }
+  function zodiacCard(id, title, b, isYear, scope) { const z = A.zodiacRel(S.ch, b, isYear);
+    return card(id, title, `<div class="bz-gua"><div class="bz-hex">${['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'][Z.indexOf(b)]}</div><div><div class="bz-gname">${gzc(b)} · ${z.animal}</div><p class="bz-muted">${scope} · 你属${AN[Z.indexOf(S.ch.P.y[1])]}</p></div></div>
+      <dl class="bz-kv"><dt>与你的关系</dt><dd>${z.rel}</dd><dt>相合生肖</dt><dd>${z.good}</dd><dt>相冲生肖</dt><dd>${z.bad}</dd><dt>冲煞</dt><dd>${z.chong}</dd></dl>`); }
+  function guaCard(id, title, n, how) { const g = A.guaInfo(S.ch, n, how);
+    const cf = ZEN_C.GUA[n] || {};
+    return card(id, title, `<div class="bz-gua"><div class="bz-hex">${g.sym}</div><div><div class="bz-gname">${g.full}</div><p class="bz-muted">上卦 ${g.up} · 下卦 ${g.lo}</p><p class="bz-muted">${g.image}</p></div></div>
+      <div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话</div><p class="bz-cf-t">${cf.comfort || ''}</p><div class="bz-cf-a"><b>今天可以做的小事：</b>${cf.act || ''}</div></div>
+      <dl class="bz-kv"><dt>卦辞</dt><dd class="bz-quote">${g.text}</dd><dt>白话</dt><dd>${g.plain}</dd><dt>建议</dt><dd>${g.mean}</dd><dt>对你</dt><dd><b>${ZEN_C.REL(g.sc)}</b><div class="bz-muted">${g.ua}。你的本命卦是${S.ch.kua}卦（${GUA.tri[S.ch.kua].el}），看作“体”，这一卦看作“用”：用卦生体为吉，同五行为比和，体克用为得财，体生用为泄气，用克体为压力。</div></dd></dl>
+      <details class="bz-help"><summary>怎么读这一卦</summary><p>六十四卦由八个基本卦两两上下相叠而成。上卦代表外在环境和他人，下卦代表你自身。卦辞是《周易》原文，白话是它的意思。</p><p>${how}</p></details>`); }
+  function luckyCard(id, title, l) { return card(id, title, `<div class="bz-nums"><div class="bz-num4"><span class="bz-num4-label">用神组</span><b>${l.a}</b></div><div class="bz-num4"><span class="bz-num4-label">相生组</span><b>${l.b}</b></div></div><p class="bz-tip">${l.note}</p><p class="bz-muted">开奖完全随机，这些号码只是按五行喜用取的幸运数字，不会提高中奖几率。小额娱乐，量力而为。</p>`, 'bz-lucky'); }
+  function eventsCard(ev) { const tag = ['重点留意', '可能遇到', '身体与天气'];
+    return card('d-events', '今日事件预示', ev.map((e, i) => `<div class="bz-ev ${i === 0 ? 'bz-ev-main' : ''}"><span class="bz-ev-tag">${tag[i]}</span><div class="bz-ev-title">${e[0]}</div><div class="bz-ev-tip">${e[1]}</div></div>`).join('') + '<p class="bz-muted">按当日干支与命局的冲合刑害、十神象意推演的生活提示，属趣味参考，不代表一定会发生。</p>', 'bz-event'); }
+  function nine(items, cls) { return `<div class="bz-fly">${items.map(([d, a, b, c, k]) => `<div class="bz-flycell ${cls(k)}"><div class="bz-flydir">${d}</div><div class="bz-flystar">${a}</div><div class="bz-flymean">${b}${c ? ' · ' + c : ''}</div></div>`).join('')}</div>`; }
+  const FC = { 大吉: 'bz-fly-g2', 吉: 'bz-fly-g1', 小吉: 'bz-fly-g1', 凶: 'bz-fly-b2', 大凶: 'bz-fly-b2', 小凶: 'bz-fly-b1' };
+  function compassCard(gz) { const c = A.compass(S.ch, gz); const o = ['东南', '南', '西南', '东', '中', '西', '东北', '北', '西北'];
+    return card('d-compass', '今日方位 · 东南西北中', nine(o.map(d => [d, c.dirs[d].lv, c.dirs[d].el, c.dirs[d].fl, c.dirs[d].lv]), k => k === '凶' ? 'bz-fly-b2' : FC[k] || '') + `<p class="bz-tip">${c.note}</p><p class="bz-muted">上南下北、左东右西。方位五行按你的喜忌，再叠加当日喜神、财神与煞方。</p>`); }
+  function flyCard(y) { const f = A.flyStars(y); const o = ['东南', '南', '西南', '东', '中', '西', '东北', '北', '西北'];
+    return card('y-fly', `${y}年九宫飞星`, nine(o.map(d => [d === '中' ? '中宫' : d, f.pos[d].name, f.pos[d].lv, f.pos[d].m, f.pos[d].lv]), k => FC[k] || '') + `<p class="bz-tip">${f.note}</p>`); }
+  function bars(rows, opt) { // rows: {k, v, l1, l2, tip, act}
+    const W = 640, H = 210, top = 22, bot = 44, n = rows.length || 1, step = (W - 8) / n, bw = step * .7;
+    const y = v => top + (H - top - bot) * (1 - v / 100);
+    return `<div class="bz-chart"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${opt.label}">
+      ${[51, 76].map(v => `<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" class="bz-gridl"/>`).join('')}<line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" class="bz-axis"/>
+      ${rows.map((r, i) => { const x = 4 + i * step + (step - bw) / 2;
+        return `<g class="bz-bar" data-act="${r.act || ''}" data-tip="${esc(r.tip || '')}"><rect x="${4 + i * step}" y="0" width="${step}" height="${H}" fill="transparent"/><rect x="${x}" y="${y(r.v)}" width="${bw}" height="${y(0) - y(r.v)}" rx="4" fill="${col(r.v)}" ${r.sel ? 'stroke="#f5d77a" stroke-width="3"' : ''}/>
+        <text x="${x + bw / 2}" y="${y(r.v) - 6}" class="bz-bv">${r.v}</text><text x="${x + bw / 2}" y="${H - bot + 17}" class="bz-bl">${esc(r.l1)}</text><text x="${x + bw / 2}" y="${H - bot + 33}" class="bz-bl2">${esc(r.l2)}</text></g>`; }).join('')}
+    </svg><div class="bz-tt" hidden></div></div>`;
+  }
+
+
+  function sceneCard(id, title, gz, s, notes) {
+    const r = ZEN_C.scenes(S.ch, E, gz, s, notes);
+    const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
+    return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
+      <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
+      <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st">心法：${d.tip}</div></div></li>`).join('')}</ul>
+      <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
+  }
+
+  // ---------- views ----------
+  function vDay() {
+    const d = S.B.day(S.date), m = S.B.monthOf(S.date), ch = S.ch;
+    const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
+    const yj = A.yiji(d.p.d, ch);
+    return hero('当日整体', d.s[0], d.lv[0], `<h2>阳历 ${ymdCN(d.date)} 周${d.wd}</h2>`, [`<p class="bz-muted">流年 ${gzc(d.p.y)} · 流月 ${gzc(d.p.m)} · 流日 ${gzc(d.p.d)}${d.dy ? ' · 大运 ' + gzc(d.dy.gz) : ''}</p>`, `<p>${summary(d.p.d, d.s)}</p>`, `<p class="bz-muted">神煞提示：${d.notes.length ? d.notes.join('、') : '无'}</p>`])
+      + card('d-pan', '八字仪表 · 今日', pan(cols) + '<p class="bz-muted">前四柱是原局，金底的是当前的大运、流年、流月、流日。</p>')
+      + eventsCard(A.events(ch, d.date, d.p.d, d.notes))
+      + sceneCard('d-scene', '人间百态 · 今日喜怒哀乐', d.p.d, d.s, d.notes)
+      + luckyCard('d-lucky', '今日幸运号码 · 4D', A.lucky(ch, 'd' + d.date, d.p.d))
+      + catsGrid(d.p.d, d.s)
+      + `<div class="bz-grid bz-grid2">${wxCard('d-wx', '五行能量', A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]))}${ssCard('d-ss', '十神', d.p.d)}${zodiacCard('d-sx', '今日生肖', d.p.d[1], false, '今日 · 日支生肖')}</div>`
+      + guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。')
+      + compassCard(d.p.d)
+      + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`);
+  }
+  function vWeek() {
+    const mon = A.monday(S.date), days = Array.from({ length: 7 }, (_, i) => S.B.day(A.addDays(mon, i)));
+    const avg = [0, 1, 2, 3, 4, 5].map(k => Math.round(days.reduce((a, d) => a + d.s[k], 0) / 7));
+    const best = days.slice().sort((a, b) => b.s[0] - a.s[0])[0], worst = days.slice().sort((a, b) => a.s[0] - b.s[0])[0];
+    const sh = {}; ELS.forEach(e => sh[e] = 0); days.forEach(d => { const w = A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]); ELS.forEach(e => sh[e] += w[e] / 7); }); ELS.forEach(e => sh[e] = Math.round(sh[e]));
+    const notable = days.filter(d => d.notes.length).map(d => `周${d.wd} ${gzc(d.p.d)}（${d.notes.join('、')}）`);
+    const pairs = CATS.map((k, i) => [CATN[i], avg[i + 1]]);
+    return hero('本周平均', avg[0], A.level(avg[0]), `<h2>${A.md(mon)} – ${A.md(A.addDays(mon, 6))}</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(mon)} – ${ymdCN(A.addDays(mon, 6))}</p>`, `<p>本周整体${A.level(avg[0])}。${pairs.sort((a, b) => b[1] - a[1])[0][0]}相对最好。${A.md(best.date)}（周${best.wd}）最适合办要事，${A.md(worst.date)}（周${worst.wd}）宜低调。</p>`])
+      + luckyCard('w-lucky', '本周幸运号码 · 4D', A.lucky(S.ch, 'w' + mon, days[3].p.d))
+      + card('w-chart', '每天整体分', bars(days.map(d => ({ v: d.s[0], l1: '周' + d.wd, l2: A.md(d.date), sel: d.date === S.date, act: 'day:' + d.date, tip: `${d.date} ${d.p.d} 整体${d.s[0]}（${d.lv[0]}）` })), { label: '本周每天整体分' }) + '<p class="bz-muted">点柱子查看当天详情。</p>')
+      + `<div class="bz-grid">${CATS.map((k, i) => scoreCat(CATN[i], avg[i + 1], A.level(avg[i + 1]))).join('')}</div>`
+      + `<div class="bz-grid bz-grid2">${wxCard('w-wx', '五行能量（七天平均）', sh)}${card('w-ss', '本周每日十神', `<p>${days.map(d => `${d.wd} ${gzc(d.p.d[0])}${tenGod(S.ch.dm, d.p.d[0])}`).join(' · ')}</p>`)}${card('w-sx', '本周每日生肖', `<p>${days.map(d => `${d.wd} ${AN[Z.indexOf(d.p.d[1])]}`).join(' · ')}</p><p class="bz-tip">${notable.length ? notable.join('；') : '本周没有特别的冲合日子。'}</p>`)}</div>`
+      + guaCard('w-gua', '易经 · 本周卦（卦气）', A.qiGua(S.B, days[3].date), '本周卦取这一周中间那天（周四）的值日卦。');
+  }
+  function vMonth() {
+    const m = S.B.monthOf(S.date); if (!m) return card('x', '', '<p>超出可推算范围。</p>');
+    const days = []; for (let d = m.start; d <= m.end; d = A.addDays(d, 1)) days.push(S.B.day(d));
+    const off = (A.parse(m.start), ['一', '二', '三', '四', '五', '六', '日'].indexOf(days[0].wd));
+    const top = days.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 4), low = days.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 4);
+    const li = d => `<li data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)} · <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分 · ${d.notes.join('、') || d.lv[0]}</li>`;
+    return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${gzc(m.gz)}月（${A.md(m.start)}–${A.md(m.end)}）</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(m.start)} – ${ymdCN(m.end)}</p>`, `<p class="bz-muted">流年 ${gzc(m.ygz)} · 按节气划分</p>`, `<p>${summary(m.gz, m.s)}</p>`])
+      + card('m-pan', '八字仪表 · 本月', pan(natalCols().concat([['大运', m.dy && m.dy.gz, true], ['流年', m.ygz, true], ['流月', m.gz, true]])))
+      + luckyCard('m-lucky', '本月幸运号码 · 4D', A.lucky(S.ch, 'm' + m.start, m.gz))
+      + catsGrid(m.gz, m.s)
+      + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
+      + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
+      + guaCard('m-gua', '易经 · 月令消息卦', GUA.bigua[m.gz[1]], '十二消息卦用阴阳爻的增减表示一年的节气：子月一阳生为复，到巳月六爻皆阳为乾；午月一阴生为姤，到亥月六爻皆阴为坤。')
+      + card('m-cal', '每日运势日历', `<div class="bz-wkh">${'一二三四五六日'.split('').map(x => `<span>${x}</span>`).join('')}</div><div class="bz-cal">${'<div></div>'.repeat(off)}${days.map(d => `<button class="bz-cell ${d.date === S.date ? 'bz-sel' : ''}" data-act="day:${d.date}" style="background:color-mix(in srgb, ${col(d.s[0])} ${Math.round(8 + d.s[0] * .4)}%, transparent)"><small>${A.md(d.date)} ${d.p.d}</small><b>${d.s[0]}</b></button>`).join('')}</div><p class="bz-muted">点日期查看当天详情。</p>`)
+      + `<div class="bz-grid bz-grid2">${card('m-best', '本月好日子', `<ol class="bz-list">${top.map(li).join('')}</ol>`)}${card('m-low', '宜低调的日子', `<ol class="bz-list">${low.map(li).join('')}</ol>`)}</div>`;
+  }
+  function vYear() {
+    const y = S.B.syOf(S.date), x = S.B.yearOf(y); if (!x) return card('x', '', '<p>超出可推算范围。</p>');
+    const ms = S.B.months.filter(m => m.sy === y); const lc = A.parse(ms[0].start);
+    const ky = ZEN_M.keyYears(S.ch, S.B, E, y, y)[0];
+    return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} ${gzc(x.gz)}年</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(ms[0].start)} – ${ymdCN(ms[ms.length - 1].end)}（立春起算）</p>`, `<p class="bz-muted">大运 ${x.dy ? gzc(x.dy.gz) : '—'}</p>`, `<p>${summary(x.gz, x.s)}</p>`])
+      + card('y-pan', '八字仪表 · 今年', pan(natalCols().concat([['大运', x.dy && x.dy.gz, true], ['流年', x.gz, true]])))
+      + luckyCard('y-lucky', '本年幸运号码 · 4D', A.lucky(S.ch, 'y' + y, x.gz))
+      + catsGrid(x.gz, x.s)
+      + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
+      + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
+      + guaCard('y-gua', '易经 · 流年卦（干支起卦）', A.yearGua(x.gz), '流年卦用干支起卦：天干序数除以 8 的余数取上卦，地支序数除以 8 的余数取下卦，按先天八卦数（乾1 兑2 离3 震4 巽5 坎6 艮7 坤8）。')
+      + flyCard(y)
+      + card('y-chart', '全年各月整体分', bars(ms.map(m => ({ v: m.s[0], l1: m.gz, l2: A.md(m.start), sel: m.start <= S.date && S.date <= m.end, act: 'month:' + m.start, tip: `${m.gz}月 ${A.md(m.start)}起 整体${m.s[0]}（${A.level(m.s[0])}）` })), { label: '全年各月整体分' }) + '<p class="bz-muted">点柱子查看那个月。</p>');
+  }
+  function chips(items) { return `<div class="bz-chips">${items.map(i => `<button class="bz-chip ${i.on ? 'bz-on' : ''}" data-act="${i.act}"><b>${i.top}</b><small>${gzc(i.gz)}</small><i class="${i.on ? '' : lvc(i.lv)}">${i.lv}</i></button>`).join('')}</div>`; }
+  function vLiunian() {
+    const ty = S.B.syOf(TODAY); const y = S.lnYear || S.B.syOf(S.date); const x = S.B.yearOf(y);
+    const list = S.B.years.filter(z => z.y >= ty - 6 && z.y <= ty + 15);
+    if (!x) return card('ln-pick', '选择流年', chips(list.map(z => ({ top: z.y, gz: z.gz, lv: A.level(z.s[0]), on: false, act: 'ln:' + z.y }))));
+    const ms = S.B.months.filter(m => m.sy === y);
+    const b2 = ms.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 2), w2 = ms.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 2);
+    const it = A.inter(S.ch, x.gz, x.dy); const yj = A.yiji(x.gz, S.ch); const z = A.zodiacRel(S.ch, x.gz[1], true);
+    const over = `${y}年${gzc(x.gz)}，天干${x.gz[0]}为${tenGod(S.ch.dm, x.gz[0])}（${S.ch.label(elOf(x.gz[0]))}），地支${x.gz[1]}本气为${tenGod(S.ch.dm, HID[x.gz[1]][0])}（${S.ch.label(elOf(x.gz[1]))}）${x.dy ? '，行' + gzc(x.dy.gz) + '大运' : ''}。${it.length ? it.join('；') + '。' : ''}整体${A.level(x.s[0])}（${x.s[0]}分）。`;
+    return card('ln-pick', '选择流年', chips(list.map(z => ({ top: z.y, gz: z.gz, lv: A.level(z.s[0]), on: z.y === y, act: 'ln:' + z.y }))))
+      + keyYearsCard('ln-key', '人生重要年份 · 大事提醒', ty - 3, ty + 20, true)
+      + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y}年 ${gzc(x.gz)}</h2>`, [`<p>${over}</p>`, `<p class="bz-muted">太岁：${z.rel}</p>`])
+      + catsGrid(x.gz, x.s, (k, s) => A.reasonFor(S.ch, k, x.gz) + '。' + A.LV[k][A.band(s)])
+      + sceneCard('ln-scene', `人间百态 · ${y}年悲欢离合`, x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
+      + card('ln-months', '全年十二个月走势', bars(ms.map(m => ({ v: m.s[0], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 整体${m.s[0]}（${A.level(m.s[0])}）：${A.reasonFor(S.ch, 'career', m.gz)}` })), { label: '流年各月走势' })
+        + `<p class="bz-tip">最旺：${b2.map(m => gzc(m.gz) + '月（' + A.md(m.start) + '起）').join('、')}，适合推进大事；最弱：${w2.map(m => gzc(m.gz) + '月（' + A.md(m.start) + '起）').join('、')}，宜低调稳守。</p>`)
+      + card('ln-adv', '流年宜忌', `<p class="bz-long">宜：${yj.yi}。忌：${yj.ji}。</p><p class="bz-muted">九宫风水：${A.flyStars(y).note}</p>`);
+  }
+  function vDayun() {
+    const ch = S.ch; const cur = ch.dayun.find(d => { const yF = S.B.pillarsOf(TODAY).yF; return yF >= d.yearFrom && yF < d.yearTo + 1; });
+    const d = ch.dayun.find(x => x.gz === S.dy) || cur || ch.dayun[0];
+    const yrs = d.years || []; const best = yrs.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 3), worst = yrs.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 2);
+    const it = A.inter(ch, d.gz, null);
+    const over = `${gzc(d.gz)}大运：天干${d.gz[0]}为${tenGod(ch.dm, d.gz[0])}（${ch.label(elOf(d.gz[0]))}），地支${d.gz[1]}本气为${tenGod(ch.dm, HID[d.gz[1]][0])}（${ch.label(elOf(d.gz[1]))}）。${it.length ? it.join('；') + '。' : ''}这十年整体${A.level(d.s[0])}。`;
+    const ADV = ['以守为主，少做大决定，练好内功。', '宜守不宜攻，挑流年好的年份做关键动作。', '平稳过渡，稳中求进。', '顺势而为，可以积极开拓。', '人生高峰期之一，大胆把握机会。'];
+    return card('dy-pick', '选择大运', chips(ch.dayun.map(x => ({ top: `${x.ageFrom}–${x.ageTo}岁`, gz: x.gz, lv: A.level(x.s[0]) + (x === cur ? ' · 当前' : ''), on: x === d, act: 'dy:' + x.gz }))))
+      + `<div class="bz-card bz-hero"><div><div class="bz-namebig">${gzc(d.gz)}</div><div class="bz-muted">${d.ageFrom}–${d.ageTo}岁 · ${d.yearFrom}–${d.yearTo}</div></div><div><h2>大运总评 <span class="${lvc(A.level(d.s[0]))}">${d.s[0]}分 · ${A.level(d.s[0])}</span></h2><p>${over}</p></div></div>`
+      + catsGrid(d.gz, d.s, (k, s) => A.reasonFor(ch, k, d.gz) + '。' + A.LV[k][A.band(s)])
+      + card('dy-years', '这十年的流年走势', bars(yrs.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '大运十年走势' })
+        + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`)
+      + keyYearsCard('dy-key', '这步大运里的重要年份', d.yearFrom, d.yearTo, false)
+      + card('dy-adv', '这步大运的建议', `<p class="bz-long">${ADV[A.band(d.s[0])]}</p>`);
+  }
+  function vChart() {
+    const ch = S.ch; const sh = {}; ELS.forEach(e => sh[e] = Math.round(ch.share[e] * 100));
+    const lab = l => ELS.filter(e => ch.label(e) === l).map(gzc).join('、') || '—';
+    const special = []; if (['庚辰', '庚戌', '壬辰', '戊戌'].includes(ch.P.d)) special.push('日柱为魁罡');
+    const nb = [ch.P.y, ch.P.m, ch.P.d, ch.P.h].filter(Boolean).map(x => x[1]);
+    for (let i = 0; i < nb.length; i++) for (let j = i + 1; j < nb.length; j++) { if (E.chong(nb[i], nb[j])) special.push(`${nb[i]}${nb[j]}相冲`); if (E.LIUHE[nb[i]] === nb[j]) special.push(`${nb[i]}${nb[j]}六合`); }
+    const ty = S.B.syOf(TODAY); const cur = ch.dayun.find(d => ty >= d.yearFrom && ty <= d.yearTo);
+    return `<div class="bz-card bz-hero"><div><div class="bz-namebig">${ch.geju}</div><div class="bz-muted">${ch.weak ? '身弱' : '身强'} · 用神 ${gzc(ch.yong)}</div></div><div><h2>八字格局</h2><dl class="bz-kv">
+      <dt>日主</dt><dd>${gzc(ch.dm)}${ch.de}，生于${gzc(ch.P.m[1])}月</dd><dt>强弱</dt><dd>${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）</dd>
+      <dt>格局</dt><dd>${ch.geju}（月令本气为${ch.mt}）</dd><dt>用神</dt><dd>${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</dd><dt>喜神</dt><dd>${lab('喜')}</dd><dt>平</dt><dd>${lab('平')}</dd><dt>忌神</dt><dd>${lab('忌')}</dd>
+      <dt>特殊</dt><dd>${special.length ? special.join('、') : '无明显冲合'}</dd></dl><p class="bz-muted">喜用神由程序按“调候优先、扶抑为辅”的简化规则自动判断，复杂命局建议再请人细看。</p></div></div>`
+      + card('c-deep', '全盘十神解析', ZEN_D(E).deep(ch).map(sec => `<div class="bz-dsec"><h3>${sec.title}</h3><ul class="bz-dlist">${sec.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul></div>`).join('') + '<p class="bz-muted">按十神、干支生克和冲合刑害自动推演，绿色为有利、红色为需留意、金色为中性。复杂命局建议再请人细看。</p>', 'bz-deepcard')
+      + card('c-pan', '原局四柱', pan(natalCols()))
+      + wxCard('c-wx', '原局五行', sh)
+      + card('c-dy', '大运', `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>大运</th><th>年龄</th><th>年份</th><th>天干十神</th><th>地支十神</th><th>分数</th><th>吉凶</th></tr></thead><tbody>${ch.dayun.map(d => `<tr class="${d === cur ? 'bz-cur' : ''}" data-act="dy:${d.gz}"><td>${gzc(d.gz)}</td><td>${d.ageFrom}–${d.ageTo}岁</td><td>${d.yearFrom}–${d.yearTo}</td><td>${tenGod(ch.dm, d.gz[0])}</td><td>${tenGod(ch.dm, HID[d.gz[1]][0])}</td><td class="${lvc(A.level(d.s[0]))}">${d.s[0]}</td><td class="${lvc(A.level(d.s[0]))}">${A.level(d.s[0])}</td></tr>`).join('')}</tbody></table></div><p class="bz-muted">${ch.fwd ? '顺' : '逆'}排大运，约 ${Math.floor(ch.startAge)} 岁 ${Math.round((ch.startAge % 1) * 12)} 个月起运。点任一行看大运运程。</p>`)
+      + card('c-ln', '流年运势', `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>年份</th><th>流年</th><th>大运</th><th>整体</th><th>吉凶</th><th>太岁</th></tr></thead><tbody>${S.B.years.filter(x => x.y >= ty - 3 && x.y <= ty + 12).map(x => `<tr class="${x.y === ty ? 'bz-cur' : ''}" data-act="ln:${x.y}"><td>${x.y}</td><td>${gzc(x.gz)}</td><td>${x.dy ? gzc(x.dy.gz) : '—'}</td><td class="${lvc(A.level(x.s[0]))}">${x.s[0]}</td><td class="${lvc(A.level(x.s[0]))}">${A.level(x.s[0])}</td><td>${(A.zodiacRel(ch, x.gz[1], true).rel.match(/【(.+?)】/) || [, ''])[1]}</td></tr>`).join('')}</tbody></table></div><p class="bz-muted">点任一行看流年运程。</p>`);
+  }
+  const CAREER = { 木: '教育、出版、文化创意、设计、园艺、中医保健、服装纺织', 火: '电子通讯、IT 与 AI、能源电力、传媒公关、摄影影像、餐饮、美容', 土: '房地产、建筑工程、项目管理、顾问、仓储物流、农业、保险', 金: '金融银行、法律、机械制造、汽车、珠宝五金、安保', 水: '贸易物流、航运、旅游、饮品水产、营销、咨询、互联网' };
+  const HOBBY = { 木: '园艺、阅读、书法、森林徒步', 火: '摄影、烹饪、看展、晨跑晒太阳', 土: '登山、陶艺、露营、收藏', 金: '健身、乐器、手作、棋类', 水: '游泳、钓鱼、旅行、冥想' };
+  const TRAVEL = { 木: '新西兰、日本和韩国（春夏）、台湾山区、北欧夏季森林', 火: '泰国、越南、印度、迪拜与中东、埃及、墨西哥、地中海南部', 土: '尼泊尔、云南、新疆、蒙古、秘鲁、澳洲内陆', 金: '瑞士、德国、法国、英国、新加坡', 水: '马尔代夫、巴厘岛、冰岛、挪威峡湾、海岛与海边城市' };
+  const PET = { 木: '兔子、植物系小宠', 火: '红色或金色羽毛的鸟、暖色系猫', 土: '狗（黄、啡色尤佳）、陆龟', 金: '白色或银灰色的猫', 水: '观赏鱼、乌龟' };
+  const FOOD = { 木: '绿色蔬菜、酸味', 火: '温热、红色食物，适量辛辣', 土: '五谷杂粮、黄色食物', 金: '白色食物、姜葱蒜', 水: '黑色食物、海产' };
+  const ORGAN = { 木: '肝胆、筋骨、眼睛', 火: '心脏、血液循环', 土: '脾胃、消化', 金: '肺、呼吸道、皮肤', 水: '肾、泌尿、腰' };
+  const SEASON = { 木: '春季', 火: '夏季', 土: '季末月份', 金: '秋季', 水: '冬季' };
+  function vLife() {
+    const ch = S.ch, good = ELS.filter(e => ['用', '喜'].includes(ch.label(e))).sort((a, b) => ch.favE[b] - ch.favE[a]), bad = ELS.filter(e => ch.label(e) === '忌');
+    const li = (arr, map) => arr.map(e => `<li><b>${gzc(e)}：</b>${map[e]}</li>`).join('');
+    const yb = ch.P.y[1]; const z = A.zodiacRel(ch, yb, false);
+    return `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
+      <div class="bz-grid bz-grid2">${card('l-career', '适合的职业', `<ul class="bz-list2">${li(good, CAREER)}${bad.length ? `<li><b>不太合适：</b>${bad.map(e => CAREER[e]).join('；')}</li>` : ''}</ul>`)}
+      ${card('l-hobby', '适合的兴趣', `<ul class="bz-list2">${li(good, HOBBY)}${bad.length ? `<li><b>少做：</b>${bad.map(e => HOBBY[e]).join('、')}</li>` : ''}</ul>`)}
+      ${card('l-travel', '适合的旅游国家', `<ul class="bz-list2">${li(good, TRAVEL)}<li><b>最佳出行季节：</b>${SEASON[ch.yong]}</li></ul>`)}
+      ${card('l-pet', '适合的宠物', `<ul class="bz-list2">${li(good, PET)}${bad.length ? `<li><b>不宜：</b>${bad.map(e => PET[e]).join('、')}</li>` : ''}<li><b>生肖摆件：</b>${z.good}（与你的生肖相合）</li></ul>`)}
+      ${card('l-home', '居家与随身', `<ul class="bz-list2"><li><b>颜色：</b>${good.map(e => A.COLOR[e]).join(' ＞ ')}${bad.length ? `；少用${bad.map(e => A.COLOR[e]).join('、')}` : ''}</li><li><b>幸运数字：</b>${good.map(e => A.NUM[e].join('、')).join('，')}</li><li><b>方位：</b>${good.map(e => A.DIR[e]).join('、')}</li></ul>`)}
+      ${card('l-food', '饮食与健康', `<ul class="bz-list2"><li><b>宜：</b>${good.map(e => FOOD[e]).join('；')}</li><li><b>重点保养：</b>${[...bad, ELS.slice().sort((a, b) => ch.share[b] - ch.share[a])[0]].filter((v, i, a) => a.indexOf(v) === i).map(e => ORGAN[e]).join('；')}</li></ul>`)}
+      ${card('l-love', '感情与伴侣', `<ul class="bz-list2"><li><b>生肖：</b>与${z.good}最合；与${z.bad}需多磨合。</li><li><b>八字：</b>和${SEASON[ch.yong]}出生、命中${gzc(ch.yong)}旺的人更互补。</li></ul>`)}</div>`;
+  }
+  function vNine() {
+    const l = S.ch.label('火');
+    return `<div class="bz-card bz-hero"><div><div class="bz-namebig">九紫离火运</div><div class="bz-muted">2024 – 2043 · 下元九运</div></div><div><h2>九运对你</h2><p>三元九运把 180 年分成九个 20 年。2024 年起进入九运，由九紫星当令，对应离卦，五行属火，方位正南。火在你的八字里是<b class="${l === '忌' ? 'bz-bad' : 'bz-good'}">${{ 用: '用神', 喜: '喜神', 平: '平', 忌: '忌神' }[l]}</b>，${l === '用' || l === '喜' ? '世界大势正合你的需要，等于顺风而行。' : l === '忌' ? '大势与你的喜忌相反，宜顺势借力、守住本业，避开过热的投机。' : '大势对你中性，按自己的节奏发展即可。'}</p></div></div>`
+      + `<div class="bz-grid bz-grid2">${card('n-basic', '九运基本资料', '<dl class="bz-kv"><dt>当令星</dt><dd>九紫右弼星</dd><dt>卦</dt><dd>离 ☲：火、光明、文明、心与眼</dd><dt>旺方</dt><dd>正南</dd><dt>旺色</dt><dd>红、紫</dd><dt>交运</dt><dd>2044 年交接一运（一白水运）</dd></dl>')}
+      ${card('n-ind', '九运旺的行业', '<ul class="bz-list2"><li>AI 与芯片、电子与通讯、新能源</li><li>互联网、短视频、传媒娱乐、摄影影像</li><li>美容医美、心理与身心灵、玄学文化</li><li>眼科、心血管医疗，教育培训</li></ul>')}
+      ${card('n-home', '九运居家布局', '<ul class="bz-list2"><li><b>正南：</b>九运旺方，保持明亮，可放红紫色物品或常亮的灯。</li><li><b>正北：</b>零神方，宜见水；鱼缸、水景只放这里。</li><li><b>东北：</b>八白退气，不宜堆杂物。</li><li>每年五黄、二黑的位置请看“今年”的九宫飞星。</li></ul>')}
+      ${card('n-kua', '八宅方位（本命卦）', `<p>你的本命卦是 <b>${S.ch.kua}卦</b>（${'坎离震巽'.includes(S.ch.kua) ? '东四命' : '西四命'}，属${GUA.tri[S.ch.kua].el}）。</p><p class="bz-tip">${'坎离震巽'.includes(S.ch.kua) ? '东四命吉方：东、东南、南、北。' : '西四命吉方：西、西北、西南、东北。'}床头、书桌、大门宜朝吉方。</p>`)}</div>`;
+  }
+
+
+  // ---------- 数字能量 ----------
+  function vNumber() {
+    const N = ZEN_N; const v = S.num || '';
+    let out = card('n-input', '数字能量分析', `<form id="bz-numform" class="bz-numform"><input name="num" value="${esc(v)}" maxlength="40" placeholder="手机号、车牌、门牌或英文字母" aria-label="输入号码或英文字母" autocomplete="off"><button type="submit" class="bz-go">分析</button></form><p class="bz-muted">按八星磁场逐组解读：相邻两个数字为一组。0 让磁场变“隐”（减弱），5 让磁场变“显”（加强）；英文字母按 A=1、B=2……I=9、J=1 换成数字。</p>`);
+    const r = v ? N.analyse(v) : null;
+    if (v && !r) out += card('n-err', '', '<p>至少需要两个 1–9 的数字才能分析。</p>');
+    if (r) {
+      const lv = A.level(r.score); const ch = S.ch;
+      out += `<div class="bz-card bz-hero"><div><div class="bz-muted">综合评分</div><div class="bz-big ${lvc(lv)}">${r.score}</div><div class="bz-lvbig ${lvc(lv)}">${lv}</div></div><div><h2>${esc(r.digits)}</h2><p>${r.groups.length} 组磁场加权计算，后三组权重较高（手机号最看后段）。</p><div class="bz-track"><div class="bz-fill" style="width:${r.score}%;background:${col(r.score)}"></div></div>${r.extra.length ? `<p class="bz-tip">${r.extra.join('；')}</p>` : ''}</div></div>`;
+      const mx = Math.max(1, ...N.ORDER.map(k => r.cnt[k]));
+      out += card('n-mix', '磁场组成 <span class="bz-muted">凶 ← → 吉</span>', `<div class="bz-div">${N.ORDER.filter(k => r.cnt[k]).sort((a, b) => N.STAR[b].good - N.STAR[a].good).map(k => { const g = N.STAR[k].good > 0; const w = r.cnt[k] / mx * 100;
+        return `<button class="bz-divrow" data-act="info:nstar|${k}"><span class="bz-divn"><b>${k}</b><small>${N.STAR[k].nick}</small></span><span class="bz-divl">${g ? '' : `<i style="width:${w}%" class="bz-dneg"></i>`}</span><span class="bz-divr">${g ? `<i style="width:${w}%" class="${N.STAR[k].good >= 1 ? 'bz-dpos' : 'bz-dmid'}"></i>` : ''}</span><span class="bz-divc ${g ? 'bz-good' : 'bz-bad'}">${r.cnt[k]}</span></button>`; }).join('')}</div><p class="bz-hint">☝ 点任一颗星看详细解读</p>`);
+      out += card('n-chain', '磁场链 · 前一组是因，后一组是果', `<div class="bz-nchain">${r.groups.map((g, k) => `${k ? '<span class="bz-arrow">→</span>' : ''}<button class="bz-ng ${N.STAR[g.star].good > 0 ? 'bz-ngg' : 'bz-ngb'}" data-act="info:nstar|${g.star}|${g.raw}|${g.lv}|${g.mode}"><b>${esc(g.raw)}</b><span>${g.star}</span><small>L${g.lv}${g.mode ? ' · ' + g.mode : ''}</small></button>`).join('')}</div>` + (r.combos.length ? `<ul class="bz-list2">${r.combos.map(c => `<li><b>${c[1]} → ${c[2]}：</b>${c[3]}</li>`).join('')}</ul>` : '<p class="bz-muted">没有特别的前后组合。</p>'));
+      out += `<div class="bz-grid bz-grid2">${['性格', '财运', '事业', '感情', '健康'].map(a => card('n-' + a, a, `<ul class="bz-list2">${r.aspects[a].map(t => `<li>${t}</li>`).join('')}</ul>`)).join('')}</div>`;
+      out += card('n-fix', '补强数组建议', `<p>号码最后一位是 <b>${esc(r.last)}</b>。如果号码可以加字或选尾数，后面接这些数字能形成吉星：</p><ul class="bz-list2">${r.fix.map(t => `<li>${t}</li>`).join('')}</ul><p class="bz-muted">尾段对手机号影响最大；车牌、门牌通常只能参考，不必强求。</p>`);
+      if (ch) {
+        const WXE = ['水', '火', '木', '金', '土'], tot = r.len;
+        const yong = ch.yong, ji = ELS.filter(e => ch.label(e) === '忌');
+        const ys = r.wx[yong], js = ji.reduce((a, e) => a + r.wx[e], 0);
+        out += card('n-wx', '号码五行 × 你的八字', `<div class="bz-wx">${WXE.map(e => `<div class="bz-wxrow"><span class="bz-wxel e-${ELC[e]}">${e}</span><span class="bz-wxtag">${{ 用: '用神', 喜: '喜', 平: '平', 忌: '忌' }[ch.label(e)]}</span><div class="bz-track"><div class="bz-fill" style="width:${r.wx[e] / tot * 100}%;background:${{ 木: '#6fd68f', 火: '#ff6f61', 土: '#e3ac72', 金: '#f5d77a', 水: '#7fa8ff' }[e]}"></div></div><span class="bz-wxv">${r.wx[e]}个</span></div>`).join('')}</div><p class="bz-tip">按河图配数：1、6 水，2、7 火，3、8 木，4、9 金，5、0 土。你的用神是${gzc(yong)}，号码里有 ${ys} 个${yong}数${ji.length ? `、${js} 个忌神（${ji.join('')}）数` : ''}。${ys > js ? '整体对你有帮助。' : ys === js ? '帮助和消耗大致相当。' : `忌神数偏多，选号时可多用 ${A.NUM[yong].join('、')}。`}</p>`);
+        const age = S.B.pillarsOf(TODAY).yF - ch.birthYearF; const bl = N.birthLuck(ch.inp.y, ch.inp.m, ch.inp.d, age);
+        if (bl && bl.segs.length) { const n = bl.segs.length, cyc = Math.floor(age / 6) % n;
+          out += card('n-birth', '生日数字 · 先天磁场年运', `<p>生日数字 <b>${bl.s}</b> 拆成 ${n} 组，按民间说法每组约管 6 年，排完后再从头循环。你现在约 ${Math.floor(age)} 岁，走在第 ${cyc + 1} 组。</p><div class="bz-nchain">${bl.segs.map((g, k) => `<button class="bz-ng ${N.STAR[g.star].good > 0 ? 'bz-ngg' : 'bz-ngb'} ${k === cyc ? 'bz-ngon' : ''}" data-act="info:nstar|${g.star}|${g.raw}|${g.lv}|${g.mode}"><b>${g.raw}</b><span>${g.star}</span><small>${g.from}–${g.to}岁${k === cyc ? ' · 现在' : ''}</small></button>`).join('')}</div><p class="bz-tip">当前这一段是${bl.segs[cyc].star}（${N.STAR[bl.segs[cyc].star].nick}）：${N.STAR[bl.segs[cyc].star].性格}。</p>`); }
+      }
+    }
+    return out;
+  }
+
+
+  // ---------- 性格测试 ----------
+  const MK = 'zen-mbti-v1';
+  const mLoad = () => { try { return JSON.parse(localStorage.getItem(MK) || 'null'); } catch (e) { return null; } };
+  const mSave = v => { try { localStorage.setItem(MK, JSON.stringify(v)); } catch (e) { } };
+  function vMbti() {
+    const M = ZEN_M; if (!S.mbti) S.mbti = mLoad() || { ans: [], done: false };
+    const st = S.mbti; const n = st.ans.filter(Boolean).length;
+    if (!st.done) {
+      return card('mb-q', '16 型性格测试', `<p>共 ${M.Q.length} 题，凭第一直觉选就好，没有对错。做完后会和你的八字十神做对照。</p><div class="bz-mprog"><div style="width:${n / M.Q.length * 100}%"></div></div><p class="bz-muted">已答 ${n} / ${M.Q.length}</p>
+        <ol class="bz-mq">${M.Q.map((q, i) => `<li><div class="bz-mqt">${q[1]}</div><div class="bz-mqo">${['A', 'B'].map(k => `<button class="bz-mopt ${st.ans[i] === k ? 'bz-on' : ''}" data-act="mq:${i}:${k}" aria-pressed="${st.ans[i] === k}">${k === 'A' ? q[2] : q[3]}</button>`).join('')}</div></li>`).join('')}</ol>
+        <button class="bz-go bz-mgo" data-act="mdone" ${n < M.Q.length ? 'disabled' : ''}>${n < M.Q.length ? `还有 ${M.Q.length - n} 题未答` : '◐ 看我的性格类型'}</button>
+        <p class="bz-muted">这是参考 16 型人格理论自编的简易测试，不是官方 MBTI®（MBTI 为 The Myers-Briggs Company 的注册商标），结果仅供自我了解。</p>`);
+    }
+    const ty = M.type(st.ans), d = M.TY[ty], c = M.score(st.ans);
+    const dims = [['E', 'I', '外向', '内向', c.E], ['S', 'N', '实感', '直觉', c.S], ['T', 'F', '思考', '情感', c.T], ['J', 'P', '判断', '感知', c.J]];
+    let html = `<div class="bz-card bz-hero"><div><div class="bz-muted">你的性格类型</div><div class="bz-namebig">${ty}</div><div class="bz-lvbig bz-good">${d[0]}</div></div><div><h2>${d[0]}</h2><dl class="bz-kv"><dt>特点</dt><dd>${d[1]}</dd><dt>优势</dt><dd>${d[2]}</dd><dt>盲点</dt><dd>${d[3]}</dd><dt>适合</dt><dd>${d[4]}</dd></dl></div></div>`;
+    html += card('mb-dims', '四个维度', dims.map(([a, b, na, nb, v]) => `<div class="bz-mdim"><span class="${v >= 3 ? 'bz-on' : ''}">${a} ${na}</span><div class="bz-mbar"><i style="width:${v / 5 * 100}%"></i></div><span class="${v < 3 ? 'bz-on' : ''}">${nb} ${b}</span></div>`).join(''));
+    if (S.ch) { const bz = M.fromChart(S.ch, E); const match = bz.filter((x, i) => x.pick === ty[i]).length; const bt = bz.map(x => x.pick).join('');
+      html += card('mb-bz', '性格测试 × 八字十神', `<p>按你八字里的十神比例推算，命盘显示的倾向接近 <b>${bt}</b>（${M.TY[bt][0]}），和测试结果有 <b>${match} / 4</b> 项一致。</p>
+        <ul class="bz-list2">${bz.map((x, i) => `<li><b>${x.a}/${x.b}：</b>八字偏${x.pick}（${x.a} ${x.x} : ${x.b} ${x.y}），测试为${ty[i]}${x.pick === ty[i] ? ' ✓' : '，不一致'}</li>`).join('')}</ul>
+        <p class="bz-tip">${match >= 3 ? '先天命盘和后天性格很接近，你活出了命局的本色。' : match === 2 ? '一半一致：后天的环境和经历，让你在某些方面发展出和命盘不同的一面。' : '差异较大：你现在的性格多半是后天环境塑造的，或者命盘里被压住的一面正在发挥。'}对照方法：比劫、食伤、财偏外向，印、正官偏内向；财、官偏实感，偏印、伤官偏直觉；官杀、比劫偏思考，印、食神偏情感；正官、正印、正财偏判断，伤官、偏印、偏财、食神偏感知。</p>`); }
+    html += `<button class="bz-btn bz-mre" data-act="mreset">↺ 重新测试</button>`;
+    return html;
+  }
+  function keyYearsCard(id, title, from, to, compact) {
+    const ks = ZEN_M.keyYears(S.ch, S.B, E, from, to); const ty = S.B.syOf(TODAY);
+    if (!ks.length) return '';
+    return card(id, title, `<ul class="bz-kys">${ks.map(k => `<li class="${k.y === ty ? 'bz-kynow' : ''}" data-act="ln:${k.y}"><div class="bz-kyy"><b>${k.y}</b><small>${gzc(k.gz)}</small><i class="${lvc(A.level(k.s))}">${A.level(k.s)}</i></div><div>${k.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b>${compact ? '' : `<span>${t.d}</span>`}</div>`).join('')}</div></li>`).join('')}</ul><p class="bz-muted">点任一年看流年运程。红色是要特别注意的事，绿色是好机会。</p>`, 'bz-kycard');
+  }
+
+  // ---------- banner ----------
+  function banner() {
+    const ch = S.ch, i = S.inp; const d = S.B.day(TODAY);
+    const P = ch.P; const hourTxt = i.time ? i.time : (i.shichen != null ? SHI[i.shichen][0].split(' ')[0] : '时辰不详');
+    return `<svg class="bz-taiji" viewBox="-52 -52 104 104" aria-hidden="true"><circle r="50" fill="none" stroke="#f5d77a" stroke-width="1.5"/><path d="M0,-50 A50,50 0 0,1 0,50 A25,25 0 0,1 0,0 A25,25 0 0,0 0,-50Z" fill="#f5d77a"/><circle cy="-25" r="7" fill="#f5d77a"/><circle cy="25" r="7" fill="#2a1846"/></svg>
+      <div class="bz-eyebrow">☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷</div>
+      <div class="bz-who"><span class="bz-cname">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button></div>
+      <div class="bz-birth"><span><b>阳历</b>${i.y}年${i.m}月${i.d}日 · ${esc(hourTxt)}</span></div>
+      <h1 class="bz-title">The Zen 八字大师仪表盘</h1>
+      <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}</p>
+      <p class="bz-take">今天整体 <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分（<span class="${lvc(d.lv[0])}">${d.lv[0]}</span>）。${summary(d.p.d, d.s)}</p>`;
+  }
+
+  // ---------- form ----------
+  function formHtml(v) {
+    v = v || { name: '', en: '', gender: '男', date: '', shichen: '', time: '', tz: 8, zishi: '换日' };
+    return `<h2>输入出生资料</h2><form id="bz-form" class="bz-form">
+      <label>中文姓名<input name="name" maxlength="20" value="${esc(v.name)}" placeholder="例如：王小明"></label>
+      <label>英文名（可选）<input name="en" maxlength="40" value="${esc(v.en)}" placeholder="例如：Alex Wong"></label>
+      <div class="bz-seg" role="radiogroup" aria-label="性别"><span>性别</span>${['男', '女'].map(g => `<label class="bz-segbtn"><input type="radio" name="gender" value="${g}" ${v.gender === g ? 'checked' : ''}><span>${g}</span></label>`).join('')}</div>
+      <label>出生日期（阳历）<input type="date" name="date" required min="1900-01-01" max="2099-12-31" value="${esc(v.date)}"></label>
+      <label>出生时辰<select name="shichen"><option value="">时辰不详</option>${SHI.map((s, i) => `<option value="${i}" ${String(v.shichen) === String(i) ? 'selected' : ''}>${s[0]}</option>`).join('')}</select></label>
+      <label>准确时间（可选，填了会优先使用）<input type="time" name="time" value="${esc(v.time)}"></label>
+      <label>出生地时区<select name="tz">${[[7, 'UTC+7 泰国/越南/印尼西部'], [8, 'UTC+8 马来西亚/新加坡/中国/台湾/香港'], [9, 'UTC+9 日本/韩国'], [10, 'UTC+10 澳洲东部'], [0, 'UTC+0 英国'], [-5, 'UTC−5 美东'], [-8, 'UTC−8 美西']].map(([n, t]) => `<option value="${n}" ${+v.tz === n ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label>夜子时（23:00 后）排法<select name="zishi"><option value="换日" ${v.zishi !== '不换日' ? 'selected' : ''}>换日（日柱算次日，常用）</option><option value="不换日" ${v.zishi === '不换日' ? 'selected' : ''}>不换日（日柱算当天）</option></select></label>
+      <div class="bz-formbtns"><button type="submit" class="bz-go">☯ 开始排盘</button>${S.ch ? '<button type="button" class="bz-cancel" data-act="cancel">取消</button>' : ''}</div>
+      <p class="bz-muted">资料只保存在你这台设备的浏览器里，不会上传。</p></form>`;
+  }
+  function readForm(f) {
+    const fd = new FormData(f); const v = Object.fromEntries(fd.entries()); v.tz = +v.tz;
+    if (!v.date) return null; const [y, m, d] = v.date.split('-').map(Number);
+    let hour = null; if (v.time) { const [hh, mm] = v.time.split(':').map(Number); hour = hh + mm / 60; } else if (v.shichen !== '') hour = SHI[+v.shichen][1];
+    return { raw: v, inp: { name: v.name.trim(), en: v.en.trim(), gender: v.gender || '男', y, m, d, hour, tz: v.tz, zishi: v.zishi, shichen: v.shichen === '' ? null : +v.shichen, time: v.time } };
+  }
+
+  // ---------- main render ----------
+  function setChart(raw) {
+    const r = readForm(Object.assign(document.createElement('form'), { innerHTML: formHtml(raw) }).querySelector('form') || null);
+  }
+  function compute(inp) { S.inp = inp; S.ch = E.makeChart(inp); S.B = A.build(S.ch, TODAY); if (!S.date) S.date = TODAY; S.dy = null; S.lnYear = null; }
+  function render() {
+    const app = $('#zen');
+    if (!S.ch || S.editing) {
+      app.querySelector('#bz-banner').innerHTML = S.ch ? banner() : `<div class="bz-eyebrow">☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷</div><h1 class="bz-title">The Zen 八字大师仪表盘</h1><p class="bz-sub">输入姓名、性别和出生日期时辰，自动排出四柱，推算每日、每月、每年运势，以及大运、流年、易经卦、九宫飞星和开运建议。</p>`;
+      app.querySelector('#bz-formwrap').innerHTML = formHtml(S.raw); app.querySelector('#bz-formwrap').hidden = false;
+      app.querySelector('#bz-main').hidden = true; return;
+    }
+    app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
+    app.querySelector('#bz-banner').innerHTML = banner();
+    app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => `<button class="bz-tab ${S.tab === k ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${t}</button>`).join('');
+    const showNav = ['day', 'week', 'month', 'year'].includes(S.tab);
+    app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
+    const V = { mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
+    app.querySelector('#bz-view').innerHTML = html;
+  }
+  function step(dir) {
+    const t = S.tab, s = S.date; let n;
+    if (t === 'day') n = A.addDays(s, dir); else if (t === 'week') n = A.addDays(s, 7 * dir);
+    else if (t === 'month') { const m = S.B.monthOf(s); n = m ? (dir < 0 ? A.addDays(m.start, -1) : A.addDays(m.end, 1)) : A.addDays(s, 30 * dir); }
+    else { const [y, m, d] = A.parse(s); n = A.iso(y + dir, m, Math.min(d, 28)); }
+    S.date = n; render();
+  }
+  function act(a) {
+    if (a.startsWith('info:')) { openSheet(a.slice(5)); return; }
+    if (a === 'close') { closeSheet(); return; }
+    if (a.startsWith('mq:')) { const [, i, k] = a.split(':'); S.mbti.ans[+i] = k; mSave(S.mbti); render(); return; }
+    if (a === 'mdone') { S.mbti.done = true; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
+    if (a === 'mreset') { S.mbti = { ans: [], done: false }; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
+    const [k, v] = a.split(':');
+    if (k === 'tab') { S.tab = v; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
+    else if (k === 'day') { S.date = v; S.tab = 'day'; }
+    else if (k === 'month') { S.date = v; S.tab = 'month'; }
+    else if (k === 'ln') { S.lnYear = +v; S.tab = 'liunian'; }
+    else if (k === 'dy') { S.dy = v; S.tab = 'dayun'; }
+    else if (k === 'edit') { S.editing = true; }
+    else if (k === 'cancel') { S.editing = false; }
+    render(); if (['day', 'month', 'ln', 'dy', 'tab'].includes(k)) $('#bz-tabs').scrollIntoView({ block: 'nearest' });
+  }
+  function init() {
+    const app = $('#zen');
+    app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    $('#bz-sheet').addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t) { e.preventDefault(); act(t.dataset.act); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+    $('.bz-prev').addEventListener('click', () => step(-1)); $('.bz-next').addEventListener('click', () => step(1));
+    $('.bz-today').addEventListener('click', () => { S.date = TODAY; render(); });
+    $('.bz-date').addEventListener('change', e => { if (e.target.value) { S.date = e.target.value; render(); } });
+    // tooltips
+    app.addEventListener('pointerover', e => { const g = e.target.closest('.bz-bar'); if (!g) return; const wrap = g.closest('.bz-chart'); const tt = wrap.querySelector('.bz-tt'); tt.textContent = g.dataset.tip; tt.hidden = false;
+      const r = wrap.getBoundingClientRect(), b = g.getBoundingClientRect(); tt.style.left = Math.max(0, Math.min(b.left - r.left, r.width - 200)) + 'px'; tt.style.top = Math.max(0, b.top - r.top - 4) + 'px'; });
+    app.addEventListener('pointerout', e => { const g = e.target.closest('.bz-bar'); if (g) { const tt = g.closest('.bz-chart').querySelector('.bz-tt'); tt.hidden = true; } });
+    const h = (location.hash || '').slice(1); if (TABS.some(t => t[0] === h)) S.tab = h;
+    window.addEventListener('hashchange', () => { const h2 = location.hash.slice(1); if (TABS.some(t => t[0] === h2) && S.ch) { S.tab = h2; render(); } });
+    const v = load(); if (v) { S.raw = v; const f = document.createElement('div'); f.innerHTML = formHtml(v); const r = readForm(f.querySelector('form')); if (r) compute(r.inp); }
+    render();
+  }
+  init();
+})();
+
+</script>
+</body>
+</html>
