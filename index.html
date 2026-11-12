@@ -281,6 +281,9 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-mk{display:inline-block;margin:2px 6px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(212,175,55,.14);color:#e9c46a;font-size:11px;font-weight:700}.bz-mk em{font-style:normal;font-weight:400;opacity:.75;margin-left:4px}
 .bz-inner{margin:12px 0;padding:12px;border-radius:12px;border:1px solid rgba(212,175,55,.3);background:rgba(212,175,55,.05)}.bz-inner h3{margin:0 0 4px;font-size:14px;color:#e9c46a}.bz-iam{margin:0 0 10px;font-size:12px;font-style:italic;opacity:.85}
 .bz-in{display:flex;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13px}.bz-in>b{flex:0 0 34px;color:#e9c46a}.bz-in.ok strong{color:#4cd38a}.bz-in.nk strong{color:#ff8a73}.bz-wit{margin-top:4px;font-size:12px;opacity:.75;padding-left:8px;border-left:2px solid rgba(212,175,55,.4)}
+.bz-rf{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(212,175,55,.35)}.bz-rf h3{margin:0 0 4px;font-size:14px;color:#e9c46a}
+.bz-cc{display:flex;flex-direction:column;gap:6px;margin:8px 0}.bz-cc>div{display:flex;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px}.bz-cc b{flex:0 0 76px;font-size:12px;color:#e9c46a}.bz-cc .nk{border-left:3px solid #ff8a73}.bz-cc .ok{border-left:3px solid #4cd38a}
+.bz-four{font-size:13px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04)}.bz-four ol,.bz-four ul{margin:6px 0 6px 18px;padding:0}.bz-four li{margin:3px 0}.bz-four strong{color:#ff8a73}
 </style>
 </head>
 <body>
@@ -984,6 +987,27 @@ const ZEN_C = (function () {
     const th = { t: THINK[t.g][t.ok ? 0 : 1], ok: t.ok, w: t.ok ? '我有这个念头，但我不是这个念头。好念头是一份礼物，拿来行动，不拿来自满。' : '我有这个念头，但我不是这个念头。念头只是脑中的声音，不是事实；我可以听见它，然后选择不跟着它走。' };
     return { feels, exp, th };
   }
+
+  // Content vs Context · 转念
+  const CTX = {
+    官: [['“终于有人肯定我了”——把价值交给别人的评价', '“这是我负责任、守承诺的自然结果”——我本来就是可靠的人', '把肯定当作起点：下一个承诺是什么？'],
+         ['“他们在为难我、看不起我”', '“这是一个让我变得更专业的训练场”', ['我做得还不够好。', '我已经做得够好了。', '我对自己不够好。', '我的上司也已经做得够好了。']]],
+    印: [['“幸好有人帮我”——觉得自己欠了人情', '“我值得被支持，也会把这份支持传下去”', '收下帮助，然后找一个人去帮他。'],
+         ['“他们不支持我，我做不了”', '“没有人替我决定，正好是我长大的机会”', ['要是有人替我决定就好了。', '要是我替自己决定就好了。', '我已经有足够的资源做决定。', '没有人替我决定，也很好。']]],
+    财: [['“我赚到了，我比别人强”', '“钱是我创造价值的回响，可以拿来贡献”', '把一部分成果拿来感恩或回馈。'],
+         ['“我没钱、我不安全”', '“我正在学会和钱建立更健康的关系”', ['万一钱不够怎么办？', '万一钱够了呢？', '我现在拥有的，今天已经够用。', '万一我的担心不够准呢？']]],
+    食: [['“我很有才华，大家应该看见”', '“我的才华是用来服务别人的”', '把想法做成一件对别人有用的小东西。'],
+         ['“没人懂我，说了也白说”', '“我在学习怎么说，让对方听得懂”', ['为什么没人懂我？', '为什么我不懂他们？', '为什么我不懂我自己？', '其实有人懂我。']]],
+    比: [['“我们一伙的，赢了别人”', '“我们一起，能为更多人做成事”', '把功劳分给伙伴。'],
+         ['“凭什么他比我好？”——人生是一场比赛', '“他的好提醒我自己想成为什么样的人”', ['凭什么他比我好？', '凭什么我不能为他高兴？', '凭什么我不能比昨天的我好？', '他好，并不代表我不好。']]]
+  };
+  function reframe(gs, exp, th) {
+    const bad = gs.find(x => !x.ok), x = bad || gs[0], c = CTX[x.g][x.ok ? 0 : 1];
+    const content = EXPR[x.g][x.ok ? 0 : 1];
+    if (x.ok) return { ok: true, content, old: c[0], ctx: c[1], act: c[2] };
+    const [thought, ...turns] = c[2];
+    return { ok: false, content, old: c[0], ctx: c[1], thought, turns };
+  }
   function scenes(ch, E, gz, s, notes) {
     const { tenGod, GRP, HID, elOf, ELS } = E;
     const gs = [gz[0], HID[gz[1]][0]].map(c => ({ g: GRP[tenGod(ch.dm, c)], ok: ch.favE[elOf(c)] >= 0 }));
@@ -997,7 +1021,7 @@ const ZEN_C = (function () {
     const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
     const doms = DOM.map(([n, k, g, b, be, tip], di) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
       return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '' : mid ? '' : tip, mind: mind(n, good ? 'g' : mid ? 'm' : 'b', gz, di) }; });
-    return { emo, meet, part, doms, inner: inner(gs) };
+    return { emo, meet, part, doms, inner: (() => { const I = inner(gs); I.rf = reframe(gs, I.exp, I.th); return I; })() };
   }
   return { GUA, REL, scenes };
 })();
@@ -1429,6 +1453,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
       ${r.inner.feels.map(f => `<div class="bz-in ${f.ok ? 'ok' : 'nk'}"><b>感受</b><div><div><strong>${f.nm}</strong> · ${f.d}</div><div class="bz-wit">${f.w}</div></div></div>`).join('')}
       <div class="bz-in ${r.inner.exp.ok ? 'ok' : 'nk'}"><b>经历</b><div><div>${r.inner.exp.t}</div><div class="bz-wit">${r.inner.exp.w}</div></div></div>
       <div class="bz-in ${r.inner.th.ok ? 'ok' : 'nk'}"><b>念头</b><div><div>${r.inner.th.t}</div><div class="bz-wit">${r.inner.th.w}</div></div></div>
+      ${(() => { const f = r.inner.rf; return `<div class="bz-rf"><h3>Content 与 Context · 转念</h3>
+        <p class="bz-muted">Content（内容）是发生的事、感受和念头；Context（语境）是你用来看待它的框架。内容常常改变不了，但语境可以由你选择。</p>
+        <div class="bz-cc"><div><b>Content 内容</b><span>${f.content}</span></div><div class="nk"><b>旧语境（自动反应）</b><span>${f.old}</span></div><div class="ok"><b>新语境（我选择）</b><span>${f.ctx}</span></div></div>
+        ${f.ok ? `<p class="bz-tip">从新语境行动：${f.act}</p><p class="bz-muted">顺的时候也要转念：把好事放进“贡献与感恩”的语境，好运才不会变成骄傲。</p>` : `<div class="bz-four"><b>转念四问</b>（针对念头：<strong>${f.thought}</strong>）<ol><li>这是真的吗？</li><li>我能百分之百确定这是真的吗？</li><li>当我相信这个念头时，我有什么反应？我怎么对待自己和别人？</li><li>如果没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：试着把念头反过来，各找三个它可能同样真实的理由：<ul>${f.turns.map(t => `<li>${t}</li>`).join('')}</ul></div>`}
+        <p class="bz-muted">转念三步：①看见内容，只写事实，不加评判 → ②觉察旧语境，我自动给了它什么意义 → ③选择新语境，从承诺、学习、贡献或感恩出发，然后行动。</p></div>`; })()}
       <p class="bz-muted">练习：感受来的时候，在心里说“我注意到我有……”，而不是“我就是……”。只是这一步，就把你和情绪拉开了一点距离。</p></div>
       <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">心法 · ${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul>
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
