@@ -290,6 +290,7 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-inner>.bz-wit{margin:8px 0}.bz-shift{display:flex;flex-direction:column;gap:2px;margin:6px 0}.bz-shift>div:not(.bz-arr){display:flex;gap:10px;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font-size:13px}.bz-shift b{flex:0 0 40px;font-size:12px}.bz-shift .nk b{color:#ff8a73}.bz-shift .ok b{color:#4cd38a}.bz-shift .nk span{opacity:.75;text-decoration:line-through;text-decoration-color:rgba(255,138,115,.5)}.bz-arr{text-align:center;font-size:11px;color:#e9c46a;opacity:.8}
 details.bz-four{margin:6px 0;padding:6px 10px}details.bz-four summary{cursor:pointer;color:#e9c46a;font-size:12px}details.bz-four em{font-style:normal;display:inline-block;margin:2px 4px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(76,211,138,.12)}details.bz-four p{margin:6px 0;font-size:12px}
 .bz-inner h4{margin:12px 0 6px;font-size:13px;color:#e9c46a}.bz-sc2 li{padding:8px 10px!important;margin:0 0 5px!important}.bz-sc2 .bz-st{font-size:12px}
+.bz-mast{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);font-size:13px}.bz-mast b{display:block;color:#e9c46a;font-size:12px;margin-bottom:3px}.bz-curve{width:100%;max-width:420px;display:block;margin:4px 0 8px}.bz-h3{font-size:14px;color:#e9c46a;margin:12px 0 4px}
 </style>
 </head>
 <body>
@@ -1027,7 +1028,7 @@ const ZEN_C = (function () {
     const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
     const doms = DOM.map(([n, k, g, b, be, tip], di) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
       return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '' : mid ? '' : tip, mind: mind(n, good ? 'g' : mid ? 'm' : 'b', gz, di) }; });
-    return { emo, meet, part, doms, inner: (() => { const I = inner(gs); I.rf = reframe(gs, I.exp, I.th); return I; })() };
+    return { emo, meet, part, doms, g0: gs[0].g, ok0: gs[0].ok, inner: (() => { const I = inner(gs); I.rf = reframe(gs, I.exp, I.th); return I; })() };
   }
   return { GUA, REL, scenes };
 })();
@@ -1338,6 +1339,34 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
 
 </script>
 <script>
+// ===== George Leonard《Mastery》大师之道 =====
+const ZEN_MA = (function () {
+  const KEYS = {
+    印: ['拜师 Instruction', '找对老师、教练或前辈。好的指导能少走很多弯路；今天向一位懂的人请教一个具体问题。'],
+    比: ['练习 Practice', '把练习当成一条路，而不是为了到达终点。今天的功课：同一个基本动作，认真重复做一次。'],
+    官: ['臣服 Surrender', '放下“我已经会了”的架子，像初学者一样听从指导、接受纠正。肯当新手，才能成为高手。'],
+    财: ['意向 Intentionality', '练习之前先在心里清楚看见目标和画面。今天开工前，花一分钟想清楚：我要练好的是什么？'],
+    食: ['边缘 The Edge', '在熟练之后，温和地挑战极限：多走一步、试一个更难的版本，但不冒进、不受伤。']
+  };
+  const TYPES = {
+    Dabbler: ['尝鲜者 The Dabbler', '一开始热情满满，进步一停滞就觉得无聊，换下一样新东西。', '学会爱上高原期：不进步的日子也照样练，热情会以更深的方式回来。'],
+    Obsessive: ['偏执者 The Obsessive', '只要结果，进步一慢就拼命加码，结果容易受伤、倦怠或大起大落。', '放慢节奏，接受高原期是正常的，别用蛮力逼自己突破。'],
+    Hacker: ['得过且过者 The Hacker', '学到“够用”就停在高原上，不再深入，满足于将就。', '找一位老师或一个挑战，把自己推回学习的路上。']
+  };
+  function type(ch) {
+    const b = ch.byRel, top = Object.keys(b).sort((x, y) => b[y] - b[x])[0];
+    const k = top === '食' ? 'Dabbler' : (top === '比' || top === '官') ? 'Obsessive' : 'Hacker';
+    const why = { 食: '食伤旺，点子多、兴趣广', 比: '比劫旺，好胜、冲劲大', 官: '官杀旺，对自己要求高、压力驱动', 财: '财星旺，重实际、讲求效率', 印: '印星旺，求稳、喜欢舒适区' }[top];
+    return { k, t: TYPES[k], why };
+  }
+  const PLATEAU = '大部分时间你都会在“高原期”：看似没有进步，其实功夫正在沉淀。大师之道就是爱上高原期，为练习本身而练习。';
+  function today(g, ok) { const [k, t] = KEYS[g]; return { k, t: t + (ok ? '' : ' 今天状态一般也没关系，这正是高原期的练习。') }; }
+  return { KEYS, TYPES, type, today, PLATEAU };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_MA;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1466,6 +1495,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
         <div class="bz-shift"><div class="nk"><b>旧语境</b><span>${f.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新语境</b><span>${f.ctx}</span></div></div>
         ${f.ok ? `<p class="bz-tip">从新语境行动：${/[。？！]$/.test(f.act) ? f.act : f.act + '。'}顺的时候也放进“贡献与感恩”，好运不变骄傲。</p>` : `<details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}
         <details class="bz-four"><summary>怎么练：转念三步</summary><p>① 看见内容：只写事实，不加评判<br>② 觉察旧语境：我自动给了它什么意义<br>③ 选择新语境：从承诺、学习、贡献或感恩出发，然后行动</p><p>感受来时，在心里说“我注意到我有……”，而不是“我就是……”。</p></details>
+        ${(() => { const m = ZEN_MA.today(r.g0, r.ok0); return `<div class="bz-mast"><b>今日大师之道 · ${m.k}</b><span>${m.t}</span></div>`; })()}
         <h4>六面心法</h4>
         <ul class="bz-scenes bz-sc2">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul></div>`; })()}
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
@@ -1588,11 +1618,20 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
   const FOOD = { 木: '绿色蔬菜、酸味', 火: '温热、红色食物，适量辛辣', 土: '五谷杂粮、黄色食物', 金: '白色食物、姜葱蒜', 水: '黑色食物、海产' };
   const ORGAN = { 木: '肝胆、筋骨、眼睛', 火: '心脏、血液循环', 土: '脾胃、消化', 金: '肺、呼吸道、皮肤', 水: '肾、泌尿、腰' };
   const SEASON = { 木: '春季', 火: '夏季', 土: '季末月份', 金: '秋季', 水: '冬季' };
+  function masteryCard() {
+    const t = ZEN_MA.type(S.ch), K = ZEN_MA.KEYS;
+    const curve = `<svg viewBox="0 0 320 90" class="bz-curve" role="img" aria-label="大师曲线：短暂进步后进入长长的高原期"><path d="M5 82 L40 82 Q48 82 50 66 Q52 60 56 64 L95 64 Q103 64 105 46 Q107 40 111 44 L170 44 Q178 44 180 26 Q182 20 186 24 L265 24 Q273 24 275 8 L315 8" fill="none" stroke="#d4af37" stroke-width="2.5"/><text x="70" y="78" fill="#bbb" font-size="9">高原期</text><text x="135" y="58" fill="#bbb" font-size="9">高原期</text><text x="215" y="38" fill="#bbb" font-size="9">高原期</text><text x="96" y="38" fill="#4cd38a" font-size="9">突破</text></svg>`;
+    return card('l-mastery', '大师之道 · George Leonard《Mastery》', `${curve}<p>${ZEN_MA.PLATEAU}</p>
+      <h3 class="bz-h3">你的学习倾向：${t.t[0]}</h3><p>${t.why}，较容易像${t.t[0].split(' ')[0]}：${t.t[1]}</p><p class="bz-tip">${t.t[2]}</p>
+      <details class="bz-four"><summary>三种走不上大师之路的人</summary><ul class="bz-list2">${Object.values(ZEN_MA.TYPES).map(x => `<li><b>${x[0]}</b>：${x[1]}</li>`).join('')}</ul></details>
+      <h3 class="bz-h3">通往大师的五把钥匙</h3><ul class="bz-list2">${Object.entries(K).map(([g, [k, v]]) => `<li><b>${k}</b>（${{ 印: '印星', 比: '比劫', 官: '官杀', 财: '财星', 食: '食伤' }[g]}日特别适合）：${v}</li>`).join('')}</ul>
+      <p class="bz-muted">每天的“今日运程”会按当天十神提示一把钥匙。倾向按命盘十神最旺的一类推算，只供参考。</p>`);
+  }
   function vLife() {
     const ch = S.ch, good = ELS.filter(e => ['用', '喜'].includes(ch.label(e))).sort((a, b) => ch.favE[b] - ch.favE[a]), bad = ELS.filter(e => ch.label(e) === '忌');
     const li = (arr, map) => arr.map(e => `<li><b>${gzc(e)}：</b>${map[e]}</li>`).join('');
     const yb = ch.P.y[1]; const z = A.zodiacRel(ch, yb, false);
-    return `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
+    return masteryCard() + `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
       <div class="bz-grid bz-grid2">${card('l-career', '适合的职业', `<ul class="bz-list2">${li(good, CAREER)}${bad.length ? `<li><b>不太合适：</b>${bad.map(e => CAREER[e]).join('；')}</li>` : ''}</ul>`)}
       ${card('l-hobby', '适合的兴趣', `<ul class="bz-list2">${li(good, HOBBY)}${bad.length ? `<li><b>少做：</b>${bad.map(e => HOBBY[e]).join('、')}</li>` : ''}</ul>`)}
       ${card('l-travel', '适合的旅游国家', `<ul class="bz-list2">${li(good, TRAVEL)}<li><b>最佳出行季节：</b>${SEASON[ch.yong]}</li></ul>`)}
