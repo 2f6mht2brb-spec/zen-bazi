@@ -1728,7 +1728,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
-  const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${/^[\x00-\x7F]+$/.test(n) ? n.toUpperCase() : n} 的` : ''; };
+  const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? (/^[\x00-\x7F]+$/.test(n) ? `${n.toUpperCase()} 的` : `${n}的`) : ''; };
   const siteTitle = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${/^[\x00-\x7F]+$/.test(n) ? n.toUpperCase() : n} 八字秘笈` : '八字秘笈'; };
   const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${XUAN[id] ? `<span class="bz-xn">${XUAN[id]}</span>` : ''}${title}</h2>` : ''}${body}</div>`;
   const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
