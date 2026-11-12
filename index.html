@@ -1923,7 +1923,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
     const OPS = [['M', '#f5c542'], ['K', '#4f8cff'], ['T', '#ff5a5a']];
     const wd = new Date(d.date + 'T00:00:00').getDay(), draw = [0, 3, 6].includes(wd);
     const used = new Set(); const uniq = s => { let t = s, i = 0; while (used.has(t) && i < 4) { t = t.slice(1) + t[0]; i++; } used.add(t); return t; };
-    const tk = OPS.map(([k, c]) => { const l0 = A.lucky(ch, k + d.date, d.p.d), l = { a: uniq(l0.a), b: uniq(l0.b) }; return `<details class="bz-tk bz-tkd" style="--tk:${c}"><summary><span class="bz-tk-k">${k}</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求号</span></summary><div class="bz-tk-r"><b>${l.a}</b><small>备选 ${l.b}</small></div></details>`; }).join('');
+    const tk = OPS.map(([k, c]) => { const l0 = A.lucky(ch, k + d.date, d.p.d), l = { a: uniq(l0.a), b: uniq(l0.b) }; return `<details class="bz-tk bz-tkd" style="--tk:${c}"><summary><span class="bz-tk-k">${k}</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求字</span></summary><div class="bz-tk-r"><b>${l.a}</b><small>备选 ${l.b}</small></div></details>`; }).join('');
     const l0 = A.lucky(ch, 'M' + d.date, d.p.d);
     return card('d-lucky', '今日幸运号码 · 4D', `<p class="bz-tkguide">先静下心，默念你的心愿，再点开你想求的那一张。</p><div class="bz-tks">${tk}</div>
       <p class="bz-tip">${draw ? '今天是开彩日（周三、六、日为常规开彩日，特别开彩以官方公布为准）。' : '今天不是常规开彩日（常规为周三、六、日）。'}${l0.note}</p>
