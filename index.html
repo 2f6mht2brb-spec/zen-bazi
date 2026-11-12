@@ -304,6 +304,13 @@ details.bz-four{margin:6px 0;padding:6px 10px}details.bz-four summary{cursor:poi
 .bz-quote{margin:0 0 4px;font-size:16px;line-height:1.6;color:#fff}.bz-quote b{color:#e9c46a}
 .bz-from{font-size:12px;opacity:.6;text-decoration:line-through;text-decoration-color:rgba(255,138,115,.6);margin-bottom:6px}.bz-to{padding:10px 12px;border-radius:10px;background:rgba(76,211,138,.12);border-left:4px solid #4cd38a;font-size:15px;font-weight:600;color:#fff;line-height:1.5}.bz-to span{display:block;font-size:11px;font-weight:400;color:#4cd38a;margin-bottom:2px}
 .bz-do{padding:10px 12px;border-radius:10px;background:rgba(212,175,55,.16);border:1px solid rgba(212,175,55,.5);font-size:15px;font-weight:600;color:#fff;line-height:1.5}
+.bz-mx{margin-top:6px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.05);font-size:12px}.bz-mx em{font-style:normal;font-size:10px;padding:1px 6px;border-radius:6px;margin-right:6px;background:#4cd38a;color:#10251a}.bz-mx.nk em{background:#ff8a73;color:#2a0f0a}.bz-mast small{display:block;margin-top:4px;font-size:11px;opacity:.7}
+.bz-mlead{font-size:13px}.bz-mtrack{margin:10px 0;padding:10px 12px;border-radius:12px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.35)}.bz-mtrack .bz-h3{margin-top:0}
+.bz-mform{display:flex;gap:6px;margin:6px 0}.bz-mform input{flex:1;min-width:0;padding:7px 10px;border-radius:9px;border:1px solid rgba(212,175,55,.35);background:rgba(0,0,0,.25);color:inherit;font:inherit;font-size:13px}.bz-mform button{padding:7px 12px;border-radius:9px;border:1px solid rgba(212,175,55,.5);background:transparent;color:#e9c46a;font:inherit;font-size:13px}
+.bz-mbtn{width:100%;padding:11px;border-radius:11px;border:0;background:linear-gradient(135deg,#d4af37,#b8860b);color:#1a1030;font:inherit;font-weight:800;font-size:15px;cursor:pointer;margin:4px 0 8px}.bz-mbtn.on{background:rgba(76,211,138,.2);color:#4cd38a;border:1px solid #4cd38a}
+.bz-mstat{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}.bz-mstat b{display:block;font-size:20px;color:#fff}.bz-mstat span{font-size:11px;opacity:.7}
+.bz-mgrid{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;margin:8px 0}.bz-mgrid i{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.08)}.bz-mgrid i.on{background:#d4af37}.bz-mgrid i.td{outline:1px solid #fff}
+.bz-msec{margin:6px 0}.bz-mlist{margin:6px 0 4px 18px;padding:0;font-size:13px}.bz-mlist li{margin:4px 0}
 </style>
 </head>
 <body>
@@ -1352,29 +1359,77 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
 
 </script>
 <script>
-// ===== George Leonard《Mastery》大师之道 =====
+// ===== George Leonard《Mastery》大师之道（内容为中文意译与整理）=====
 const ZEN_MA = (function () {
   const KEYS = {
-    印: ['拜师 Instruction', '找对老师、教练或前辈。好的指导能少走很多弯路；今天向一位懂的人请教一个具体问题。'],
-    比: ['练习 Practice', '把练习当成一条路，而不是为了到达终点。今天的功课：同一个基本动作，认真重复做一次。'],
-    官: ['臣服 Surrender', '放下“我已经会了”的架子，像初学者一样听从指导、接受纠正。肯当新手，才能成为高手。'],
-    财: ['意向 Intentionality', '练习之前先在心里清楚看见目标和画面。今天开工前，花一分钟想清楚：我要练好的是什么？'],
-    食: ['边缘 The Edge', '在熟练之后，温和地挑战极限：多走一步、试一个更难的版本，但不冒进、不受伤。']
+    印: ['拜师 Instruction', '找对老师、教练或前辈。好老师不只示范，更懂得在你进步时肯定你、在你出错时清楚指出；也别忽略向书本、同伴和自己的身体学习。今天向一位懂的人请教一个具体问题。'],
+    比: ['练习 Practice', '“练习”不是为了到达终点而做的事，而是你本来就走在上面的那条路。今天的功课：同一个基本动作，认真、专注地重复一次。'],
+    官: ['臣服 Surrender', '放下“我已经会了”的架子，像系白带的初学者一样听从指导、接受纠正；肯在别人面前看起来笨拙，才会继续进步。'],
+    财: ['意向 Intentionality', '心里的画面会带动身体。练习之前，先清楚看见做好的样子，再全神贯注地做。今天开工前，花一分钟想清楚：我要练好的是什么？'],
+    食: ['边缘 The Edge', '真正的高手会在熟练之后温和地挑战极限：多走一步、试一个更难的版本；但边缘是靠长期练习慢慢推开的，不是靠冒进。']
   };
   const TYPES = {
-    Dabbler: ['尝鲜者 The Dabbler', '一开始热情满满，进步一停滞就觉得无聊，换下一样新东西。', '学会爱上高原期：不进步的日子也照样练，热情会以更深的方式回来。'],
-    Obsessive: ['偏执者 The Obsessive', '只要结果，进步一慢就拼命加码，结果容易受伤、倦怠或大起大落。', '放慢节奏，接受高原期是正常的，别用蛮力逼自己突破。'],
+    Dabbler: ['尝鲜者 The Dabbler', '一开始热情满满，第一次突破后进入高原期就觉得无聊，换下一样新东西。', '学会爱上高原期：不进步的日子也照样练，热情会以更深的方式回来。'],
+    Obsessive: ['偏执者 The Obsessive', '只要结果，进步一慢就拼命加码，常常练到受伤、倦怠或大起大落。', '放慢节奏，接受高原期是正常的，别用蛮力逼自己突破。'],
     Hacker: ['得过且过者 The Hacker', '学到“够用”就停在高原上，不再深入，满足于将就。', '找一位老师或一个挑战，把自己推回学习的路上。']
   };
+  // 第十章：为什么决心会失败（恒定状态 homeostasis）
+  const CHANGE = [
+    ['留意“恒定状态”', '身体、家庭、公司都会抗拒改变，连变好也一样。出现反弹不代表你错了，往往是你真的在改变的信号；身边的人不配合，也不是他们想害你。'],
+    ['和阻力谈判', '不硬冲、也不退缩：进两步、退一步，留意身体和环境发出的警讯，用它当作调整的指南。'],
+    ['建立支持系统', '找志同道合的老师、同伴或团体，一起走会更容易坚持。'],
+    ['固定练习', '把练习变成每天的习惯和节奏，习惯本身会成为你的新“恒定状态”。'],
+    ['终身学习', '把学习当成一辈子的事，而不是读完书就结束。']
+  ];
+  // 第十一章：为大师之路获得能量
+  const ENERGY = [
+    ['保持体能', '身体有力气，做什么都有力气；规律运动是能量的基础。'],
+    ['承认负面，放大正面', '不必假装一切都好，但把注意力多放在做得对的地方。'],
+    ['试着说真话', '隐瞒和说谎很耗能量；说真话（带着善意）会让人轻松。'],
+    ['尊重但不放纵自己的阴暗面', '看见自己的愤怒、贪心或恐惧，把它的能量导向正面行动，而不是被它带着走。'],
+    ['排出优先顺序', '列出真正重要的事，先做最重要的，其他的放下。'],
+    ['做出承诺，采取行动', '拖延最耗能量；做决定、开始行动，能量会随之而来。'],
+    ['走上大师之路并坚持', '在路上的人，能量会越来越多；常常换方向的人，能量会被消耗掉。']
+  ];
+  // 第十二章：路上的陷阱
+  const PITFALLS = [
+    ['生活方式冲突', '工作、家庭和练习彼此拉扯，时间和精力不够用。'],
+    ['过度执着目标', '眼里只有终点，忘了享受练习本身。'],
+    ['老师不对', '错误的指导会让你越练越歪。'],
+    ['缺乏竞争心', '完全不比较，有时会失去动力。'],
+    ['过度好胜', '把每一次练习都当成比赛，赢了骄傲、输了沮丧。'],
+    ['懒惰', '不是性格缺陷，常常是缺乏方向或累积的抗拒。'],
+    ['受伤', '练过头、忽视身体的警讯。'],
+    ['依赖刺激', '用药物、酒精或其他捷径追求一时的“状态”。'],
+    ['奖杯与奖牌', '太在意外在奖励，练习的乐趣就不见了。'],
+    ['虚荣', '怕在别人面前看起来笨拙，于是不敢学新东西。'],
+    ['太严肃', '没有笑声，路会变得又苦又长；对自己幽默一点。'],
+    ['不连贯', '时练时停，比练得少更伤。'],
+    ['完美主义', '大师之道不是完美，而是愿意一次又一次地尝试、失败、再尝试。']
+  ];
+  const GIFTS = [
+    ['平衡与中心', '站稳，把注意力放到小腹（丹田）附近，身体前后左右平均承重；紧张时先回到中心再行动。'],
+    ['放松才有力量', '僵硬的肌肉反而没力；放松、感受能量从肩膀流到指尖，力量更大，待人处事也一样。'],
+    ['把意外打击变成能量', '遇到突发打击时，不抗拒、不否认，先说出自己真实的感受，再回到平衡和中心，把这股冲击当成送来的能量。'],
+    ['认识“气”', '把身体当成练习场：留意呼吸和能量的流动，身心合一时，做事更从容。']
+  ];
+  const COMMON = '大部分的生活都是“中间时间”：通勤、做饭、洗碗、排队。把这些平凡小事也当成练习，用全然的觉察去做，你就把失去的时间要回来了。';
+  const PLATEAU = '学习不是一条直线：短暂突破之后，是长长的高原期，有时甚至会小退步。大部分时间你都在高原上，看似没有进步，其实功夫正在沉淀。大师之道就是爱上高原期，为练习本身而练习。';
   function type(ch) {
     const b = ch.byRel, top = Object.keys(b).sort((x, y) => b[y] - b[x])[0];
     const k = top === '食' ? 'Dabbler' : (top === '比' || top === '官') ? 'Obsessive' : 'Hacker';
     const why = { 食: '食伤旺，点子多、兴趣广', 比: '比劫旺，好胜、冲劲大', 官: '官杀旺，对自己要求高、压力驱动', 财: '财星旺，重实际、讲求效率', 印: '印星旺，求稳、喜欢舒适区' }[top];
     return { k, t: TYPES[k], why };
   }
-  const PLATEAU = '大部分时间你都会在“高原期”：看似没有进步，其实功夫正在沉淀。大师之道就是爱上高原期，为练习本身而练习。';
-  function today(g, ok) { const [k, t] = KEYS[g]; return { k, t: t + (ok ? '' : ' 今天状态一般也没关系，这正是高原期的练习。') }; }
-  return { KEYS, TYPES, type, today, PLATEAU };
+  // 每日：钥匙 + （顺）能量来源 /（逆）留意陷阱
+  const PIT_BY = { 印: [5, 2], 比: [4, 11], 官: [1, 10], 财: [8, 0], 食: [11, 12] };
+  const EN_BY = { 印: [6, 0], 比: [0, 5], 官: [4, 2], 财: [5, 4], 食: [1, 3] };
+  function today(g, ok, seed) {
+    const [k, t] = KEYS[g], i = seed % 2;
+    const extra = ok ? { tag: '能量来源', v: ENERGY[EN_BY[g][i]] } : { tag: '留意陷阱', v: PITFALLS[PIT_BY[g][i]] };
+    return { k, t, extra, plateau: !ok };
+  }
+  return { KEYS, TYPES, CHANGE, ENERGY, PITFALLS, GIFTS, COMMON, PLATEAU, type, today };
 })();
 if (typeof module !== 'undefined') module.exports = ZEN_MA;
 
@@ -1512,7 +1567,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
           <div class="bz-to"><span>改成这样想</span>${f.ctx}</div></div></div>
         <div class="bz-step"><i>4</i><div><h5>今天就做</h5>${f.ok ? `<div class="bz-do">👉 ${f.act}</div><p class="bz-muted">顺的时候，把好事放进“贡献与感恩”，好运才不会变成骄傲。</p>` : `<div class="bz-do">👉 念头一出现，先问自己：“这是真的吗？”</div><details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}</div></div>
         <details class="bz-four"><summary>怎么练：转念三步</summary><p>① 看见内容：只写事实，不加评判<br>② 觉察旧语境：我自动给了它什么意义<br>③ 选择新语境：从承诺、学习、贡献或感恩出发，然后行动</p><p>感受来时，在心里说“我注意到我有……”，而不是“我就是……”。</p></details>
-        ${(() => { const m = ZEN_MA.today(r.g0, r.ok0); return `<div class="bz-mast"><b>今日大师之道 · ${m.k}</b><span>${m.t}</span></div>`; })()}
+        ${(() => { const m = ZEN_MA.today(r.g0, r.ok0, [...gz].reduce((a, c) => a + c.charCodeAt(0), 0)); return `<div class="bz-mast"><b>今日大师之道 · ${m.k}</b><span>${m.t}</span><div class="bz-mx ${m.plateau ? 'nk' : 'ok'}"><em>${m.extra.tag}</em><strong>${m.extra.v[0]}</strong>：${m.extra.v[1]}</div>${m.plateau ? '<small>今天状态一般也没关系，这正是高原期的练习。</small>' : ''}</div>`; })()}
         <h4>六面心法</h4>
         <ul class="bz-scenes bz-sc2">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul></div>`; })()}
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
@@ -1635,14 +1690,34 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
   const FOOD = { 木: '绿色蔬菜、酸味', 火: '温热、红色食物，适量辛辣', 土: '五谷杂粮、黄色食物', 金: '白色食物、姜葱蒜', 水: '黑色食物、海产' };
   const ORGAN = { 木: '肝胆、筋骨、眼睛', 火: '心脏、血液循环', 土: '脾胃、消化', 金: '肺、呼吸道、皮肤', 水: '肾、泌尿、腰' };
   const SEASON = { 木: '春季', 火: '夏季', 土: '季末月份', 金: '秋季', 水: '冬季' };
+  const MSK = 'zen-bazi-mastery';
+  const mlLoad = () => { try { return JSON.parse(localStorage.getItem(MSK) || 'null') || { skill: '', days: [] }; } catch (e) { return { skill: '', days: [] }; } };
+  const mlSave = v => { try { localStorage.setItem(MSK, JSON.stringify(v)); } catch (e) { } };
   function masteryCard() {
-    const t = ZEN_MA.type(S.ch), K = ZEN_MA.KEYS;
-    const curve = `<svg viewBox="0 0 320 90" class="bz-curve" role="img" aria-label="大师曲线：短暂进步后进入长长的高原期"><path d="M5 82 L40 82 Q48 82 50 66 Q52 60 56 64 L95 64 Q103 64 105 46 Q107 40 111 44 L170 44 Q178 44 180 26 Q182 20 186 24 L265 24 Q273 24 275 8 L315 8" fill="none" stroke="#d4af37" stroke-width="2.5"/><text x="70" y="78" fill="#bbb" font-size="9">高原期</text><text x="135" y="58" fill="#bbb" font-size="9">高原期</text><text x="215" y="38" fill="#bbb" font-size="9">高原期</text><text x="96" y="38" fill="#4cd38a" font-size="9">突破</text></svg>`;
-    return card('l-mastery', '大师之道 · George Leonard《Mastery》', `${curve}<p>${ZEN_MA.PLATEAU}</p>
+    const t = ZEN_MA.type(S.ch), K = ZEN_MA.KEYS, L = S.mlog || (S.mlog = mlLoad());
+    const set = new Set(L.days); let streak = 0; for (let d = TODAY; set.has(d); d = A.addDays(d, -1)) streak++;
+    const last = []; for (let i = 27; i >= 0; i--) last.push(A.addDays(TODAY, -i));
+    const n28 = last.filter(d => set.has(d)).length, done = set.has(TODAY);
+    const msg = !L.days.length ? '开始第一天吧。重要的不是练多久，而是每天都上路。' : n28 >= 20 ? '你已经走在大师之路上了。继续，不管有没有感觉到进步。' : n28 >= 10 ? '节奏不错。高原期来了也别停，连贯比强度更重要。' : '时练时停是最大的陷阱。哪怕只练 10 分钟，也比不练好。';
+    const curve = `<svg viewBox="0 0 320 96" class="bz-curve" role="img" aria-label="大师曲线：短暂突破，接着是长长的高原期，有时会小退步"><path d="M5 86 L38 86 Q46 86 48 70 Q50 63 54 67 L58 70 L96 68 Q104 68 106 50 Q108 43 112 47 L116 50 L168 48 Q176 48 178 30 Q180 23 184 27 L188 30 L262 28 Q270 28 272 12 L315 10" fill="none" stroke="#d4af37" stroke-width="2.5"/><text x="64" y="82" fill="#bbb" font-size="9">高原期</text><text x="126" y="64" fill="#bbb" font-size="9">高原期</text><text x="206" y="44" fill="#bbb" font-size="9">高原期</text><text x="88" y="40" fill="#4cd38a" font-size="9">突破</text><text x="160" y="22" fill="#4cd38a" font-size="9">突破</text></svg>`;
+    const sec = (title, inner, open) => `<details class="bz-four bz-msec" ${open ? 'open' : ''}><summary>${title}</summary>${inner}</details>`;
+    const list = arr => `<ol class="bz-mlist">${arr.map(([a, b]) => `<li><b>${a}</b>：${b}</li>`).join('')}</ol>`;
+    return card('l-mastery', '大师之道 · George Leonard《Mastery》', `${curve}<p class="bz-mlead">${ZEN_MA.PLATEAU}</p>
+      <div class="bz-mtrack"><h3 class="bz-h3">我的练习打卡</h3>
+        <form id="bz-mform" class="bz-mform"><input name="skill" maxlength="20" placeholder="我在练的技能，例如：摄影、跑步、英语" value="${esc(L.skill)}"><button type="submit">保存</button></form>
+        <button class="bz-mbtn ${done ? 'on' : ''}" data-act="mlog">${done ? '✓ 今天已练习' : '＋ 今天练了' + (L.skill ? ' · ' + esc(L.skill) : '')}</button>
+        <div class="bz-mstat"><div><b>${streak}</b><span>连续天数</span></div><div><b>${n28}</b><span>近 28 天</span></div><div><b>${L.days.length}</b><span>累计天数</span></div></div>
+        <div class="bz-mgrid">${last.map(d => `<i class="${set.has(d) ? 'on' : ''} ${d === TODAY ? 'td' : ''}" title="${d}"></i>`).join('')}</div>
+        <p class="bz-tip">${msg}</p></div>
       <h3 class="bz-h3">你的学习倾向：${t.t[0]}</h3><p>${t.why}，较容易像${t.t[0].split(' ')[0]}：${t.t[1]}</p><p class="bz-tip">${t.t[2]}</p>
-      <details class="bz-four"><summary>三种走不上大师之路的人</summary><ul class="bz-list2">${Object.values(ZEN_MA.TYPES).map(x => `<li><b>${x[0]}</b>：${x[1]}</li>`).join('')}</ul></details>
-      <h3 class="bz-h3">通往大师的五把钥匙</h3><ul class="bz-list2">${Object.entries(K).map(([g, [k, v]]) => `<li><b>${k}</b>（${{ 印: '印星', 比: '比劫', 官: '官杀', 财: '财星', 食: '食伤' }[g]}日特别适合）：${v}</li>`).join('')}</ul>
-      <p class="bz-muted">每天的“今日运程”会按当天十神提示一把钥匙。倾向按命盘十神最旺的一类推算，只供参考。</p>`);
+      ${sec('三种走不上大师之路的人', list(Object.values(ZEN_MA.TYPES).map(x => [x[0], x[1]])))}
+      ${sec('通往大师的五把钥匙', `<ol class="bz-mlist">${Object.entries(K).map(([g, [k, v]]) => `<li><b>${k}</b>（${{ 印: '印星', 比: '比劫', 官: '官杀', 财: '财星', 食: '食伤' }[g]}日特别适合）：${v}</li>`).join('')}</ol>`, true)}
+      ${sec('面对改变的五个方法（为什么决心会失败）', list(ZEN_MA.CHANGE))}
+      ${sec('为大师之路获得能量的七个方法', list(ZEN_MA.ENERGY))}
+      ${sec('路上的十三个陷阱', list(ZEN_MA.PITFALLS))}
+      ${sec('日常即修行', `<p>${ZEN_MA.COMMON}</p>`)}
+      ${sec('旅途小礼物：身心练习', list(ZEN_MA.GIFTS))}
+      <p class="bz-muted">内容整理自 George Leonard《Mastery: The Keys to Success and Long-Term Fulfillment》，为中文意译。学习倾向按命盘十神推算，只供参考。每天“今日运程”会提示一把钥匙，以及能量来源或要留意的陷阱。</p>`);
   }
   function vLife() {
     const ch = S.ch, good = ELS.filter(e => ['用', '喜'].includes(ch.label(e))).sort((a, b) => ch.favE[b] - ch.favE[a]), bad = ELS.filter(e => ch.label(e) === '忌');
@@ -1918,6 +1993,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
     if (a.startsWith('mq:')) { const [, i, k] = a.split(':'); S.mbti.ans[+i] = k; mSave(S.mbti); render(); return; }
     if (a === 'mdone') { S.mbti.done = true; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
     if (a === 'mreset') { S.mbti = { ans: [], done: false }; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
+    if (a === 'mlog') { const L = S.mlog || (S.mlog = mlLoad()); const i = L.days.indexOf(TODAY); if (i >= 0) L.days.splice(i, 1); else L.days.push(TODAY); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     const [k, v] = a.split(':');
     if (k === 'zm') { S.zmode = v; render(); return; }
     if (k === 'tdel') { S.team.splice(+v, 1); tSave(S.team); S.tOpen = false; render(); return; }
@@ -1933,7 +2009,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
