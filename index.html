@@ -385,6 +385,8 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5),transparent 60%),radial-gradient(1.5px 1.5px at 82% 38%,var(--ystar),transparent 60%),radial-gradient(1px 1px at 46% 72%,rgba(255,255,255,.35),transparent 60%),radial-gradient(1px 1px at 68% 90%,var(--ystar),transparent 60%),radial-gradient(ellipse at 50% -12%,var(--yg1),transparent 62%),radial-gradient(ellipse at 100% 100%,var(--yg2),transparent 55%),radial-gradient(ellipse at 0% 70%,var(--yg1),transparent 50%);background-size:300px 300px,300px 300px,300px 300px,300px 300px,100% 100%,100% 100%,100% 100%;background-attachment:fixed;transition:background-color .6s}
 .bz-bgnote{font-size:.85em;opacity:.6;margin-left:4px}
 .bz-card,.bz-tab,.bz-hero,.bz-banner,.bz-scroll,.bz-xn,.bz-mk{transition:border-color .8s ease,color .8s ease,box-shadow .8s ease,border-radius .8s ease}
+.bz-music{position:fixed;left:calc(12px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(10,8,20,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--gold2);font:inherit;font-size:12px;cursor:pointer}
+.bz-music.on{border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,55,.35)}.bz-music.on::first-letter{animation:zapulse 1.6s ease-in-out infinite}@keyframes zapulse{50%{opacity:.4}}
 </style>
 </head>
 <body>
@@ -2298,5 +2300,33 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
 </script>
 <script>if ('serviceWorker' in navigator && location.protocol === 'https:' && !/claude\.ai|claudeusercontent/.test(location.hostname)) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); }</script>
 
+<button id="bz-music" class="bz-music" aria-pressed="false" title="背景音乐">♪ <span>背景音乐</span></button>
+<script>(function () {
+  const btn = document.getElementById('bz-music'), lab = btn.querySelector('span'), LK = 'zen-music';
+  let audio = null, ctx = null, master = null, timer = null, on = false, mode = '';
+  function synthStart() {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    master.gain.linearRampToValueAtTime(.32, ctx.currentTime + 3);
+    const dl = ctx.createDelay(); dl.delayTime.value = .42; const fb = ctx.createGain(); fb.gain.value = .38; const lp = ctx.createBiquadFilter(); lp.frequency.value = 1800;
+    dl.connect(fb); fb.connect(lp); lp.connect(dl); dl.connect(master);
+    [65.41, 98.0, 130.81].forEach((f, i) => { const o = ctx.createOscillator(), g = ctx.createGain(), l = ctx.createOscillator(), lg = ctx.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.value = .07 - i * .015; l.frequency.value = .05 + i * .03; lg.gain.value = .03; l.connect(lg); lg.connect(g.gain); o.connect(g); g.connect(master); o.start(); l.start(); });
+    const scale = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25];
+    function bell() { const t = ctx.currentTime, f = scale[Math.floor(Math.random() * scale.length)], o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 2.76; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.12, t + .02); g.gain.exponentialRampToValueAtTime(.0008, t + 5);
+      o.connect(g); o2.connect(g); g.connect(master); g.connect(dl); o.start(t); o2.start(t); o.stop(t + 5.2); o2.stop(t + 5.2);
+      timer = setTimeout(bell, 1800 + Math.random() * 3200); }
+    bell(); mode = 'synth';
+  }
+  function synthStop() { clearTimeout(timer); if (master && ctx) { const m = master; m.gain.cancelScheduledValues(ctx.currentTime); m.gain.setValueAtTime(m.gain.value, ctx.currentTime); m.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2); setTimeout(() => m.disconnect(), 1400); } master = null; }
+  function play() {
+    if (!audio) { audio = new Audio('music.mp3'); audio.loop = true; audio.volume = .55; audio.preload = 'auto'; }
+    audio.play().then(() => { mode = 'file'; lab.textContent = '音乐播放中'; }).catch(() => { synthStart(); lab.textContent = '禅音播放中'; });
+  }
+  function stop() { if (audio) audio.pause(); synthStop(); lab.textContent = '背景音乐'; }
+  btn.onclick = () => { on = !on; btn.setAttribute('aria-pressed', on); btn.classList.toggle('on', on); try { localStorage.setItem(LK, on ? '1' : '0'); } catch (e) { } on ? play() : stop(); };
+  document.addEventListener('visibilitychange', () => { if (!on) return; if (document.hidden) { if (audio) audio.pause(); if (ctx) ctx.suspend(); } else { if (mode === 'file' && audio) audio.play().catch(() => { }); if (ctx) ctx.resume(); } });
+})();</script>
 </body>
 </html>
