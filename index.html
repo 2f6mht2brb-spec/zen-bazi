@@ -1756,7 +1756,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
-  const TABS = [['fort', '☯', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['chart', '❖', '观命盘'], ['mbti', '◐', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
+  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '◐', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
