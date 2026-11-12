@@ -284,6 +284,12 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-rf{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(212,175,55,.35)}.bz-rf h3{margin:0 0 4px;font-size:14px;color:#e9c46a}
 .bz-cc{display:flex;flex-direction:column;gap:6px;margin:8px 0}.bz-cc>div{display:flex;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px}.bz-cc b{flex:0 0 76px;font-size:12px;color:#e9c46a}.bz-cc .nk{border-left:3px solid #ff8a73}.bz-cc .ok{border-left:3px solid #4cd38a}
 .bz-four{font-size:13px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04)}.bz-four ol,.bz-four ul{margin:6px 0 6px 18px;padding:0}.bz-four li{margin:3px 0}.bz-four strong{color:#ff8a73}
+.bz-ih{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:8px}.bz-ih h3{margin:0}.bz-ih span{font-size:11px;font-style:italic;opacity:.75}
+.bz-tri{display:flex;flex-direction:column;gap:5px}.bz-tri>div{display:flex;gap:10px;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font-size:13px;border-left:3px solid transparent}.bz-tri>div.ok{border-left-color:#4cd38a}.bz-tri>div.nk{border-left-color:#ff8a73}
+.bz-tri b{flex:0 0 40px;color:#e9c46a;font-size:12px}.bz-tri b i{display:block;font-style:normal;font-weight:400;font-size:9px;opacity:.7}.bz-tri small{display:block;opacity:.7;font-size:11px;margin-top:2px}.bz-tri strong.g{color:#4cd38a}.bz-tri strong.r{color:#ff8a73}
+.bz-inner>.bz-wit{margin:8px 0}.bz-shift{display:flex;flex-direction:column;gap:2px;margin:6px 0}.bz-shift>div:not(.bz-arr){display:flex;gap:10px;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.04);font-size:13px}.bz-shift b{flex:0 0 40px;font-size:12px}.bz-shift .nk b{color:#ff8a73}.bz-shift .ok b{color:#4cd38a}.bz-shift .nk span{opacity:.75;text-decoration:line-through;text-decoration-color:rgba(255,138,115,.5)}.bz-arr{text-align:center;font-size:11px;color:#e9c46a;opacity:.8}
+details.bz-four{margin:6px 0;padding:6px 10px}details.bz-four summary{cursor:pointer;color:#e9c46a;font-size:12px}details.bz-four em{font-style:normal;display:inline-block;margin:2px 4px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(76,211,138,.12)}details.bz-four p{margin:6px 0;font-size:12px}
+.bz-inner h4{margin:12px 0 6px;font-size:13px;color:#e9c46a}.bz-sc2 li{padding:8px 10px!important;margin:0 0 5px!important}.bz-sc2 .bz-st{font-size:12px}
 </style>
 </head>
 <body>
@@ -1449,17 +1455,19 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
     return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
-      <div class="bz-inner"><h3>感受 · 经历 · 念头</h3><p class="bz-iam">I have my feelings, I am not my feelings.<br>我有感受，但我不是我的感受。</p>
-      ${r.inner.feels.map(f => `<div class="bz-in ${f.ok ? 'ok' : 'nk'}"><b>感受</b><div><div><strong>${f.nm}</strong> · ${f.d}</div><div class="bz-wit">${f.w}</div></div></div>`).join('')}
-      <div class="bz-in ${r.inner.exp.ok ? 'ok' : 'nk'}"><b>经历</b><div><div>${r.inner.exp.t}</div><div class="bz-wit">${r.inner.exp.w}</div></div></div>
-      <div class="bz-in ${r.inner.th.ok ? 'ok' : 'nk'}"><b>念头</b><div><div>${r.inner.th.t}</div><div class="bz-wit">${r.inner.th.w}</div></div></div>
-      ${(() => { const f = r.inner.rf; return `<div class="bz-rf"><h3>Content 与 Context · 转念</h3>
-        <p class="bz-muted">Content（内容）是发生的事、感受和念头；Context（语境）是你用来看待它的框架。内容常常改变不了，但语境可以由你选择。</p>
-        <div class="bz-cc"><div><b>Content 内容</b><span>${f.content}</span></div><div class="nk"><b>旧语境（自动反应）</b><span>${f.old}</span></div><div class="ok"><b>新语境（我选择）</b><span>${f.ctx}</span></div></div>
-        ${f.ok ? `<p class="bz-tip">从新语境行动：${f.act}</p><p class="bz-muted">顺的时候也要转念：把好事放进“贡献与感恩”的语境，好运才不会变成骄傲。</p>` : `<div class="bz-four"><b>转念四问</b>（针对念头：<strong>${f.thought}</strong>）<ol><li>这是真的吗？</li><li>我能百分之百确定这是真的吗？</li><li>当我相信这个念头时，我有什么反应？我怎么对待自己和别人？</li><li>如果没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：试着把念头反过来，各找三个它可能同样真实的理由：<ul>${f.turns.map(t => `<li>${t}</li>`).join('')}</ul></div>`}
-        <p class="bz-muted">转念三步：①看见内容，只写事实，不加评判 → ②觉察旧语境，我自动给了它什么意义 → ③选择新语境，从承诺、学习、贡献或感恩出发，然后行动。</p></div>`; })()}
-      <p class="bz-muted">练习：感受来的时候，在心里说“我注意到我有……”，而不是“我就是……”。只是这一步，就把你和情绪拉开了一点距离。</p></div>
-      <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">心法 · ${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul>
+      ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
+        return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3><span>I have my feelings, I am not my feelings.</span></div>
+        <div class="bz-tri">
+          <div class="${I.feels.some(x => !x.ok) ? 'nk' : 'ok'}"><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('、')}<small>${I.feels.map(x => x.d).join('；')}</small></span></div>
+          <div class="${okc}"><b>经历<i>Content</i></b><span>${f.content}</span></div>
+          <div class="${okc}"><b>念头</b><span>${th}</span></div>
+        </div>
+        <p class="bz-wit">我有这些感受、经历和念头，但我不是它们。它们像天气一样来去，我是看着天气的那片天空。</p>
+        <div class="bz-shift"><div class="nk"><b>旧语境</b><span>${f.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新语境</b><span>${f.ctx}</span></div></div>
+        ${f.ok ? `<p class="bz-tip">从新语境行动：${f.act.replace(/。$/, '')}。顺的时候也放进“贡献与感恩”，好运不变骄傲。</p>` : `<details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}
+        <details class="bz-four"><summary>怎么练：转念三步</summary><p>① 看见内容：只写事实，不加评判<br>② 觉察旧语境：我自动给了它什么意义<br>③ 选择新语境：从承诺、学习、贡献或感恩出发，然后行动</p><p>感受来时，在心里说“我注意到我有……”，而不是“我就是……”。</p></details>
+        <h4>六面心法</h4>
+        <ul class="bz-scenes bz-sc2">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul></div>`; })()}
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
   }
 
