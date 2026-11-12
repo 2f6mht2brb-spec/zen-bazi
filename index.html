@@ -376,6 +376,11 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 @media (prefers-reduced-motion:reduce){#zen{transition:none}.th-fade #zen{opacity:1}}
 .bz-th{position:fixed;left:calc(12px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;display:flex;align-items:center;border-radius:999px;border:1px solid var(--line);background:rgba(10,8,20,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:12px;color:var(--gold2);overflow:hidden}
 .bz-th button{border:0;background:transparent;color:inherit;font:inherit;padding:8px 10px;cursor:pointer}.bz-th button+button{border-left:1px solid var(--line)}
+.bz-scroll{position:relative;text-align:center;margin:2px 0 12px;padding:14px 16px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.05));font-family:"Songti SC","STSong","Noto Serif SC",serif}
+.bz-scroll::before,.bz-scroll::after{content:'';position:absolute;top:8px;bottom:8px;width:4px;border-radius:2px;background:linear-gradient(180deg,var(--gold2),var(--gold))}.bz-scroll::before{left:8px}.bz-scroll::after{right:8px}
+.bz-scroll-t{font-size:20px;font-weight:700;letter-spacing:4px;color:var(--gold2)}.bz-scroll-s{font-size:11px;letter-spacing:2px;opacity:.65;margin-top:2px}.bz-scroll-q{margin-top:8px;font-size:14px;letter-spacing:1px;color:var(--fg)}.bz-scroll-q span{display:block;font-size:11px;opacity:.6;margin-top:2px}
+.bz-xn{display:inline-block;margin-right:8px;padding:0 7px;border:1px solid var(--gold);border-radius:3px;font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:.78em;letter-spacing:2px;color:var(--gold2);vertical-align:2px}
+.bz-sutra{margin:-2px 0 10px;font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:13px;letter-spacing:1px;opacity:.85}.bz-sutra span{opacity:.6;font-size:11px;margin-left:4px}
 </style>
 </head>
 <body>
@@ -1523,7 +1528,34 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
   const save = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { } };
 
   // ---------- small renderers ----------
-  const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${title}</h2>` : ''}${body}</div>`;
+  // ---------- 玄化卷名 ----------
+  const SCROLL = {
+    day: ['日课 · 天时卷', '取法《奇门遁甲》时家', '天行健，君子以自强不息。', '《易经 · 乾卦》'],
+    week: ['七曜 · 周天卷', '日月五星，周而复始', '反复其道，七日来复。', '《易经 · 复卦》'],
+    month: ['月令 · 玄机卷', '节气为纲，月建为主', '日往则月来，月往则日来，日月相推而明生焉。', '《易经 · 系辞下》'],
+    year: ['太岁 · 天书卷', '一年之运，系于太岁', '人法地，地法天，天法道，道法自然。', '《道德经》'],
+    liunian: ['流年 · 六壬卷', '取意《大六壬》课传', '穷则变，变则通，通则久。', '《易经 · 系辞下》'],
+    dayun: ['大运 · 乾坤卷', '十年一运，阴阳迭用', '一阴一阳之谓道。', '《易经 · 系辞上》'],
+    zodiac: ['十二元辰 · 山海卷', '取意《山海经》百兽', '方以类聚，物以群分。', '《易经 · 系辞上》'],
+    team: ['合和 · 众生卷', '同气相求，同声相应', '二人同心，其利断金。', '《易经 · 系辞上》'],
+    love: ['月老 · 红线卷', '姻缘天定，经营在人', '执子之手，与子偕老。', '《诗经 · 邶风 · 击鼓》'],
+    number: ['河洛 · 数理卷', '取法《河图》《洛书》', '参伍以变，错综其数。', '《易经 · 系辞上》'],
+    chart: ['四柱 · 天机卷', '取法《渊海子平》', '观天之道，执天之行，尽矣。', '《黄帝阴符经》'],
+    mbti: ['本来面目卷', '取意《六祖坛经》', '知人者智，自知者明。', '《道德经》'],
+    life: ['日用即道卷', '取意《金刚经》', '应无所住，而生其心。', '《金刚经》'],
+    nine: ['三元九运卷', '取法玄空飞星', '变动不居，周流六虚。', '《易经 · 系辞下》']
+  };
+  const XUAN = {
+    'd-pan': '天盘', 'm-pan': '月盘', 'y-pan': '岁盘', 'd-compass': '八门方位', 'd-events': '玄机预示', 'd-other': '趋吉避凶',
+    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
+    'y-fly': '九宫飞星', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
+    'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
+    'lv-match': '合婚', 'lv-time': '红鸾天喜', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
+    'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
+    'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
+  };
+  const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll"><div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
+  const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${XUAN[id] ? `<span class="bz-xn">${XUAN[id]}</span>` : ''}${title}</h2>` : ''}${body}</div>`;
   const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
   const hero = (small, s, lv, title, lines) => `<div class="bz-card bz-hero"><div><div class="bz-muted">${small}</div><div class="bz-big ${lvc(lv)}">${s}</div><div class="bz-lvbig ${lvc(lv)}">${lv}</div></div><div>${title}${lines.join('')}</div></div>`;
   const catsGrid = (gz, s, longFn) => `<div class="bz-grid">${CATS.map((k, i) => scoreCat(CATN[i], s[i + 1], A.level(s[i + 1]), longFn ? longFn(k, s[i + 1]) : A.reasonFor(S.ch, k, gz), !!longFn)).join('')}</div>`;
@@ -1618,7 +1650,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
     return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
       ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
-        return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div>
+        return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div><p class="bz-sutra">一切有为法，如梦幻泡影，如露亦如电，应作如是观。<span>——《金刚经》</span></p>
         <div class="bz-head ${okc}"><small>今日一句话</small><strong>${f.ctx.replace(/^“|”$/g, '').replace(/”——/, '——')}</strong></div>
         <div class="bz-step"><i>1</i><div><h5>今天可能出现</h5>
           <div class="bz-tri">
@@ -2041,7 +2073,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
-    app.querySelector('#bz-view').innerHTML = html;
+    app.querySelector('#bz-view').innerHTML = scrollHead(S.tab) + html;
     track();
   }
   function step(dir) {
