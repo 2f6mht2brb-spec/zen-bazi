@@ -2326,6 +2326,17 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   }
   function stop() { if (audio) audio.pause(); synthStop(); lab.textContent = '背景音乐'; }
   btn.onclick = () => { on = !on; btn.setAttribute('aria-pressed', on); btn.classList.toggle('on', on); try { localStorage.setItem(LK, on ? '1' : '0'); } catch (e) { } on ? play() : stop(); };
+  function setOn(v) { on = v; btn.setAttribute('aria-pressed', on); btn.classList.toggle('on', on); }
+  function playFileOnly() { if (!audio) { audio = new Audio('music.mp3'); audio.loop = true; audio.volume = .55; audio.preload = 'auto'; } return audio.play().then(() => { mode = 'file'; lab.textContent = '音乐播放中'; }); }
+  let pref = null; try { pref = localStorage.getItem(LK); } catch (e) { }
+  if (pref !== '0') {
+    setOn(true); lab.textContent = '点任意处播放音乐';
+    playFileOnly().catch(() => {
+      const evs = ['pointerdown', 'touchstart', 'keydown', 'click'];
+      const go = e => { evs.forEach(t => document.removeEventListener(t, go, true)); if (!on || e.target.closest && e.target.closest('#bz-music')) return; play(); };
+      evs.forEach(t => document.addEventListener(t, go, true));
+    });
+  }
   document.addEventListener('visibilitychange', () => { if (!on) return; if (document.hidden) { if (audio) audio.pause(); if (ctx) ctx.suspend(); } else { if (mode === 'file' && audio) audio.play().catch(() => { }); if (ctx) ctx.resume(); } });
 })();</script>
 </body>
