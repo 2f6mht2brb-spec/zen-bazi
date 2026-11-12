@@ -1459,7 +1459,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
         return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div>
         <div class="bz-tri">
           <div class="${I.feels.some(x => !x.ok) ? 'nk' : 'ok'}"><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('、')}<small>${I.feels.map(x => x.d).join('；')}</small></span></div>
-          <div class="${okc}"><b>经历<i>Content</i></b><span>${f.content}</span></div>
+          <div class="${okc}"><b>经历</b><span>${f.content}</span></div>
           <div class="${okc}"><b>念头</b><span>${th}</span></div>
         </div>
         <p class="bz-wit">我有这些感受、经历和念头，但我不是它们。它们像天气一样来去，我是看着天气的那片天空。</p>
