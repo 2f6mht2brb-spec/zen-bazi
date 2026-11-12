@@ -381,6 +381,12 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 .bz-scroll-t{font-size:20px;font-weight:700;letter-spacing:4px;color:var(--gold2)}.bz-scroll-s{font-size:11px;letter-spacing:2px;opacity:.65;margin-top:2px}.bz-scroll-q{margin-top:8px;font-size:14px;letter-spacing:1px;color:var(--fg)}.bz-scroll-q span{display:block;font-size:11px;opacity:.6;margin-top:2px}
 .bz-xn{display:inline-block;margin-right:8px;padding:0 7px;border:1px solid var(--gold);border-radius:3px;font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:.78em;letter-spacing:2px;color:var(--gold2);vertical-align:2px}
 .bz-sutra{margin:-2px 0 10px;font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:13px;letter-spacing:1px;opacity:.85}.bz-sutra span{opacity:.6;font-size:11px;margin-left:4px}
+.bz-scroll{overflow:hidden;min-height:96px}.bz-scroll>*:not(svg){position:relative;z-index:1}
+.za{display:block}.za-bg{position:absolute;right:-34px;top:50%;width:170px;height:170px;margin-top:-85px;color:var(--gold2);opacity:.22;pointer-events:none}
+.za-corner{position:absolute;width:30px;height:30px;color:var(--gold2);opacity:.6;pointer-events:none}.za-corner.tl{left:16px;top:6px}.za-corner.br{right:16px;bottom:6px;transform:rotate(180deg)}
+.bz-hero{position:relative;overflow:hidden}.bz-hero>*{position:relative;z-index:1}.za-wm{position:absolute!important;z-index:0!important;right:-40px;bottom:-40px;width:150px;height:150px;color:var(--gold2);opacity:.1;pointer-events:none}
+.za-spin{transform-origin:0 0;animation:zaspin 180s linear infinite}@keyframes zaspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.za-spin{animation:none}}
 </style>
 </head>
 <body>
@@ -1505,6 +1511,37 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
 
 </script>
 <script>
+// ===== 玄学插画（原创 SVG，随模板变色）=====
+const ZEN_ART = (function () {
+  const TRI = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'], ZB = '子丑寅卯辰巳午未申酉戌亥', TG = '甲乙丙丁戊己庚辛壬癸';
+  const P = (a, r) => [Math.sin(a) * r, -Math.cos(a) * r].map(v => v.toFixed(1));
+  const ring = (r, items, fs, rot = 0) => items.map((t, i) => { const [x, y] = P((i / items.length) * 2 * Math.PI + rot, r); return `<text x="${x}" y="${y}" font-size="${fs}" text-anchor="middle" dominant-baseline="central">${t}</text>`; }).join('');
+  const ticks = (r1, r2, n) => Array.from({ length: n }, (_, i) => { const a = i / n * 2 * Math.PI, [x1, y1] = P(a, r1), [x2, y2] = P(a, r2); return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`; }).join('');
+  const taiji = r => `<g><circle r="${r}" fill="none"/><path d="M0,-${r} A${r},${r} 0 0,1 0,${r} A${r / 2},${r / 2} 0 0,1 0,0 A${r / 2},${r / 2} 0 0,0 0,-${r}" fill="currentColor" fill-opacity=".55" stroke="none"/><circle cy="-${r / 2}" r="${r / 7}" fill="currentColor" fill-opacity=".55" stroke="none"/><circle cy="${r / 2}" r="${r / 7}" fill="none"/></g>`;
+  const luopan = () => `<g class="za-spin">${ticks(88, 94, 72)}<circle r="96" fill="none"/><circle r="86" fill="none"/>${ring(78, (TG + ZB).split(''), 7)}<circle r="70" fill="none"/>${ring(60, TRI, 13)}<circle r="50" fill="none"/>${ticks(40, 50, 24)}</g>${taiji(26)}`;
+  const luoshu = () => { const g = [[4, 9, 2], [3, 5, 7], [8, 1, 6]]; let s = ''; g.forEach((row, r) => row.forEach((n, c) => { const cx = (c - 1) * 56, cy = (r - 1) * 56; for (let i = 0; i < n; i++) { const [x, y] = n === 1 ? [0, 0] : P(i / n * 2 * Math.PI, 13); s += `<circle cx="${cx + +x}" cy="${cy + +y}" r="3.6" fill="${n % 2 ? 'none' : 'currentColor'}" fill-opacity=".7"/>`; } })); return `<g>${s}<rect x="-84" y="-84" width="168" height="168" fill="none" stroke-dasharray="2 4"/></g>`; };
+  const stars = (n, r) => { const pts = Array.from({ length: n }, (_, i) => { const a = i * 2.39996, rr = r * Math.sqrt((i + .5) / n); return P(a, rr); }); return `<g>${pts.map((p, i) => i ? `<line x1="${pts[i - 1][0]}" y1="${pts[i - 1][1]}" x2="${p[0]}" y2="${p[1]}" stroke-opacity=".35"/>` : '').join('')}${pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 2 : 3.4}" fill="currentColor"/>`).join('')}</g>`; };
+  const qiyao = () => { const pts = [[-80, 10], [-52, -18], [-20, -6], [8, -30], [40, -22], [62, 8], [86, 26]]; return `<g>${pts.slice(1).map((p, i) => `<line x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${p[0]}" y2="${p[1]}"/>`).join('')}${pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i === 3 ? 6 : 4}" fill="currentColor"/>`).join('')}${ring(70, '日月火水木金土'.split(''), 10, .2)}</g>`; };
+  const moons = () => `<g>${[-90, -54, -18, 18, 54, 90].map((x, i) => { const k = [0.15, .5, 1, 1, .5, .15][i], side = i < 3 ? 1 : -1; return `<g transform="translate(${x},0)"><circle r="14" fill="none"/><path d="M0,-14 A14,14 0 0,${side > 0 ? 1 : 0} 0,14 A${14 * (1 - 2 * Math.abs(k - .5)) || 1},14 0 0,${k > .5 ? (side > 0 ? 1 : 0) : (side > 0 ? 0 : 1)} 0,-14" fill="currentColor" fill-opacity=".6" stroke="none"/></g>`; }).join('')}<circle cx="0" cy="-60" r="2"/><circle cx="-60" cy="40" r="1.5"/><circle cx="70" cy="-48" r="1.5"/></g>`;
+  const xiu = () => `<g class="za-spin">${ring(86, Array.from({ length: 28 }, () => '✦'), 7)}<circle r="76" fill="none" stroke-dasharray="1 5"/>${stars(14, 60)}</g>`;
+  const bagua = () => `<g class="za-spin">${TRI.map((t, i) => { const a = i / 8 * 2 * Math.PI; return `<g transform="rotate(${i * 45}) translate(0,-70)">${[0, 1, 2].map(j => { const yin = [0b111, 0b110, 0b101, 0b100, 0b011, 0b010, 0b001, 0b000][i] >> (2 - j) & 1; return yin ? `<rect x="-16" y="${j * 7 - 9}" width="32" height="4" fill="currentColor" stroke="none"/>` : `<rect x="-16" y="${j * 7 - 9}" width="13" height="4" fill="currentColor" stroke="none"/><rect x="3" y="${j * 7 - 9}" width="13" height="4" fill="currentColor" stroke="none"/>`; }).join('')}</g>`; }).join('')}<circle r="92" fill="none"/></g>${taiji(34)}`;
+  const zodiacWheel = () => `<g class="za-spin">${ticks(84, 92, 12)}<circle r="92" fill="none"/><circle r="64" fill="none"/>${ring(74, ZB.split(''), 13)}${ring(50, '🐭🐮🐯🐰🐲🐍🐴🐑🐵🐔🐶🐷'.match(/./gu), 11)}</g><circle r="22" fill="none"/>${ring(0, ['元'], 14)}`;
+  const tongxin = () => `<g><circle cx="-26" r="46" fill="none"/><circle cx="26" r="46" fill="none"/><circle cy="-40" r="46" fill="none" stroke-opacity=".5"/><circle r="6" fill="currentColor"/>${ticks(96, 100, 36)}</g>`;
+  const hongxian = () => `<g><path d="M-100,10 C-60,-50 -20,60 0,0 C20,-60 60,50 100,-10" fill="none" stroke-width="2"/><path d="M-12,0 C-12,-14 12,-14 12,0 C12,14 -12,14 -12,0 Z M-12,0 C-30,-20 -30,20 -12,0 M12,0 C30,-20 30,20 12,0" fill="none" stroke-width="2"/><circle cx="-100" cy="10" r="4" fill="currentColor"/><circle cx="100" cy="-10" r="4" fill="currentColor"/></g>`;
+  const pillars = () => `<g>${[-66, -22, 22, 66].map(x => `<rect x="${x - 14}" y="-70" width="28" height="140" rx="3" fill="none"/><line x1="${x - 18}" y1="-70" x2="${x + 18}" y2="-70" stroke-width="2"/><line x1="${x - 18}" y1="70" x2="${x + 18}" y2="70" stroke-width="2"/><circle cx="${x}" cy="-30" r="7" fill="none"/><circle cx="${x}" cy="20" r="7" fill="none"/>`).join('')}${cloud(-96, -84)}${cloud(60, 84)}</g>`;
+  const enso = () => `<g><path d="M60,-58 A84,84 0 1,0 78,24" fill="none" stroke-width="7" stroke-linecap="round" stroke-opacity=".7"/><path d="M78,24 q4,10 -2,18" fill="none" stroke-width="3" stroke-linecap="round" stroke-opacity=".5"/></g>`;
+  const lotus = () => `<g>${[-60, -30, 0, 30, 60].map((a, i) => `<path transform="rotate(${a})" d="M0,40 C-${i === 2 ? 22 : 18},-10 -8,-60 0,-80 C8,-60 ${i === 2 ? 22 : 18},-10 0,40 Z" fill="currentColor" fill-opacity="${i === 2 ? .35 : .18}"/>`).join('')}<path d="M-90,52 C-40,40 40,40 90,52" fill="none"/><path d="M-70,64 C-30,56 30,56 70,64" fill="none" stroke-opacity=".5"/></g>`;
+  const jiugong = () => { const ord = [5, 6, 7, 8, 9, 1, 2, 3, 4], pos = { 4: [-1, -1], 9: [0, -1], 2: [1, -1], 3: [-1, 0], 5: [0, 0], 7: [1, 0], 8: [-1, 1], 1: [0, 1], 6: [1, 1] }; const pt = n => pos[n].map(v => v * 52); return `<g><rect x="-78" y="-78" width="156" height="156" fill="none"/><line x1="-26" y1="-78" x2="-26" y2="78"/><line x1="26" y1="-78" x2="26" y2="78"/><line x1="-78" y1="-26" x2="78" y2="-26"/><line x1="-78" y1="26" x2="78" y2="26"/><polyline points="${ord.map(n => pt(n).join(',')).join(' ')}" fill="none" stroke-dasharray="3 3" stroke-opacity=".7"/>${Object.entries(pos).map(([n, [x, y]]) => `<text x="${x * 52}" y="${y * 52}" font-size="16" text-anchor="middle" dominant-baseline="central">${'一二三四五六七八九'[n - 1]}</text>`).join('')}</g>`; };
+  function cloud(x, y) { return `<path transform="translate(${x},${y})" d="M0,0 c0,-10 14,-10 14,0 c0,-14 20,-14 20,0 c0,-10 14,-10 14,0 c6,0 6,8 0,8 h-48 c-6,0 -6,-8 0,-8 z" fill="none"/>`; }
+  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
+  function svg(k, cls = '') { const f = MAP[k] || luopan; return `<svg class="za ${cls}" viewBox="-110 -110 220 220" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1" font-family="serif">${f()}</svg>`; }
+  const corner = `<svg class="za-corner" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2,58 V18 a16,16 0 0 1 16,-16 H58"/><path d="M8,58 V22 a14,14 0 0 1 14,-14 H58" stroke-opacity=".5"/><path d="M14,30 c0,-8 8,-8 8,0 c0,-6 10,-6 10,0" /><circle cx="18" cy="18" r="3"/></svg>`;
+  return { svg, corner, luopan: () => svg('day') };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_ART;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1554,7 +1591,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
     'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
-  const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll"><div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
+  const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
   const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${XUAN[id] ? `<span class="bz-xn">${XUAN[id]}</span>` : ''}${title}</h2>` : ''}${body}</div>`;
   const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
   const hero = (small, s, lv, title, lines) => `<div class="bz-card bz-hero"><div><div class="bz-muted">${small}</div><div class="bz-big ${lvc(lv)}">${s}</div><div class="bz-lvbig ${lvc(lv)}">${lv}</div></div><div>${title}${lines.join('')}</div></div>`;
@@ -2074,6 +2111,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
     const V = { team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     app.querySelector('#bz-view').innerHTML = scrollHead(S.tab) + html;
+    app.querySelectorAll('#bz-view .bz-hero').forEach(h => { if (!h.querySelector('.za-wm')) h.insertAdjacentHTML('beforeend', ZEN_ART.svg(S.tab, 'za-wm')); });
     track();
   }
   function step(dir) {
