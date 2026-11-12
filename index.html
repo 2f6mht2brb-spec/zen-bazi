@@ -396,6 +396,9 @@ html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient
 .bz-ebar{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:4px;overflow:hidden}.bz-ebar i{display:block;height:100%;background:currentColor;opacity:.75}.bz-enote{margin:4px 0 0;font-size:11px}
 .bz-e-joy .bz-eh em,.bz-e-joy .bz-ebar i{color:#4cd38a;background-color:transparent}.bz-e-joy .bz-ebar i{background:#4cd38a}
 .bz-e-anger .bz-eh em{color:#ff6b6b}.bz-e-anger .bz-ebar i{background:#ff6b6b}.bz-e-sad .bz-eh em{color:#7fa8ff}.bz-e-sad .bz-ebar i{background:#7fa8ff}.bz-e-fun .bz-eh em{color:var(--gold2)}.bz-e-fun .bz-ebar i{background:var(--gold2)}
+.bz-donut{display:flex;gap:12px;align-items:center}.bz-donut svg{flex:0 0 118px;width:118px;height:118px}
+.bz-dleg{list-style:none;margin:0;padding:0;flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}.bz-dleg li{display:grid;grid-template-columns:8px auto 1fr;column-gap:6px;align-items:baseline;font-size:12px}
+.bz-dleg li i{width:8px;height:8px;border-radius:2px;align-self:center}.bz-dleg li b{font-size:14px}.bz-dleg li em{font-style:normal;font-weight:700;font-size:13px}.bz-dleg li span{grid-column:2/4;opacity:.75;font-size:11px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -1791,7 +1794,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   function sceneCard(id, title, gz, s, notes) {
     const r = ZEN_C.scenes(S.ch, E, gz, s, notes);
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
-    return card(id, title, `<div class="bz-emo bz-emo2">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><div class="bz-eh"><b>${k}</b><em>${r.emoP[k]}%</em></div><i class="bz-ebar"><i style="width:${r.emoP[k]}%"></i></i><span>${r.emo[k]}</span></div>`).join('')}</div><p class="bz-muted bz-enote">百分比是今天四种情绪出现的比重，合计 100%。</p>
+    return card(id, title, `${(() => { const ks = ['喜', '乐', '怒', '哀'], C = { 喜: '#4cd38a', 乐: '#f5d77a', 怒: '#ff6b6b', 哀: '#7fa8ff' }, R = 40, L = 2 * Math.PI * R; let off = 0;
+        const top = ks.slice().sort((a, b) => r.emoP[b] - r.emoP[a])[0];
+        const segs = ks.map(k => { const len = r.emoP[k] / 100 * L, gap = r.emoP[k] > 2 ? 2 : 0, s = `<circle r="${R}" fill="none" stroke="${C[k]}" stroke-width="14" stroke-dasharray="${Math.max(0, len - gap)} ${L}" stroke-dashoffset="${-off}" transform="rotate(-90)"><title>${k} ${r.emoP[k]}%</title></circle>`; off += len; return s; }).join('');
+        return `<div class="bz-donut"><svg viewBox="-56 -56 112 112" role="img" aria-label="${ks.map(k => k + r.emoP[k] + '%').join('，')}"><circle r="${R}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="14"/>${segs}<text y="-4" text-anchor="middle" font-size="22" font-weight="700" fill="${C[top]}" font-family="Songti SC,serif">${top}</text><text y="16" text-anchor="middle" font-size="12" fill="#ddd">${r.emoP[top]}%</text></svg>
+          <ul class="bz-dleg">${ks.map(k => `<li><i style="background:${C[k]}"></i><b style="color:${C[k]}">${k}</b><em>${r.emoP[k]}%</em><span>${r.emo[k]}</span></li>`).join('')}</ul></div><p class="bz-muted bz-enote">圆环显示今天喜怒哀乐各占的比重（合计 100%），中间是今天最主要的情绪。</p>`; })()}
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
       ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
         return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div><p class="bz-sutra">一切有为法，如梦幻泡影，如露亦如电，应作如是观。<span>——《金刚经》</span></p>
