@@ -437,6 +437,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 @media (prefers-reduced-motion:reduce){.bz-tk-q,.bz-tk-r{animation:none}}
 .bz-jp{margin-top:16px}.bz-jp>summary{min-height:70px;flex-direction:row;gap:10px}.bz-jp[open]>summary{padding:16px 4px 0}.bz-jpb{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:4px 0 4px}.bz-jpb i{font-style:normal;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:16px;color:#2a1240;background:radial-gradient(circle at 35% 30%,#fff3c4,#f5c542 60%,#c7901d);box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .bz-warn{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.22);border:1px solid rgba(255,224,138,.35);font-size:12.5px;line-height:1.55}
+.bz-jp2{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 4px}.bz-jp2 b{font-family:Georgia,serif;font-size:26px;letter-spacing:2px;color:#ffe08a;text-shadow:0 0 12px rgba(255,200,80,.35)}.bz-jp2 span{font-size:20px;opacity:.7}
 </style>
 </head>
 <body>
@@ -1927,19 +1928,15 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
     const used = new Set(); const uniq = s => { let t = s, i = 0; while (used.has(t) && i < 4) { t = t.slice(1) + t[0]; i++; } used.add(t); return t; };
     const tk = OPS.map(([k, c]) => { const l0 = A.lucky(ch, k + d.date, d.p.d), l = { a: uniq(l0.a), b: uniq(l0.b) }; return `<details class="bz-tk bz-tkd" style="--tk:${c}"><summary><span class="bz-tk-k">${k}</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求字</span></summary><div class="bz-tk-r"><b>${l.a}</b><small>备选 ${l.b}</small></div></details>`; }).join('');
     const l0 = A.lucky(ch, 'M' + d.date, d.p.d);
-    const jp = (() => { let h = 2166136261; for (const ch2 of 'J' + d.date + (S.inp.name || '')) { h ^= ch2.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } const rnd = () => (h = (Math.imul(h ^ (h >>> 15), 2246822507) + 0x9e3779b9) >>> 0) / 4294967296;
-      const fav = new Set([...A.NUM[ch.yong], ...E.ELS.filter(e => ch.label(e) === '喜').flatMap(e => A.NUM[e])].map(String)); const pool = Array.from({ length: 50 }, (_, i) => i + 1);
-      const pref = pool.filter(n => fav.has(String(n % 10))), rest = pool.filter(n => !fav.has(String(n % 10))), out = new Set();
-      while (out.size < 4) out.add(pref[Math.floor(rnd() * pref.length)]); while (out.size < 6) out.add(rest[Math.floor(rnd() * rest.length)]);
-      return [...out].sort((a, b) => a - b).map(n => String(n).padStart(2, '0')); })();
-    const jpk = `<details class="bz-tk bz-tkd bz-jp" style="--tk:#b46cff"><summary><span class="bz-tk-k">Jackpot</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求 Jackpot 字</span></summary><div class="bz-tk-r"><div class="bz-jpb">${jp.map(n => `<i>${n}</i>`).join('')}</div><small>6 个号码 · 1–50 之间，Star、Power、Supreme 都适用</small></div></details>`;
+    const jp = ['J1', 'J2'].map(k => uniq(A.lucky(ch, k + d.date, d.p.d).a));
+    const jpk = `<details class="bz-tk bz-tkd bz-jp" style="--tk:#b46cff"><summary><span class="bz-tk-k">Jackpot 4D</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求 Jackpot 字</span></summary><div class="bz-tk-r"><div class="bz-jp2">${jp.map(n => `<b>${n}</b>`).join('<span>+</span>')}</div><small>Jackpot 4D 需同时选两个号码</small></div></details>`;
     return card('d-lucky', '幸运 4D 万字 · Jackpot', `<p class="bz-tkguide">先静下心，默念你的心愿，再点开你想求的那一张。</p><div class="bz-tks">${tk}</div>${jpk}
       <p class="bz-tip">${draw ? '今天是开彩日（周三、六、日为常规开彩日，特别开彩以官方公布为准）。' : '今天不是常规开彩日（常规为周三、六、日）。'}${l0.note}</p>
       <details class="bz-four"><summary>数学上的真相（建议一读）</summary>
         <ul class="bz-mlist"><li>每期开奖都是独立、随机的：任何一个 4D 号码中头奖的几率都是 <b>1/10,000</b>，不管它过去开过几次。</li>
         <li>所谓“热门号”“冷门号”只是过去的巧合，对下一期<b>没有预测力</b>；以为“很久没开就快开了”是常见的“赌徒谬误”。</li>
         <li>以 Big 玩法为例，每期约有 23 个中奖号码，中任何奖的几率约 <b>0.23%</b>；按常见奖金表计算，每投注 RM1 长期平均只拿回约 <b>RM0.64</b>。</li>
-        <li>Jackpot 的头奖几率更低：6/50 约 <b>1/1,589 万</b>，6/55 约 <b>1/2,899 万</b>，6/58 约 <b>1/4,048 万</b>。</li><li>所以这里的号码是按你的八字喜用神取的“心意号码”，不是预测；各家用不同的号码，只是让你有得选。</li></ul></details>
+        <li>Jackpot 4D 要两个号码同时中奖，几率比单个 4D 号码低得多。</li><li>所以这里的号码是按你的八字喜用神取的“心意号码”，不是预测；各家用不同的号码，只是让你有得选。</li></ul></details>
       <p class="bz-warn">⚠️ 只限 18 岁以上的非穆斯林。根据伊斯兰教义及马来西亚相关规定，穆斯林不可参与任何形式的博彩。小额娱乐，量力而为。</p>`, 'bz-lucky');
   }
   function luckyCard(id, title, l) { return card(id, title, `<div class="bz-nums"><div class="bz-num4"><span class="bz-num4-label">用神组</span><b>${l.a}</b></div><div class="bz-num4"><span class="bz-num4-label">相生组</span><b>${l.b}</b></div></div><p class="bz-tip">${l.note}</p><p class="bz-muted">开奖完全随机，这些号码只是按五行喜用取的幸运数字，不会提高中奖几率。小额娱乐，量力而为。</p>`, 'bz-lucky'); }
