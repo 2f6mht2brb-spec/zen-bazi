@@ -67,8 +67,8 @@ body{background-color:#0c0719;background-image:radial-gradient(1px 1px at 12% 18
 .bz-cancel{padding:12px 18px;border-radius:12px;border:1px solid rgba(201,162,39,.5);background:transparent;color:var(--fg);font:inherit;cursor:pointer}
 .bz-form .bz-muted{grid-column:1/-1}
 /* tabs & nav */
-.bz-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.bz-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}}
 .bz-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:10px;border:1px solid rgba(201,162,39,.4);background:linear-gradient(180deg,rgba(58,32,98,.9),rgba(27,18,51,.95));color:var(--fg);font:inherit;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
 .bz-tab i{font-style:normal;font-size:14px;color:var(--gold)}
 .bz-tab.bz-on{background:linear-gradient(160deg,#f8e08e,#c9a227 60%,#9a760f);color:#2a1846;border-color:#f5d77a;box-shadow:0 2px 10px rgba(201,162,39,.45)}
@@ -192,7 +192,7 @@ body{background-color:#0c0719;background-image:radial-gradient(1px 1px at 12% 18
 .bz-chip2{display:inline-block;margin:0 6px 6px 0;padding:2px 10px;border-radius:999px;border:1px solid rgba(245,215,122,.5);color:var(--gold2);font-size:12px}
 .bz-sheet-card p{margin:8px 0;line-height:1.7}
 .bz-sheet-card .bz-kv{margin:8px 0}
-@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(7,minmax(0,1fr))}}
 .bz-numform{display:flex;gap:8px}
 .bz-numform input{flex:1;min-width:0;background:rgba(12,7,25,.6);color:var(--fg);border:1px solid rgba(201,162,39,.6);border-radius:12px;padding:12px;font:inherit;font-size:18px;letter-spacing:.08em}
 .bz-numform .bz-go{flex:0 0 auto;padding:12px 22px}
@@ -269,6 +269,12 @@ body{background-color:#0c0719;background-image:radial-gradient(1px 1px at 12% 18
 .bz-toast[hidden]{display:none}
 .bz{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
 button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.bz-seg{display:flex;gap:6px;margin:0 0 10px}.bz-seg button{flex:1;padding:7px 0;border-radius:10px;border:1px solid rgba(212,175,55,.35);background:transparent;color:inherit;font:inherit;font-size:13px;cursor:pointer}.bz-seg button.bz-on{background:linear-gradient(135deg,#d4af37,#b8860b);color:#1a1030;font-weight:700}
+.bz-zlist{display:flex;flex-direction:column;gap:6px}.bz-zr{border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(255,255,255,.03)}.bz-zr.bz-top{border-color:rgba(212,175,55,.45)}.bz-zr.bz-me{box-shadow:0 0 0 2px #d4af37 inset;background:rgba(212,175,55,.08)}
+.bz-zr summary{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;list-style:none;font-size:13px}.bz-zr summary::-webkit-details-marker{display:none}
+.bz-zk{width:22px;text-align:center;font-weight:700;opacity:.85}.bz-ze{font-size:18px}.bz-zr summary b{min-width:52px;display:flex;gap:4px;align-items:baseline}.bz-zr summary b small{opacity:.8;font-weight:400}.bz-zr summary em{font-style:normal;font-size:10px;background:#d4af37;color:#1a1030;border-radius:6px;padding:0 4px}
+.bz-zbar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}.bz-zbar span{display:block;height:100%}.bz-zs{width:24px;text-align:right;font-weight:700}.bz-zr summary i{font-style:normal;font-size:11px;width:30px;text-align:right}
+.bz-zd{padding:0 12px 10px;font-size:13px}.bz-zd p{margin:6px 0}
 </style>
 </head>
 <body>
@@ -1142,6 +1148,54 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
 
 </script>
 <script>
+// ===== 12 生肖运势排名 =====
+const ZEN_Z = (function () {
+  const EMO = ['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'];
+  const REL = {
+    六合: [3, 'good', '与{T}六合：贵人多、人缘旺，利合作与感情'], 三合: [2.2, 'good', '与{T}三合：有助力，做事顺手'], 三会: [1, 'good', '与{T}同方三会：同气相助'],
+    本命: [-.8, 'mid', '与{T}相同（{B}）：变动与机遇并存，宜稳'], 冲: [-3, 'bad', '冲{T}：变动大、奔波多，防冲突与意外'], 害: [-2, 'bad', '害{T}：防小人暗损、背后是非'],
+    刑: [-1.5, 'bad', '刑{T}：人际摩擦、口舌较多'], 破: [-1, 'bad', '破{T}：小破耗，计划易变卦'], 平: [0, 'mid', '与{T}无冲合：运势平稳']
+  };
+  const TG = { 官: ['事业有压力也有机会，利争取职位、承担责任', '规矩多、压力大'], 印: ['贵人照顾，利学习、考证、文书、置业', '依赖心重，行动偏慢'], 财: ['财运活跃，利赚钱、谈业务', '为钱奔忙，投资要稳'], 食: ['才华得到发挥，利创作、表达、享受生活', '口舌多，防说话得罪人'], 比: ['朋友同辈助力多，利合作', '竞争多，防破财、借贷'] };
+  const COLOR = { 木: '绿色', 火: '红色、紫色', 土: '黄色、啡色', 金: '白色、金色', 水: '黑色、蓝色' };
+  const HUI = ['亥子丑', '寅卯辰', '巳午未', '申酉戌'];
+  function relOf(E, a, b) { const { LIUHE, SANHE, chong, HAI, XING, PO } = E;
+    if (a === b) return '本命'; if (LIUHE[a] === b) return '六合'; if (chong(a, b)) return '冲'; if (HAI[a] === b) return '害';
+    if ((XING[a] || []).includes(b)) return '刑'; if (SANHE.some(g => g.includes(a) && g.includes(b))) return '三合'; if (PO[a] === b) return '破';
+    if (HUI.some(g => g.includes(a) && g.includes(b))) return '三会'; return '平'; }
+  function rank(E, gz, scope) {
+    const { Z, AN, HID, elOf, tenGod, GRP, GEN, CTL } = E; const T = { 年: '太岁', 月: '月建', 日: '日辰' }[scope];
+    const list = Z.split('').map((a, i) => {
+      const r = relOf(E, a, gz[1]); const [rv, tone, rt] = REL[r];
+      const ae = elOf(a), se = elOf(gz[0]); let ev = 0, et;
+      if (GEN[se] === ae) { ev = 1; et = `${scope}干${gz[0]}（${se}）生${AN[i]}（${ae}），得到滋养`; }
+      else if (se === ae) { ev = .5; et = `${scope}干与${AN[i]}同属${ae}，同气相助`; }
+      else if (CTL[ae] === se) { ev = .4; et = `${AN[i]}（${ae}）克${scope}干（${se}），主动可得财`; }
+      else if (CTL[se] === ae) { ev = -1; et = `${scope}干${gz[0]}（${se}）克${AN[i]}（${ae}），压力较大`; }
+      else { ev = -.4; et = `${AN[i]}（${ae}）生${scope}干（${se}），付出较多`; }
+      const g = GRP[tenGod(HID[a][0], gz[0])]; const ok = rv + ev >= 0;
+      const raw = rv + ev;
+      return { a, an: AN[i], emo: EMO[i], r, tone, rel: rt.replace('{T}', T).replace('{B}', a), el: et, raw, g, ok, tg: TG[g][ok ? 0 : 1], color: COLOR[[...'木火土金水'].find(e => GEN[e] === ae)] };
+    });
+    list.forEach(x => { x.score = Math.max(0, Math.min(100, Math.round(60 + 9.5 * x.raw))); });
+    list.sort((p, q) => q.raw - p.raw || p.a.localeCompare(q.a));
+    list.forEach((x, i) => {
+      x.rank = i + 1;
+      const s = x.score;
+      x.career = x.g === '官' || x.g === '印' ? x.tg : s >= 70 ? '工作顺利，努力容易被看见' : s >= 50 ? '按部就班，稳定为主' : '工作易有阻力或变动，先守住位置';
+      x.wealth = x.g === '财' || x.g === '比' ? x.tg : s >= 70 ? '财运不错，正财稳定' : s >= 50 ? '收支平衡，量入为出' : '开销易增加，避免冒险投资';
+      x.love = x.r === '六合' || x.r === '三合' ? '感情顺利，单身者易遇对象' : x.r === '冲' ? '感情易起波动，多沟通、少争吵' : x.r === '害' || x.r === '刑' ? '防误会与第三方，坦诚最重要' : s >= 60 ? '感情平稳甜蜜' : '感情平淡，多花时间陪伴';
+      x.health = x.r === '冲' ? '注意出行安全、意外和旧患' : x.r === '本命' ? '情绪起伏大，注意作息' : s >= 60 ? '精神不错，保持运动' : '容易疲累，早睡多休息';
+      x.tip = x.tone === 'bad' ? `宜低调稳守，可多穿戴${x.color}助运` : `把握机会主动出击，${x.color}是你的幸运色`;
+    });
+    return list;
+  }
+  return { rank };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_Z;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1154,8 +1208,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
-  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
-  const S = { tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
+  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
+  const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
 
@@ -1519,8 +1573,24 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
   // ---------- 撤销 / 重做 ----------
   const H = { past: [], future: [], cur: null, applying: false };
   const TABNAME = Object.fromEntries(TABS.map(t => [t[0], t[2]]));
-  function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null }); }
-  function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
+  function vZodiac() {
+    const md = S.zmode || '年'; let gz, when, sub;
+    if (md === '年') { const y = S.B.syOf(S.date), x = S.B.yearOf(y); gz = x.gz; when = `${y} ${gzc(gz)}年`; sub = `太岁 ${AN[Z.indexOf(gz[1])]} · 以立春为界`; }
+    else if (md === '月') { const m = S.B.monthOf(S.date); gz = m.gz; when = `${gzc(gz)}月`; sub = `${A.md(m.start)} – ${A.md(m.end)} · 月建 ${AN[Z.indexOf(gz[1])]} · 按节气`; }
+    else { const d = S.B.day(S.date); gz = d.p.d; when = `${A.md(S.date)} 周${d.wd} ${gzc(gz)}日`; sub = `日辰 ${AN[Z.indexOf(gz[1])]}`; }
+    const list = ZEN_Z.rank(E, gz, md), mine = S.ch.P.y[1], me = list.find(x => x.a === mine);
+    const seg = `<div class="bz-seg">${['年', '月', '日'].map(k => `<button class="${k === md ? 'bz-on' : ''}" data-act="zm:${k}">按${k}</button>`).join('')}</div>`;
+    const lvTag = x => { const lv = A.level(x.score); return `<i class="${lvc(lv)}">${lv}</i>`; };
+    const row = x => `<details class="bz-zr ${x.a === mine ? 'bz-me' : ''} ${x.rank <= 3 ? 'bz-top' : ''}"><summary><span class="bz-zk">${x.rank <= 3 ? ['🥇', '🥈', '🥉'][x.rank - 1] : x.rank}</span><span class="bz-ze">${x.emo}</span><b>${x.an}<small>${gzc(x.a)}</small>${x.a === mine ? '<em>你</em>' : ''}</b><span class="bz-zbar"><span style="width:${x.score}%;background:${col(x.score)}"></span></span><span class="bz-zs">${x.score}</span>${lvTag(x)}</summary>
+      <div class="bz-zd"><p class="bz-${x.tone === 'bad' ? 'bad' : x.tone === 'good' ? 'good' : 'muted'}"><b>${x.r}</b> · ${esc(x.rel)}</p><p class="bz-muted">${gzc(x.el)}</p>
+      <dl class="bz-kv"><dt>事业</dt><dd>${esc(x.career)}</dd><dt>财运</dt><dd>${esc(x.wealth)}</dd><dt>感情</dt><dd>${esc(x.love)}</dd><dt>健康</dt><dd>${esc(x.health)}</dd><dt>幸运色</dt><dd>${esc(x.color)}</dd></dl><p class="bz-tip">${esc(x.tip)}</p></div></details>`;
+    const good = list.filter(x => x.tone === 'good').map(x => x.an), bad = list.filter(x => x.tone === 'bad').map(x => `${x.an}（${x.r}）`);
+    return seg + hero(`你的生肖 ${me.emo}${me.an} · 第 ${me.rank} 名`, me.score, A.level(me.score), `<h2>${when}生肖运势</h2>`, [`<p class="bz-muted">${sub}</p>`, `<p>${esc(me.rel)}。${esc(me.tip)}。</p>`])
+      + card('z-rank', `十二生肖排名 · ${md === '年' ? '今年' : md === '月' ? '本月' : '今日'}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点任一生肖展开详细分析。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
+      + card('z-sum', '一句话总结', `<p><b class="bz-good">较顺：</b>${good.join('、') || '—'}</p><p><b class="bz-bad">需留意：</b>${bad.join('、') || '—'}</p><p class="bz-muted">排名以地支与${md === '年' ? '太岁' : md === '月' ? '月建' : '日辰'}的冲合刑害为主，再加天干五行生克；只看生肖是大方向，个人细节仍以自己的八字为准。</p>`);
+  }
+  function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null, zmode: S.zmode }); }
+  function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year', 'zodiac'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
   function track() {
     if (!S.ch || S.editing) return; const sn = snapshot();
     if (!H.applying && H.cur && sn !== H.cur) { H.past.push(H.cur); if (H.past.length > 60) H.past.shift(); H.future = []; }
@@ -1528,7 +1598,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
   }
   function restore(sn) {
     const o = JSON.parse(sn); const rawChanged = JSON.stringify(o.raw) !== JSON.stringify(S.raw || null);
-    Object.assign(S, { tab: o.tab, date: o.date, lnYear: o.lnYear, dy: o.dy, num: o.num, mbti: o.mbti, partner: o.partner, editing: false });
+    Object.assign(S, { tab: o.tab, date: o.date, lnYear: o.lnYear, dy: o.dy, num: o.num, mbti: o.mbti, partner: o.partner, zmode: o.zmode || '年', editing: false });
     if (S.mbti) mSave(S.mbti);
     if (rawChanged && o.raw) { S.raw = o.raw; save(o.raw); const f = document.createElement('div'); f.innerHTML = formHtml(o.raw); const r = readForm(f.querySelector('form')); if (r) { const keep = { date: S.date, lnYear: S.lnYear, dy: S.dy }; compute(r.inp); Object.assign(S, keep); } }
     H.applying = true; render(); H.applying = false; H.cur = sn; updUR();
@@ -1553,15 +1623,15 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
     app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => `<button class="bz-tab ${S.tab === k ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${t}</button>`).join('');
-    const showNav = ['day', 'week', 'month', 'year'].includes(S.tab);
+    const showNav = ['day', 'week', 'month', 'year', 'zodiac'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     app.querySelector('#bz-view').innerHTML = html;
     track();
   }
   function step(dir) {
-    const t = S.tab, s = S.date; let n;
+    const t = S.tab === 'zodiac' ? { 年: 'year', 月: 'month', 日: 'day' }[S.zmode || '年'] : S.tab, s = S.date; let n;
     if (t === 'day') n = A.addDays(s, dir); else if (t === 'week') n = A.addDays(s, 7 * dir);
     else if (t === 'month') { const m = S.B.monthOf(s); n = m ? (dir < 0 ? A.addDays(m.start, -1) : A.addDays(m.end, 1)) : A.addDays(s, 30 * dir); }
     else { const [y, m, d] = A.parse(s); n = A.iso(y + dir, m, Math.min(d, 28)); }
@@ -1574,6 +1644,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_L;
     if (a === 'mdone') { S.mbti.done = true; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
     if (a === 'mreset') { S.mbti = { ans: [], done: false }; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
     const [k, v] = a.split(':');
+    if (k === 'zm') { S.zmode = v; render(); return; }
     if (k === 'tab') { S.tab = v; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
     else if (k === 'day') { S.date = v; S.tab = 'day'; }
     else if (k === 'month') { S.date = v; S.tab = 'month'; }
