@@ -391,6 +391,10 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tcmk{margin:10px 0;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.04);border-left:3px solid #ff8a73}.bz-tcmk.df{border-left-color:#7fa8ff}.bz-tcmk h5{margin:0 0 4px;font-size:14px}
 .bz-tcml{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px;line-height:1.6}.bz-tcml li{margin:3px 0}.bz-tcml b{color:var(--acc,#e9c46a);font-weight:600}
 .bz-tcmd{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bz-tcmd>div{padding:9px 8px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center}.bz-tcmd small{display:block;font-size:10.5px;opacity:.7}.bz-tcmd b{display:block;font-size:16px;margin:3px 0;color:var(--gold2);font-family:"Songti SC",serif}.bz-tcmd em{display:block;font-style:normal;font-size:11px;line-height:1.4;opacity:.85}
+.bz-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(6,minmax(0,1fr))!important}}
+.bz-fseg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 12px;padding:5px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
+.bz-fseg button{padding:10px 2px;border-radius:10px;border:0;background:transparent;color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}.bz-fseg button i{font-style:normal;display:block;font-size:14px;opacity:.8;color:var(--gold2)}
+.bz-fseg button.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1030}.bz-fseg button.on i{color:#1a1030}
 </style>
 </head>
 <body>
@@ -1751,7 +1755,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
-  const TABS = [['day', '☼', '问今日'], ['week', '☷', '问本周'], ['month', '☾', '问本月'], ['year', '✦', '问今年'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['chart', '❖', '观命盘'], ['mbti', '◐', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
+  const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
+  const TABS = [['fort', '☯', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['chart', '❖', '观命盘'], ['mbti', '◐', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
@@ -2327,7 +2332,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
 
   // ---------- 撤销 / 重做 ----------
   const H = { past: [], future: [], cur: null, applying: false };
-  const TABNAME = Object.fromEntries(TABS.map(t => [t[0], t[2]]));
+  const TABNAME = Object.assign(Object.fromEntries(TABS.map(t => [t[0], t[2]])), { day: '问今日', week: '问本周', month: '问本月', year: '问今年' });
   function vWork() {
     const md = S.wmode || '日', ch = S.ch, lvTag = v => { const l = A.level(v); return `<i class="${lvc(l)}">${l}</i>`; };
     let gz, s, when, unit;
@@ -2490,12 +2495,12 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
     }
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
-    app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => `<button class="bz-tab ${S.tab === k ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${t}</button>`).join('');
+    app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => { const on = S.tab === k || (k === 'fort' && FORTK.includes(S.tab)); return `<button class="bz-tab ${on ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${on}"><i>${ic}</i>${t}</button>`; }).join('');
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
-    let vh = html + scrollHead(S.tab);
+    let vh = (FORTK.includes(S.tab) ? `<div class="bz-fseg" role="tablist" aria-label="选择运程">${FORT.map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>` : '') + html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
     if (S.tab === 'month' && S.B.monthOf(S.date).start !== S.B.monthOf(TODAY).start) vh = vh.replace(/本月/g, '当月').replace(/这个月/g, '那个月');
     if (S.tab === 'year' && S.B.syOf(S.date) !== S.B.syOf(TODAY)) vh = vh.replace(/今年/g, `${S.B.syOf(S.date)}年`);
@@ -2523,7 +2528,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
     if (k === 'zd') { S.date = v; render(); return; }
     if (k === 'wm') { S.wmode = v; render(); return; }
     if (k === 'tdel') { S.team.splice(+v, 1); tSave(S.team); S.tOpen = false; render(); return; }
-    if (k === 'tab') { S.tab = v; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
+    if (k === 'tab') { const tv = v === 'fort' ? (S.lastFort || 'day') : v; if (FORTK.includes(tv)) S.lastFort = tv; S.tab = tv; try { history.replaceState(null, '', '#' + tv); } catch (e) { location.hash = tv; } }
     else if (k === 'day') { S.date = v; S.tab = 'day'; }
     else if (k === 'month') { S.date = v; S.tab = 'month'; }
     else if (k === 'ln') { S.lnYear = +v; S.tab = 'liunian'; }
