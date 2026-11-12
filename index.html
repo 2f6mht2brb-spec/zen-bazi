@@ -2256,9 +2256,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const good = list.filter(x => x.tone === 'good').map(x => x.an), bad = list.filter(x => x.tone === 'bad').map(x => `${x.an}（${x.r}）`);
     return seg + hero(`你的生肖 ${me.emo}${me.an} · 第 ${me.rank} 名`, me.score, A.level(me.score), `<h2>${when}生肖运势</h2>`, [`<p class="bz-muted">${sub}</p>`, `<p>${esc(me.rel)}。${esc(me.tip)}。</p>`])
       + card('z-rank', `十二生肖排名 · ${md === '年' ? '今年' : md === '月' ? '本月' : '今日'}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点开任一生肖，看看它这段时间的运势。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
-      + (() => { const R = PER.map(p => { const l = ZEN_Z.rank(E, p.gz, md), m = {}; l.forEach(x => m[x.a] = x); return m; });
-          const cell = (x, on) => `<td class="${on ? 'on' : ''}"><span style="background:${col(x.score)}22;color:${col(x.score)}">${x.score}</span><small>#${x.rank}</small></td>`;
-          return card('z-trend', `五${md === '年' ? '年' : md === '月' ? '个月' : '天'}对照`, `<div class="bz-tablewrap"><table class="bz-table bz-ztr"><thead><tr><th></th>${PER.map(p => `<th class="${p.on ? 'on' : ''}">${p.lab}<small>${p.sub}</small></th>`).join('')}</tr></thead><tbody>${list.map(x => `<tr class="${x.a === mine ? 'me' : ''}"><td>${x.emo}${x.an}</td>${R.map((m, i) => cell(m[x.a], PER[i].on)).join('')}</tr>`).join('')}</tbody></table></div><p class="bz-muted">分数越高越顺，#是当期排名。点上面的“${PER[0].lab}…${PER[4].lab}”可直接切换。</p>`); })()
       + card('z-sum', '一句话总结', `<p><b class="bz-good">较顺：</b>${good.join('、') || '—'}</p><p><b class="bz-bad">需留意：</b>${bad.join('、') || '—'}</p><p class="bz-muted">排名以地支与${md === '年' ? '太岁' : md === '月' ? '月建' : '日辰'}的冲合刑害为主，再加天干五行生克；只看生肖是大方向，个人细节仍以自己的八字为准。</p>`);
   }
   // ---------- 团队关系 ----------
