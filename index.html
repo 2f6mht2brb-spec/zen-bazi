@@ -279,6 +279,8 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-chip2{display:inline-block;margin:3px 4px 0 0;padding:4px 8px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
 .bz-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0;font-size:13px}.bz-chain span{padding:4px 10px;border-radius:999px;border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08)}.bz-chain i{font-style:normal;font-size:12px}.bz-chain i::before{content:'→ ';opacity:.6}.bz-chain i::after{content:' →';opacity:.6}
 .bz-mk{display:inline-block;margin:2px 6px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(212,175,55,.14);color:#e9c46a;font-size:11px;font-weight:700}.bz-mk em{font-style:normal;font-weight:400;opacity:.75;margin-left:4px}
+.bz-inner{margin:12px 0;padding:12px;border-radius:12px;border:1px solid rgba(212,175,55,.3);background:rgba(212,175,55,.05)}.bz-inner h3{margin:0 0 4px;font-size:14px;color:#e9c46a}.bz-iam{margin:0 0 10px;font-size:12px;font-style:italic;opacity:.85}
+.bz-in{display:flex;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13px}.bz-in>b{flex:0 0 34px;color:#e9c46a}.bz-in.ok strong{color:#4cd38a}.bz-in.nk strong{color:#ff8a73}.bz-wit{margin-top:4px;font-size:12px;opacity:.75;padding-left:8px;border-left:2px solid rgba(212,175,55,.4)}
 </style>
 </head>
 <body>
@@ -953,6 +955,35 @@ const ZEN_C = (function () {
             b: [['自我接纳', '累了就承认自己累，休息不是偷懒，是对自己负责。'], ['臣服', '身体要你慢下来时，就顺着它慢下来；早点睡，明天再战。'], ['正念', '做三次深呼吸：吸气数四、停四、呼气数六，让紧绷的神经松一松。']] }
   };
   function mind(n, state, gz, i) { const L = MIND[n][state]; const h = [...gz].reduce((a, c) => a + c.charCodeAt(0), 0) + i * 7; const [k, t] = L[h % L.length]; return { k, en: PR[k], t }; }
+
+  // 感受 · 经历 · 念头 —— I have my feelings, I am not my feelings
+  const FEEL = {
+    官: [['被认可的踏实', '努力有人看见，心里稳稳的'], ['压力与紧绷', '被要求、被检视，肩膀不自觉地绷紧']],
+    印: [['被照顾的温暖', '有人在背后撑着你，心里安定'], ['迟疑与依赖', '想有人替你决定，自己却迟迟不敢动']],
+    财: [['满足与掌控感', '事情和钱都在掌握之中，很有成就感'], ['焦虑与不安', '担心钱、担心结果，脑子停不下来']],
+    食: [['轻松与创造的喜悦', '灵感多、想表达，做事带劲'], ['烦躁与不被理解', '话说出口却被误会，心里憋着气']],
+    比: [['归属与并肩', '有同伴一起，不觉得孤单'], ['比较与嫉妒', '看到别人比你好，心里酸酸的']]
+  };
+  const EXPR = {
+    官: ['被安排新任务、开会汇报或接受考核', '被上司点名、规定变严，或流程卡住'],
+    印: ['长辈、老师或贵人给你建议和帮助', '计划被否定、文件手续拖延'],
+    财: ['谈成一件事、收到款项或买到需要的东西', '意外开销、为钱和人计较'],
+    食: ['有机会展示作品、分享想法，或吃到好东西', '一句直话惹来误会，或别人不领情'],
+    比: ['和朋友同事一起完成一件事', '和同辈竞争同一个机会或资源']
+  };
+  const THINK = {
+    官: ['“我是不是终于被看见了？”', '“我做得还不够好。”'], 印: ['“有人懂我，真好。”', '“要是有人替我决定就好了。”'],
+    财: ['“我可以拥有更多。”', '“万一钱不够怎么办？”'], 食: ['“我有好多想法想做！”', '“为什么没人懂我？”'], 比: ['“我们是一伙的。”', '“凭什么他比我好？”']
+  };
+  function inner(gs) {
+    const seen = new Set(), feels = [];
+    gs.forEach(x => { const [nm, d] = FEEL[x.g][x.ok ? 0 : 1]; if (!seen.has(nm)) { seen.add(nm); const W = x.ok ? [`我有「${nm}」，但我不是「${nm}」。它像天气一样来，也会像天气一样走；我是看着天气的那片天空。`, `我有「${nm}」，但我不是「${nm}」。好感受值得享受，但不必抓紧，我不需要它才是完整的。`] : [`我有「${nm}」，但我不是「${nm}」。它像天气一样来，也会像天气一样走；我是看着天气的那片天空。`, `我有「${nm}」，但我不是「${nm}」。我可以允许它在这里，深呼吸，陪着它，而不被它推着走。`];
+        feels.push({ nm, d, ok: x.ok, w: W[feels.length % 2] }); } });
+    const b = gs[1], t = gs[0];
+    const exp = { t: EXPR[b.g][b.ok ? 0 : 1], ok: b.ok, w: b.ok ? '我有这段经历，但我不是这段经历。好事来了，享受它，不抓紧它。' : '我有这段经历，但我不是这段经历。发生在我身上的事，不等于我是谁。' };
+    const th = { t: THINK[t.g][t.ok ? 0 : 1], ok: t.ok, w: t.ok ? '我有这个念头，但我不是这个念头。好念头是一份礼物，拿来行动，不拿来自满。' : '我有这个念头，但我不是这个念头。念头只是脑中的声音，不是事实；我可以听见它，然后选择不跟着它走。' };
+    return { feels, exp, th };
+  }
   function scenes(ch, E, gz, s, notes) {
     const { tenGod, GRP, HID, elOf, ELS } = E;
     const gs = [gz[0], HID[gz[1]][0]].map(c => ({ g: GRP[tenGod(ch.dm, c)], ok: ch.favE[elOf(c)] >= 0 }));
@@ -966,7 +997,7 @@ const ZEN_C = (function () {
     const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
     const doms = DOM.map(([n, k, g, b, be, tip], di) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
       return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '' : mid ? '' : tip, mind: mind(n, good ? 'g' : mid ? 'm' : 'b', gz, di) }; });
-    return { emo, meet, part, doms };
+    return { emo, meet, part, doms, inner: inner(gs) };
   }
   return { GUA, REL, scenes };
 })();
@@ -1394,6 +1425,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
     return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
+      <div class="bz-inner"><h3>感受 · 经历 · 念头</h3><p class="bz-iam">I have my feelings, I am not my feelings.<br>我有感受，但我不是我的感受。</p>
+      ${r.inner.feels.map(f => `<div class="bz-in ${f.ok ? 'ok' : 'nk'}"><b>感受</b><div><div><strong>${f.nm}</strong> · ${f.d}</div><div class="bz-wit">${f.w}</div></div></div>`).join('')}
+      <div class="bz-in ${r.inner.exp.ok ? 'ok' : 'nk'}"><b>经历</b><div><div>${r.inner.exp.t}</div><div class="bz-wit">${r.inner.exp.w}</div></div></div>
+      <div class="bz-in ${r.inner.th.ok ? 'ok' : 'nk'}"><b>念头</b><div><div>${r.inner.th.t}</div><div class="bz-wit">${r.inner.th.w}</div></div></div>
+      <p class="bz-muted">练习：感受来的时候，在心里说“我注意到我有……”，而不是“我就是……”。只是这一步，就把你和情绪拉开了一点距离。</p></div>
       <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">心法 · ${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul>
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
   }
