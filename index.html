@@ -387,6 +387,8 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 .bz-hero{position:relative;overflow:hidden}.bz-hero>*{position:relative;z-index:1}.za-wm{position:absolute!important;z-index:0!important;right:-40px;bottom:-40px;width:150px;height:150px;color:var(--gold2);opacity:.1;pointer-events:none}
 .za-spin{transform-origin:0 0;animation:zaspin 180s linear infinite}@keyframes zaspin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.za-spin{animation:none}}
+.bz-wbad summary b{color:#ffb4a6}.bz-wdo,.bz-wfix{padding:8px 10px;border-radius:9px;margin-top:6px;font-size:13px;line-height:1.55}.bz-wdo{background:rgba(76,211,138,.12);border-left:3px solid #4cd38a}.bz-wfix{background:rgba(255,138,115,.1);border-left:3px solid #ff8a73}.bz-wdo b,.bz-wfix b{display:block;font-size:12px;margin-bottom:2px}
+.bz-chip{display:inline-block;margin:2px 4px 2px 0;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:12px;cursor:pointer}.bz-wdays td:first-child{white-space:nowrap;font-size:12px}.bz-table td small{display:block;font-size:10px;opacity:.6}.bz-table tr.bz-cur td{background:rgba(212,175,55,.1)}
 </style>
 </head>
 <body>
@@ -1533,12 +1535,89 @@ const ZEN_ART = (function () {
   const lotus = () => `<g>${[-60, -30, 0, 30, 60].map((a, i) => `<path transform="rotate(${a})" d="M0,40 C-${i === 2 ? 22 : 18},-10 -8,-60 0,-80 C8,-60 ${i === 2 ? 22 : 18},-10 0,40 Z" fill="currentColor" fill-opacity="${i === 2 ? .35 : .18}"/>`).join('')}<path d="M-90,52 C-40,40 40,40 90,52" fill="none"/><path d="M-70,64 C-30,56 30,56 70,64" fill="none" stroke-opacity=".5"/></g>`;
   const jiugong = () => { const ord = [5, 6, 7, 8, 9, 1, 2, 3, 4], pos = { 4: [-1, -1], 9: [0, -1], 2: [1, -1], 3: [-1, 0], 5: [0, 0], 7: [1, 0], 8: [-1, 1], 1: [0, 1], 6: [1, 1] }; const pt = n => pos[n].map(v => v * 52); return `<g><rect x="-78" y="-78" width="156" height="156" fill="none"/><line x1="-26" y1="-78" x2="-26" y2="78"/><line x1="26" y1="-78" x2="26" y2="78"/><line x1="-78" y1="-26" x2="78" y2="-26"/><line x1="-78" y1="26" x2="78" y2="26"/><polyline points="${ord.map(n => pt(n).join(',')).join(' ')}" fill="none" stroke-dasharray="3 3" stroke-opacity=".7"/>${Object.entries(pos).map(([n, [x, y]]) => `<text x="${x * 52}" y="${y * 52}" font-size="16" text-anchor="middle" dominant-baseline="central">${'一二三四五六七八九'[n - 1]}</text>`).join('')}</g>`; };
   function cloud(x, y) { return `<path transform="translate(${x},${y})" d="M0,0 c0,-10 14,-10 14,0 c0,-14 20,-14 20,0 c0,-10 14,-10 14,0 c6,0 6,8 0,8 h-48 c-6,0 -6,-8 0,-8 z" fill="none"/>`; }
-  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
+  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, work: () => `<g>${ticks(88, 96, 60)}<circle r="96" fill="none"/>${ring(74, '开休生伤杜景死惊'.split(''), 13)}<circle r="62" fill="none"/>${ring(46, TRI, 12)}<rect x="-22" y="-22" width="44" height="44" fill="none"/><text y="2" font-size="16" text-anchor="middle" dominant-baseline="central">禄</text></g>`, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
   function svg(k, cls = '') { const f = MAP[k] || luopan; return `<svg class="za ${cls}" viewBox="-110 -110 220 220" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1" font-family="serif">${f()}</svg>`; }
   const corner = `<svg class="za-corner" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2,58 V18 a16,16 0 0 1 16,-16 H58"/><path d="M8,58 V22 a14,14 0 0 1 14,-14 H58" stroke-opacity=".5"/><path d="M14,30 c0,-8 8,-8 8,0 c0,-6 10,-6 10,0" /><circle cx="18" cy="18" r="3"/></svg>`;
   return { svg, corner, luopan: () => svg('day') };
 })();
 if (typeof module !== 'undefined') module.exports = ZEN_ART;
+
+</script>
+<script>
+// ===== 工作分析：事项吉凶、预测、化解 =====
+const ZEN_W = (function () {
+  // 事项：[名称, 图标, 主导十神组, 次要十神组, 参考分类(1事业2人缘3财富4健康), 是否喜变动, 吉时建议, 凶时化解]
+  const M = [
+    ['升职 · 考核', '🏅', '官', '印', 1, false, '主动争取表现机会，把成果量化写进汇报；适合向上司提出职责扩大的请求。', '先守住本分，不越级、不抢功；把工作记录整理好，等更好的时机再提。'],
+    ['加薪 · 奖金', '💰', '财', '食', 3, false, '准备好市场行情和自己的贡献数字，今天适合谈待遇。', '不宜今天谈钱，先做出一件可衡量的成绩，再找时机。'],
+    ['跳槽 · 面试', '🚪', '印', '官', 1, true, '投履历、面试、谈 offer 都顺；面试时多讲你能为对方解决什么问题。', '先打听清楚新工作的内情，不要因一时情绪辞职；面试前多做功课，提早到场。'],
+    ['谈判 · 签约', '✍', '财', '食', 3, false, '利谈判、签合约、成交；条款看清楚后可以拍板。', '合约多看两遍、关键条款请人核对；能延后就延后签，避免口头承诺。'],
+    ['汇报 · 表达', '🎤', '食', '官', 1, false, '思路清楚、表达有说服力，适合做简报、提方案、开会发言。', '少说多听，发言前先写重点；避免当众反驳上司，有不同意见私下谈。'],
+    ['学习 · 考证', '📚', '印', '食', 1, false, '吸收力强，适合上课、考试、读资料、学新工具。', '分小段学习，别贪多；考试前多睡觉，带齐证件文具。'],
+    ['团队合作', '🤝', '比', '食', 2, false, '同事助力多，适合分工、协作、拉人一起做事。', '分工和功劳事先讲清楚，避免合伙出钱或替人担保。'],
+    ['上司关系', '👔', '官', '印', 2, false, '上司对你较认可，可以主动沟通、请示、争取支持。', '先报告结论和进度，不顶撞、不辩解；重要指示用文字确认。'],
+    ['同事 · 竞争', '⚔', '比', '官', 2, false, '你在竞争中占上风，适合争取资源和项目。', '防同辈抢功或比较，不炫耀成绩；钱和资源别借出去。'],
+    ['小人 · 口舌', '🗣', '食', '比', 2, false, '人和气顺，是非少，可以放心沟通。', '说话留三分，不在背后评论人；聊天群组少发情绪性的话，邮件多看一遍再发。'],
+    ['出差 · 外勤', '✈', '财', '比', 1, true, '出行顺利，外出拜访客户、出差都有收获。', '提早出门、预留时间；文件和证件检查两次，注意交通安全。'],
+    ['压力 · 加班', '🔥', '官', '比', 4, false, '虽然忙，但能扛得住，效率高。', '压力大的日子先做最重要的一件事，其余的排后；准时吃饭、早点睡。']
+  ];
+  function grpOf(E, ch, c) { return E.GRP[E.tenGod(ch.dm, c)]; }
+  function score(E, A, ch, gz, s, mvBonus) {
+    const gs = grpOf(E, ch, gz[0]), gb = grpOf(E, ch, E.HID[gz[1]][0]);
+    const fs = ch.label(E.elOf(gz[0])), fb = ch.label(E.elOf(E.HID[gz[1]][0]));
+    const fv = l => l === '用' ? 1.2 : l === '喜' ? .8 : l === '忌' ? -1 : 0;
+    const chongY = E.chong(gz[1], ch.P.d[1]) || E.chong(gz[1], ch.P.m[1]);
+    const hai = E.HAI[gz[1]] === ch.P.d[1] || (E.XING[gz[1]] || []).includes(ch.P.d[1]);
+    const gui = (E.GUIREN[ch.dm] || '').includes(gz[1]);
+    return M.map(([n, ic, g1, g2, cat, mv, good, bad], i) => {
+      let v = s[cat];
+      if (gs === g1) v += 13 * fv(fs) + 4; if (gb === g1) v += 9 * fv(fb) + 3;
+      if (gs === g2) v += 6 * fv(fs); if (gb === g2) v += 4 * fv(fb);
+      if (chongY) v += mv ? 6 : -6; if (hai && (i === 9 || i === 7 || i === 8)) v -= 10; if (gui) v += 6;
+      if (i === 9) v = s[2] + (hai ? -14 : 4) + (gs === '食' && E.tenGod(ch.dm, gz[0]) === '伤官' ? -8 : 0) + (gui ? 6 : 0);
+      v = Math.round(100 / (1 + Math.exp(-(v - 50) / 16)));
+      const lv = A.level(v);
+      return { i, n, ic, v, lv, ok: v >= 51, t: v >= 51 ? good : bad, why: why(E, ch, gz, g1, gs, gb, fs, fb, chongY, hai, gui, mv, i) };
+    });
+  }
+  function why(E, ch, gz, g1, gs, gb, fs, fb, chongY, hai, gui, mv, i) {
+    const N = { 官: '官杀（职位、上司、规矩）', 印: '印星（贵人、文书、学习）', 财: '财星（收入、客户、成果）', 食: '食伤（表达、创意、技术）', 比: '比劫（同辈、竞争、合作）' };
+    const out = [];
+    if (gs === g1) out.push(`天干${gz[0]}是${N[g1]}，${fs === '忌' ? '但属忌神，好事里有压力' : fs === '平' ? '力量中性' : '又是你的' + (fs === '用' ? '用神' : '喜神') + '，助力大'}`);
+    else if (gb === g1) out.push(`地支${gz[1]}藏${N[g1]}，${fb === '忌' ? '属忌神，暗中有阻力' : '暗中有助力'}`);
+    else out.push(`这段时间${N[g1].split('（')[0]}不明显，此事主要看整体运势`);
+    if (chongY) out.push(mv ? '逢冲主变动，正好利于移动和改变' : '逢冲，人事易有变动，宜稳');
+    if (hai && (i === 7 || i === 8 || i === 9)) out.push('地支相害或相刑，防误会和暗中是非');
+    if (gui) out.push('逢天乙贵人，遇到困难有人帮');
+    return out.join('；') + '。';
+  }
+  function fix(E, A, ch) {
+    const y = ch.yong, el = A.DIR[y], gr = (E.GUIREN[ch.dm] || '').split('').map(b => E.AN[E.Z.indexOf(b)]).join('、');
+    const xi = E.ELS.filter(e => ch.label(e) === '喜'), ji = E.ELS.filter(e => ch.label(e) === '忌');
+    return [
+      ['颜色', `上班多穿戴${A.COLOR[y]}色${xi.length ? `，其次${xi.map(e => A.COLOR[e]).join('、')}色` : ''}；${ji.length ? `少用${ji.map(e => A.COLOR[e]).join('、')}色` : ''}。`],
+      ['方位', `办公桌尽量面向${el}方，或坐在${el}方位；重要会议选面向${el}的座位。`],
+      ['数字', `尾数带 ${A.NUM[y].join('、')} 的日子、楼层、车牌对你较有利。`],
+      ['贵人', `天乙贵人生肖：${gr}。遇到难题，可以多请教这些生肖的上司或同事。`],
+      ['随身', y === '火' ? '可放一盏暖光台灯、红色笔记本，或戴红绳、石榴石。' : y === '木' ? '桌上放一盆绿植，或戴木质手串、绿幽灵。' : y === '水' ? '桌上放一杯清水或小鱼缸图，戴黑曜石、海蓝宝。' : y === '金' ? '用金属笔、白色杯子，戴白水晶、银饰。' : '桌上放黄水晶或陶瓷小摆件，用黄色文件夹。'],
+      ['行为', '每天先做最重要的一件事；遇到不顺的日子，多说“请”和“谢谢”，少辩解多做事，是最好的化解。']
+    ];
+  }
+  function profile(E, ch) {
+    const b = ch.byRel, tot = Object.values(b).reduce((x, y) => x + y, 0) || 1, pct = g => Math.round(b[g] / tot * 100);
+    const top = Object.keys(b).sort((x, y) => b[y] - b[x]);
+    const ST = {
+      官: ['管理型', '重规矩、有责任感，适合体制内、大机构、管理岗位，晋升靠稳定表现。'],
+      印: ['专业型', '学习力强、重口碑，适合研究、教育、顾问、法务、策划等专业岗位。'],
+      财: ['经营型', '务实、重结果，适合销售、业务、财务、采购、经营管理。'],
+      食: ['技术创意型', '点子多、表达好、技术强，适合技术、设计、内容、摄影、讲师等靠才华吃饭的工作。'],
+      比: ['开拓型', '冲劲大、重义气，适合团队开拓、业务拓展、自主创业或合伙。']
+    };
+    return { top, pct, main: ST[top[0]], sub: ST[top[1]] };
+  }
+  return { M, score, fix, profile };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_W;
 
 </script>
 <script>
@@ -1554,7 +1633,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
-  const TABS = [['day', '☼', '今日运程'], ['week', '☷', '本周运程'], ['month', '☾', '本月运程'], ['year', '✦', '今年运程'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['team', '⚇', '团队关系'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活提示'], ['nine', '☲', '九运']];
+  const TABS = [['day', '☼', '今日运程'], ['week', '☷', '本周运程'], ['month', '☾', '本月运程'], ['year', '✦', '今年运程'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['work', '⚒', '工作分析'], ['team', '⚇', '团队关系'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活提示'], ['nine', '☲', '九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
@@ -1574,6 +1653,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
     liunian: ['流年 · 六壬卷', '取意《大六壬》课传', '穷则变，变则通，通则久。', '《易经 · 系辞下》'],
     dayun: ['大运 · 乾坤卷', '十年一运，阴阳迭用', '一阴一阳之谓道。', '《易经 · 系辞上》'],
     zodiac: ['十二元辰 · 山海卷', '取意《山海经》百兽', '方以类聚，物以群分。', '《易经 · 系辞上》'],
+    work: ['事业 · 官禄卷', '取法《子平》官星为禄', '君子藏器于身，待时而动。', '《易经 · 系辞下》'],
     team: ['合和 · 众生卷', '同气相求，同声相应', '二人同心，其利断金。', '《易经 · 系辞上》'],
     love: ['月老 · 红线卷', '姻缘天定，经营在人', '执子之手，与子偕老。', '《诗经 · 邶风 · 击鼓》'],
     number: ['河洛 · 数理卷', '取法《河图》《洛书》', '参伍以变，错综其数。', '《易经 · 系辞上》'],
@@ -1587,7 +1667,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
     'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
     'y-fly': '九宫飞星', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
-    'lv-match': '合婚', 'lv-time': '红鸾天喜', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
+    'lv-match': '合婚', 'lv-time': '红鸾天喜', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
     'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
@@ -1991,6 +2071,44 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
   // ---------- 撤销 / 重做 ----------
   const H = { past: [], future: [], cur: null, applying: false };
   const TABNAME = Object.fromEntries(TABS.map(t => [t[0], t[2]]));
+  function vWork() {
+    const md = S.wmode || '日', ch = S.ch, lvTag = v => { const l = A.level(v); return `<i class="${lvc(l)}">${l}</i>`; };
+    let gz, s, when, unit;
+    if (md === '日') { const d = S.B.day(S.date); gz = d.p.d; s = d.s; when = `${A.md(S.date)} 周${d.wd} ${gzc(gz)}日`; unit = '今天'; }
+    else if (md === '月') { const m = S.B.monthOf(S.date); gz = m.gz; s = m.s; when = `${gzc(gz)}月（${A.md(m.start)} – ${A.md(m.end)}）`; unit = '这个月'; }
+    else { const y = S.B.syOf(S.date), x = S.B.yearOf(y); gz = x.gz; s = x.s; when = `${y} ${gzc(gz)}年`; unit = '今年'; }
+    const L = ZEN_W.score(E, A, ch, gz, s), srt = L.slice().sort((a, b) => b.v - a.v);
+    const good = srt.filter(x => x.ok).slice(0, 3), bad = srt.filter(x => !x.ok).slice(-3).reverse();
+    const seg = `<div class="bz-seg">${['日', '月', '年'].map(k => `<button class="${k === md ? 'bz-on' : ''}" data-act="wm:${k}">按${k}</button>`).join('')}</div>`;
+    let html = seg + hero(`${unit}工作运`, s[1], A.level(s[1]), `<h2>${when}</h2>`, [
+      `<p><b class="bz-good">宜：</b>${good.map(x => x.ic + x.n.split(' · ')[0]).join('、') || '—'}</p>`,
+      `<p><b class="bz-bad">慎：</b>${bad.map(x => x.ic + x.n.split(' · ')[0]).join('、') || '无明显凶项'}</p>`]);
+    html += card('w-items', `${unit}工作事项吉凶`, `<div class="bz-zlist">${srt.map(x => `<details class="bz-zr ${x.ok ? '' : 'bz-wbad'}"><summary><span class="bz-ze">${x.ic}</span><b>${x.n}</b><span class="bz-zbar"><span style="width:${x.v}%;background:${col(x.v)}"></span></span><span class="bz-zs">${x.v}</span>${lvTag(x.v)}</summary>
+      <div class="bz-zd"><p class="bz-muted">为什么：${gzc(x.why)}</p><div class="${x.ok ? 'bz-wdo' : 'bz-wfix'}"><b>${x.ok ? '✅ 建议' : '🛡 化解'}</b>${x.t}</div></div></details>`).join('')}</div><p class="bz-muted">点开每一项，看原因和${unit}的建议或化解方法。</p>`);
+    // good days next 30
+    const PICK = [2, 3, 4, 0, 1], days = []; for (let i = 0; i < 30; i++) days.push(A.addDays(S.date, i));
+    const rows = PICK.map(k => { const top = days.map(d => { const x = S.B.day(d); return { d, wd: x.wd, v: ZEN_W.score(E, A, ch, x.p.d, x.s)[k].v }; }).sort((a, b) => b.v - a.v).slice(0, 3).sort((a, b) => a.d < b.d ? -1 : 1);
+      return `<tr><td>${ZEN_W.M[k][1]} ${ZEN_W.M[k][0]}</td><td>${top.map(t => `<button class="bz-chip ${lvc(A.level(t.v))}" data-act="day:${t.d}">${A.md(t.d)} 周${t.wd}</button>`).join('')}</td></tr>`; }).join('');
+    html += card('w-days', '未来 30 天的好日子', `<div class="bz-tablewrap"><table class="bz-table bz-wdays"><tbody>${rows}</tbody></table></div><p class="bz-muted">点日期可跳到那天的今日运程。面试、签约、提方案，尽量选这些日子。</p>`);
+    // 12 months
+    const sy = S.B.syOf(S.date), ms = S.B.months.filter(m => m.sy === sy);
+    const mrows = ms.map(m => { const l = ZEN_W.score(E, A, ch, m.gz, m.s), b = l.slice().sort((a, c) => c.v - a.v)[0], w = l.slice().sort((a, c) => a.v - c.v)[0];
+      return { m, l, row: `<tr class="${m.start <= S.date && S.date <= m.end ? 'bz-cur' : ''}"><td>${gzc(m.gz)}<small>${A.md(m.start)}</small></td><td><b class="${lvc(A.level(m.s[1]))}">${m.s[1]}</b></td><td>${b.ic}${b.n.split(' · ')[0]}</td><td class="bz-bad">${w.v < 51 ? w.ic + w.n.split(' · ')[0] : '—'}</td></tr>` }; });
+    const bestOf = k => mrows.slice().sort((a, b) => b.l[k].v - a.l[k].v).slice(0, 2).map(x => `${gzc(x.m.gz)}月`).join('、');
+    html += card('w-year', `${sy}年 · 十二个月事业走势`, `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>月份</th><th>事业</th><th>最顺</th><th>要防</th></tr></thead><tbody>${mrows.map(x => x.row).join('')}</tbody></table></div>
+      <p><b>跳槽 · 面试</b>最佳：${bestOf(2)}　<b>升职 · 考核</b>最佳：${bestOf(0)}　<b>加薪</b>最佳：${bestOf(1)}</p>`);
+    // job change assessment
+    const yrs = [sy, sy + 1, sy + 2].map(y => { const x = S.B.yearOf(y), l = ZEN_W.score(E, A, ch, x.gz, x.s); return { y, x, j: l[2].v, p: l[0].v }; });
+    const bestY = yrs.slice().sort((a, b) => b.j - a.j)[0];
+    html += card('w-move', '跳槽 · 转换跑道评估', `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>年份</th><th>流年</th><th>事业运</th><th>跳槽面试</th><th>留任升职</th></tr></thead><tbody>${yrs.map(r => `<tr><td>${r.y}</td><td>${gzc(r.x.gz)}</td><td>${r.x.s[1]}</td><td><b class="${lvc(A.level(r.j))}">${r.j}</b></td><td><b class="${lvc(A.level(r.p))}">${r.p}</b></td></tr>`).join('')}</tbody></table></div>
+      <p class="bz-tip">${bestY.j >= 56 ? `三年里 ${bestY.y} 年最适合转换工作。如果有心仪的职位，可以在这一年里挑上表的好月份去面试。` : '这三年跳槽运都不算特别旺，若要转换，先把新工作的条件了解清楚，选上表的好月份行动，并保留后路。'}${yrs[0].p > yrs[0].j + 8 ? `今年留在原单位争取表现，比跳槽更有利。` : ''}</p>
+      <p class="bz-muted">要比较新旧工作，可以到“团队关系”加入新上司的生日，看合拍度；到“数字能量”分析公司电话或门牌。</p>`);
+    const P = ZEN_W.profile(E, ch);
+    html += card('w-profile', '你的事业格局', `<p>主：<b>${P.main[0]}</b>（${P.pct(P.top[0])}%）—— ${P.main[1]}</p><p>次：<b>${P.sub[0]}</b>（${P.pct(P.top[1])}%）—— ${P.sub[1]}</p><p class="bz-muted">${gzc(ch.dm)}${ch.de}日主，${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}。用神所属的行业与方向对你最有利。</p>`);
+    html += card('w-fix', '工作化解总纲', `<dl class="bz-kv">${ZEN_W.fix(E, A, ch).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="bz-muted">化解是帮你调整状态和注意力的方法，真正决定结果的，仍是你的准备和行动。</p>`);
+    return html;
+  }
+
   function vZodiac() {
     const md = S.zmode || '年'; let gz, when, sub;
     if (md === '年') { const y = S.B.syOf(S.date), x = S.B.yearOf(y); gz = x.gz; when = `${y} ${gzc(gz)}年`; sub = `太岁 ${AN[Z.indexOf(gz[1])]} · 以立春为界`; }
@@ -2073,7 +2191,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
     return html + form + '<p class="bz-muted">合拍度取双方互看的平均分。八字只是参考，好的团队还是靠沟通、信任和清楚的分工。</p>';
   }
   function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null, zmode: S.zmode, team: S.team || null }); }
-  function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year', 'zodiac'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
+  function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year', 'zodiac', 'work'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
   function track() {
     if (!S.ch || S.editing) return; const sn = snapshot();
     if (!H.applying && H.cur && sn !== H.cur) { H.past.push(H.cur); if (H.past.length > 60) H.past.shift(); H.future = []; }
@@ -2106,16 +2224,16 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
     app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => `<button class="bz-tab ${S.tab === k ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${t}</button>`).join('');
-    const showNav = ['day', 'week', 'month', 'year', 'zodiac'].includes(S.tab);
+    const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     app.querySelector('#bz-view').innerHTML = scrollHead(S.tab) + html;
     app.querySelectorAll('#bz-view .bz-hero').forEach(h => { if (!h.querySelector('.za-wm')) h.insertAdjacentHTML('beforeend', ZEN_ART.svg(S.tab, 'za-wm')); });
     track();
   }
   function step(dir) {
-    const t = S.tab === 'zodiac' ? { 年: 'year', 月: 'month', 日: 'day' }[S.zmode || '年'] : S.tab, s = S.date; let n;
+    const t = S.tab === 'zodiac' ? { 年: 'year', 月: 'month', 日: 'day' }[S.zmode || '年'] : S.tab === 'work' ? { 年: 'year', 月: 'month', 日: 'day' }[S.wmode || '日'] : S.tab, s = S.date; let n;
     if (t === 'day') n = A.addDays(s, dir); else if (t === 'week') n = A.addDays(s, 7 * dir);
     else if (t === 'month') { const m = S.B.monthOf(s); n = m ? (dir < 0 ? A.addDays(m.start, -1) : A.addDays(m.end, 1)) : A.addDays(s, 30 * dir); }
     else { const [y, m, d] = A.parse(s); n = A.iso(y + dir, m, Math.min(d, 28)); }
@@ -2130,6 +2248,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_ART;
     if (a === 'mlog') { const L = S.mlog || (S.mlog = mlLoad()); const i = L.days.indexOf(TODAY); if (i >= 0) L.days.splice(i, 1); else L.days.push(TODAY); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     const [k, v] = a.split(':');
     if (k === 'zm') { S.zmode = v; render(); return; }
+    if (k === 'wm') { S.wmode = v; render(); return; }
     if (k === 'tdel') { S.team.splice(+v, 1); tSave(S.team); S.tOpen = false; render(); return; }
     if (k === 'tab') { S.tab = v; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
     else if (k === 'day') { S.date = v; S.tab = 'day'; }
