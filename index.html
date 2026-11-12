@@ -420,6 +420,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-g3{display:flex;flex-direction:column;gap:6px;margin:10px 0}.bz-g3>div{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:start;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px;line-height:1.5}
 .bz-g3 em{font-style:normal;font-size:12px;color:var(--acc,#e9c46a);padding-top:1px}.bz-g3 span b{color:#fff}.bz-v{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;white-space:nowrap}.bz-v.g{background:rgba(76,211,138,.18);color:#7fe0aa}.bz-v.m{background:rgba(255,255,255,.1)}.bz-v.b{background:rgba(255,107,107,.18);color:#ffab9a}
 .bz-guacard .bz-comfort{margin:6px 0}
+.bz-cf-l{list-style:none;margin:6px 0 8px;padding:0;font-size:13px;line-height:1.6;opacity:.92}.bz-cf-l li{padding-left:12px;position:relative;margin:3px 0}.bz-cf-l li::before{content:'·';position:absolute;left:2px;color:var(--gold2)}.bz-cf-l b{color:var(--gold2);font-weight:600}
 </style>
 </head>
 <body>
@@ -1819,7 +1820,10 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
         <div class="bz-gbox">${hexDraw(y.L, y.k)}<b>${g.full}</b><small>本卦 · 现在</small></div>
         <div class="bz-garr"><span>${yname(y.k, y.L)}动</span>→</div>
         <div class="bz-gbox">${hexDraw(y.M, y.k, 'to')}<b>${hb.full}</b><small>变卦 · 走向</small></div></div>
-      <div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话</div><p class="bz-cf-t">${cf.comfort || g.mean}</p><div class="bz-cf-a"><b>${U}可以做的小事：</b>${(cf.act || '').replace(/^今天/, '')}</div></div>
+      ${(() => { const cfB = ZEN_C.GUA[y.bian] || {}, sh = n2 => n2, act = (y.yang ? (cfB.act || cf.act) : (cf.act || cfB.act) || '').replace(/^今天/, '');
+        return `<div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话 · 从「${n}」到「${y.bian}」</div><p class="bz-cf-t">${cf.comfort || g.mean}</p>
+        <ul class="bz-cf-l"><li><b>关键在${yname(y.k, y.L)}：</b>${YAOM[y.k][1]}；而这一爻正在变，${y.yang ? '由刚转柔，宜收一收、放软身段' : '由柔转刚，宜主动一点、拿出决断'}。</li><li><b>往后看：</b>${cfB.comfort || hb.mean}</li></ul>
+        <div class="bz-cf-a"><b>${U}可以做的小事：</b>${act}</div></div>`; })()}
       <div class="bz-g3">
         <div><em>现在</em><span><b>${g.full}</b> · ${g.mean}</span><i class="bz-v ${v1[1]}">${v1[0]}</i></div>
         <div><em>关键</em><span><b>${yname(y.k, y.L)}（第${y.pos}爻）</b> · ${y.t}</span></div>
