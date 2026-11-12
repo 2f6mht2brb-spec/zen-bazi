@@ -391,6 +391,11 @@ html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient
 .bz-scroll::before,.bz-scroll::after{top:6px;bottom:6px;width:2px}.bz-scroll::before{left:6px}.bz-scroll::after{right:6px}
 .bz-scroll-t{font-size:13px;letter-spacing:3px}.bz-scroll-s{font-size:10px;letter-spacing:1px;margin-top:1px}.bz-scroll-q{margin-top:4px;font-size:11px}.bz-scroll-q span{font-size:9px;margin-top:1px}
 .bz-scroll .za-bg{width:90px;height:90px;margin-top:-45px;right:-18px}.bz-scroll .za-corner{width:16px;height:16px}.bz-scroll .za-corner.tl{left:10px;top:4px}.bz-scroll .za-corner.br{right:10px;bottom:4px}
+.bz-emo2{gap:6px!important}.bz-emo2 .bz-emot{padding:7px 9px!important;border-radius:10px!important}.bz-emo2 .bz-emot span{font-size:11.5px!important;line-height:1.45;display:block;opacity:.85;margin-top:3px}
+.bz-eh{display:flex;align-items:baseline;justify-content:space-between}.bz-emo2 .bz-eh b{font-size:17px!important;line-height:1.1}.bz-eh em{font-style:normal;font-weight:800;font-size:15px;color:currentColor}
+.bz-ebar{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:4px;overflow:hidden}.bz-ebar i{display:block;height:100%;background:currentColor;opacity:.75}.bz-enote{margin:4px 0 0;font-size:11px}
+.bz-e-joy .bz-eh em,.bz-e-joy .bz-ebar i{color:#4cd38a;background-color:transparent}.bz-e-joy .bz-ebar i{background:#4cd38a}
+.bz-e-anger .bz-eh em{color:#ff6b6b}.bz-e-anger .bz-ebar i{background:#ff6b6b}.bz-e-sad .bz-eh em{color:#7fa8ff}.bz-e-sad .bz-ebar i{background:#7fa8ff}.bz-e-fun .bz-eh em{color:var(--gold2)}.bz-e-fun .bz-ebar i{background:var(--gold2)}
 </style>
 </head>
 <body>
@@ -1124,11 +1129,16 @@ const ZEN_C = (function () {
       喜: JOY[pick(goodG, gs[0].g)], 怒: badG.length ? ANGER[badG[0]] : `机会不大；偶尔可能${ANGER[gs[1].g]}，很快会过去`, 哀: badG.length ? SORROW[badG[0]] : `机会不大；若有一点${SORROW[gs[0].g]}，和人聊聊就好`,
       乐: `做些让你舒服的事：${PLEASE[ch.yong]}（${ch.yong}是你的用神）`
     };
+    const ch_ = notes.some(n => /冲/.test(n)), hx = notes.some(n => /害|刑/.test(n)), hp = notes.some(n => /合|贵人/.test(n)), d0 = s[0] - 50;
+    const raw = { 喜: 18 + goodG.length * 14 + d0 * .6 + (hp ? 8 : 0), 怒: 10 + badG.length * 13 + (ch_ ? 8 : 0) - d0 * .4, 哀: 9 + badG.length * 10 + (hx ? 7 : 0) + (ch_ ? 4 : 0) - d0 * .4, 乐: 20 + d0 * .4 + goodG.length * 6 };
+    Object.keys(raw).forEach(k => raw[k] = Math.max(4, raw[k]));
+    const tot = Object.values(raw).reduce((a, b) => a + b, 0), emoP = {}; let acc = 0;
+    ['怒', '哀', '乐'].forEach(k => { emoP[k] = Math.round(raw[k] / tot * 100); acc += emoP[k]; }); emoP.喜 = 100 - acc;
     const meet = notes.some(n => /合|贵人/.test(n)) ? '有人主动靠近，可能是久别重逢、贵人相助或合作谈成' : s[2] >= 60 ? '和朋友、同事的互动多，容易结下新缘分' : '人际平淡，适合和亲近的人好好相处';
     const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
     const doms = DOM.map(([n, k, g, b, be, tip], di) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
       return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '' : mid ? '' : tip, mind: mind(n, good ? 'g' : mid ? 'm' : 'b', gz, di) }; });
-    return { emo, meet, part, doms, g0: gs[0].g, ok0: gs[0].ok, inner: (() => { const I = inner(gs); I.rf = reframe(gs, I.exp, I.th); return I; })() };
+    return { emo, emoP, meet, part, doms, g0: gs[0].g, ok0: gs[0].ok, inner: (() => { const I = inner(gs); I.rf = reframe(gs, I.exp, I.th); return I; })() };
   }
   return { GUA, REL, scenes };
 })();
@@ -1781,7 +1791,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   function sceneCard(id, title, gz, s, notes) {
     const r = ZEN_C.scenes(S.ch, E, gz, s, notes);
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
-    return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
+    return card(id, title, `<div class="bz-emo bz-emo2">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><div class="bz-eh"><b>${k}</b><em>${r.emoP[k]}%</em></div><i class="bz-ebar"><i style="width:${r.emoP[k]}%"></i></i><span>${r.emo[k]}</span></div>`).join('')}</div><p class="bz-muted bz-enote">百分比是今天四种情绪出现的比重，合计 100%。</p>
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
       ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
         return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div><p class="bz-sutra">一切有为法，如梦幻泡影，如露亦如电，应作如是观。<span>——《金刚经》</span></p>
