@@ -275,6 +275,8 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-zk{width:22px;text-align:center;font-weight:700;opacity:.85}.bz-ze{font-size:18px}.bz-zr summary b{min-width:52px;display:flex;gap:4px;align-items:baseline}.bz-zr summary b small{opacity:.8;font-weight:400}.bz-zr summary em{font-style:normal;font-size:10px;background:#d4af37;color:#1a1030;border-radius:6px;padding:0 4px}
 .bz-zbar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}.bz-zbar span{display:block;height:100%}.bz-zs{width:24px;text-align:right;font-weight:700}.bz-zr summary i{font-style:normal;font-size:11px;width:30px;text-align:right}
 .bz-zd{padding:0 12px 10px;font-size:13px}.bz-zd p{margin:6px 0}
+.bz-tm{padding:0}.bz-tm>summary{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;list-style:none;font-size:13px}.bz-tm>summary::-webkit-details-marker{display:none}.bz-tm>summary b{display:flex;flex-direction:column;min-width:96px}.bz-tm>summary b small{font-weight:400;opacity:.75;font-size:11px}.bz-tm>summary i{font-style:normal;font-size:11px;width:30px;text-align:right}.bz-tm .bz-zd{padding:0 14px 14px}
+.bz-chip2{display:inline-block;margin:3px 4px 0 0;padding:4px 8px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1196,6 +1198,59 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
 
 </script>
 <script>
+// ===== 同事 / 伙伴 / 队友 · 团队关系 =====
+const ZEN_T = (function () {
+  const ROLE = {
+    印: ['贵人 · 导师型', '对方像你的靠山，会提点、照顾你，适合向他请教、让他帮你背书。', '别太依赖，主动回报对方的帮忙。'],
+    官: ['督促 · 上司型', '对方给你压力和规矩，也推你成长；适合他定方向、你执行。', '他说话直接时别往心里去，把要求当成长。'],
+    财: ['资源 · 你能带领的人', '你在关系里较有主导权，对方能为你带来资源、成果或客户。', '别把对方当工具，分功劳、分利益要公道。'],
+    食: ['支持 · 你来发挥的对象', '你在对方面前容易发挥才华，适合你出点子、教他、带他。', '你付出较多，注意别累坏自己，也别说话太冲。'],
+    比: ['同辈 · 并肩或竞争', '像兄弟姐妹，能并肩作战，也容易抢同一个位置或资源。', '分工要清楚，利益先讲好，避免暗中比较。']
+  };
+  const TALENT = { 官: '管理、规则、把关', 印: '研究、培训、文书', 财: '业务、销售、资源', 食: '创意、技术、表达', 比: '执行、协作、冲锋' };
+  const ELJOB = { 木: '规划、成长、培育新人', 火: '宣传、演讲、带动气氛', 土: '协调、行政、稳住大局', 金: '决策、执行、质量把关', 水: '策略、沟通、信息收集' };
+  const WUHE = ['甲己', '乙庚', '丙辛', '丁壬', '戊癸'];
+  function relZ(E, a, b) { const { LIUHE, SANHE, chong, HAI, XING } = E;
+    if (a === b) return '同'; if (LIUHE[a] === b) return '六合'; if (chong(a, b)) return '冲'; if (HAI[a] === b) return '害';
+    if ((XING[a] || []).includes(b)) return '刑'; if (SANHE.some(g => g.includes(a) && g.includes(b))) return '三合'; return ''; }
+  function talent(ch) { return Object.entries(ch.byRel).sort((x, y) => y[1] - x[1])[0][0]; }
+  // what b is to a
+  function pair(a, b, E) {
+    const { GEN, AN, Z, tenGod, GRP } = E; const items = []; let sc = 0;
+    const add = (v, tone, h, t) => { sc += v; items.push({ tone, h, t }); };
+    const tg = tenGod(a.dm, b.dm), g = GRP[tg], role = ROLE[g];
+    const da = a.dm, dbm = b.dm, ea = a.de, eb = b.de;
+    if (WUHE.some(p => p.includes(da) && p.includes(dbm) && da !== dbm)) add(2, 'good', `日干相合（${da}${dbm}合）`, '天干五合，彼此欣赏，容易一拍即合。');
+    else if (GEN[eb] === ea) add(1.2, 'good', `对方${eb}生你${ea}`, '对方天生会支持你、帮你补气。');
+    else if (GEN[ea] === eb) add(.6, 'mid', `你${ea}生对方${eb}`, '你付出、照顾对方较多。');
+    else if (ea === eb) add(.3, 'mid', '日主同五行', '想法相近、沟通快，但也容易互不相让。');
+    else add(-.6, 'mid', `日主相克（${ea}与${eb}）`, '做事方式不同，会互相约束；尊重分工就能互补。');
+    const R = [['年支', a.P.y[1], b.P.y[1], '生肖'], ['月支', a.P.m[1], b.P.m[1], '工作环境'], ['日支', a.P.d[1], b.P.d[1], '私下相处']];
+    const W = { 六合: [1.5, 'good', '相合，默契好'], 三合: [1, 'good', '三合，目标一致'], 同: [.3, 'mid', '相同，习惯相近'], 冲: [-1.5, 'bad', '相冲，节奏和想法容易对立'], 害: [-1, 'bad', '相害，易有误会、心结'], 刑: [-.8, 'bad', '相刑，摩擦、口舌较多'] };
+    R.forEach(([pos, x, y, what], i) => { const r = relZ(E, x, y); if (!r) return; const [v, tone, t] = W[r]; add(v * (i === 1 ? 1.2 : 1), tone, `${what}${r}（${pos} ${x}${y}${i === 0 ? ` · ${AN[Z.indexOf(x)]}${AN[Z.indexOf(y)]}` : ''}）`, `${what}${t}。`); });
+    const fa = b.share[a.yong], fb = a.share[b.yong];
+    if (fa >= .22) add(1.3, 'good', `对方${a.yong}旺，补你的用神`, '和他合作，你会觉得顺、有能量。'); else if (fa < .1) add(-.4, 'mid', `对方${a.yong}偏少`, '对方补不到你最需要的能量，靠分工互补。');
+    if (fb >= .22) add(1.3, 'good', `你${b.yong}旺，补对方的用神`, '对方会觉得和你合作很舒服。'); else if (fb < .1) add(-.4, 'mid', `你${b.yong}偏少`, '你补不到对方的用神。');
+    const ha = E.ELS.filter(e => a.label(e) === '忌' && b.share[e] >= .3), hb = E.ELS.filter(e => b.label(e) === '忌' && a.share[e] >= .3);
+    if (ha.length) add(-1, 'bad', `对方${ha.join('')}旺，是你的忌神`, '长时间相处你容易累，保持适当距离。');
+    if (hb.length) add(-1, 'bad', `你${hb.join('')}旺，是对方的忌神`, '对方可能感到压力，多给他空间。');
+    const score = Math.max(0, Math.min(100, Math.round(58 + sc * 6.5)));
+    return { score, tg, g, role, items };
+  }
+  function team(list, E) { // list: [{name, ch}], first = you
+    const n = list.length, el = {}; E.ELS.forEach(e => el[e] = list.reduce((s, m) => s + m.ch.share[e], 0) / n);
+    const pairs = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const p = pair(list[i].ch, list[j].ch, E), q = pair(list[j].ch, list[i].ch, E); pairs.push({ i, j, score: Math.round((p.score + q.score) / 2) }); }
+    pairs.sort((x, y) => y.score - x.score);
+    const roles = list.map(m => ({ name: m.name, de: m.ch.de, dm: m.ch.dm, t: talent(m.ch), job: ELJOB[m.ch.de], tal: TALENT[talent(m.ch)] }));
+    const lack = E.ELS.filter(e => el[e] < .1), much = E.ELS.filter(e => el[e] > .35);
+    return { el, pairs, roles, lack, much };
+  }
+  return { pair, team, ELJOB, TALENT, relZ };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_T;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1208,7 +1263,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
-  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
+  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['team', '⚇', '团队关系'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
@@ -1589,7 +1644,49 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
       + card('z-rank', `十二生肖排名 · ${md === '年' ? '今年' : md === '月' ? '本月' : '今日'}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点任一生肖展开详细分析。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
       + card('z-sum', '一句话总结', `<p><b class="bz-good">较顺：</b>${good.join('、') || '—'}</p><p><b class="bz-bad">需留意：</b>${bad.join('、') || '—'}</p><p class="bz-muted">排名以地支与${md === '年' ? '太岁' : md === '月' ? '月建' : '日辰'}的冲合刑害为主，再加天干五行生克；只看生肖是大方向，个人细节仍以自己的八字为准。</p>`);
   }
-  function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null, zmode: S.zmode }); }
+  // ---------- 团队关系 ----------
+  const TK = 'zen-bazi-team';
+  const tLoad = () => { try { return JSON.parse(localStorage.getItem(TK) || '[]') || []; } catch (e) { return []; } };
+  const tSave = v => { try { localStorage.setItem(TK, JSON.stringify(v)); } catch (e) { } };
+  const TREL = ['同事', '上司', '下属', '合作伙伴', '队友', '客户', '朋友'];
+  function tChart(m) { const [y, mo, d] = m.date.split('-').map(Number); return E.makeChart({ gender: m.gender, y, m: mo, d, hour: m.sh === '' || m.sh == null ? null : SHI[+m.sh][1], tz: S.ch.inp.tz, zishi: '换日' }); }
+  function goodDays(pc) {
+    const out = [];
+    for (let i = 0; i < 30; i++) { const dt = A.addDays(TODAY, i), d = S.B.day(dt), b = d.p.d[1];
+      if (E.chong(b, pc.P.d[1]) || E.chong(b, pc.P.y[1]) || E.chong(b, S.ch.P.d[1])) continue;
+      let v = d.s[0]; [pc.P.y[1], pc.P.d[1]].forEach(x => { const r = ZEN_T.relZ(E, b, x); if (r === '六合') v += 10; else if (r === '三合') v += 6; });
+      const l = pc.label(elOf(d.p.d[0])); if (l === '用' || l === '喜') v += 5; out.push({ dt, d, v }); }
+    return out.sort((x, y) => y.v - x.v).slice(0, 3).sort((x, y) => x.dt < y.dt ? -1 : 1);
+  }
+  function vTeam() {
+    const ch = S.ch; if (!S.team) S.team = tLoad();
+    const T = S.team.map(m => ({ m, pc: tChart(m) }));
+    const form = card('t-add', '加入同事 / 伙伴 / 队友', `<form id="bz-tform" class="bz-form"><label>称呼<input name="tname" maxlength="20" required placeholder="例如：阿明、Boss Lee"></label><label>关系<select name="trel">${TREL.map(r => `<option>${r}</option>`).join('')}</select></label><label>出生日期<input type="date" name="tdate" required min="1900-01-01" max="2099-12-31"></label><label>时辰（不知道可不填）<select name="tsh"><option value="">时辰不详</option>${SHI.map((x, i) => `<option value="${i}">${x[0]}</option>`).join('')}</select></label><div class="bz-seg"><span>性别</span>${['男', '女'].map((g, i) => `<label class="bz-segbtn"><input type="radio" name="tg" value="${g}" ${i ? '' : 'checked'}><span>${g}</span></label>`).join('')}</div><div class="bz-formbtns"><button type="submit" class="bz-go">⚇ 加入团队</button></div><p class="bz-muted">资料只存在这台设备的浏览器里。只知道生日也可以，时辰不详时日柱和时柱以外的分析照样准。</p></form>`);
+    let html = `<div class="bz-card bz-hero"><div><div class="bz-namebig">⚇</div><div class="bz-muted">${T.length} 位成员</div></div><div><h2>同事 · 伙伴 · 队友关系</h2><p>看每个人在你的八字里扮演什么角色（贵人、上司型、同辈、支持者…），你们合不合拍，什么日子最适合一起谈事；再看整个团队五行够不够平衡、谁和谁最搭。</p><p class="bz-muted">你自己：${gzc(ch.dm)}${ch.de}日主 · 用神${gzc(ch.yong)} · 擅长${ZEN_T.TALENT[Object.entries(ch.byRel).sort((x, y) => y[1] - x[1])[0][0]]}</p></div></div>`;
+    if (!T.length) return html + form + card('t-how', '怎么看', `<ul class="bz-list2"><li><b>角色：</b>按对方日干是你的哪一种十神，判断他对你是贵人、督促者、资源、支持对象还是同辈竞争。</li><li><b>合拍度：</b>看日干五合与生克、生肖（年支）、工作环境（月支）、私下相处（日支）的冲合刑害，以及彼此能否补对方的用神。</li><li><b>团队：</b>加入两人以上，会显示团队五行配置、最佳搭档和需要留意的组合。</li></ul>`);
+    T.forEach(({ m, pc }, k) => {
+      const r = ZEN_T.pair(ch, pc, E), back = ZEN_T.pair(pc, ch, E), sc = Math.round((r.score + back.score) / 2), lv = A.level(sc);
+      const gd = goodDays(pc);
+      html += `<details class="bz-card bz-tm" ${k === T.length - 1 && S.tOpen ? 'open' : ''}><summary><span class="bz-ze">${['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'][Z.indexOf(pc.P.y[1])]}</span><b>${esc(m.name)}<small>${esc(m.rel)} · ${r.role[0].split(' · ')[0]}</small></b><span class="bz-zbar"><span style="width:${sc}%;background:${col(sc)}"></span></span><span class="bz-zs">${sc}</span><i class="${lvc(lv)}">${lv}</i></summary>
+        <div class="bz-zd"><p class="bz-muted">${gzc(pc.P.y)} ${gzc(pc.P.m)} ${gzc(pc.P.d)} ${pc.P.h ? gzc(pc.P.h) : ''} · 属${AN[Z.indexOf(pc.P.y[1])]} · ${gzc(pc.dm)}${pc.de}日主 · 用神${gzc(pc.yong)}</p>
+        <p><b>他是你的「${r.tg}」→ ${r.role[0]}</b><br>${r.role[1]}</p><p class="bz-tip">相处提醒：${r.role[2]}</p>
+        <p class="bz-muted">反过来，你是他的「${back.tg}」→ ${back.role[0]}。他擅长${ZEN_T.TALENT[Object.entries(pc.byRel).sort((x, y) => y[1] - x[1])[0][0]]}，适合负责${ZEN_T.ELJOB[pc.de]}。</p>
+        <ul class="bz-dlist">${r.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul>
+        <p><b>未来 30 天适合一起谈事 / 开会：</b>${gd.map(x => `<button class="bz-chip2" data-act="day:${x.dt}">${A.md(x.dt)} 周${x.d.wd} ${gzc(x.d.p.d)}</button>`).join(' ') || '暂无特别好的日子'}</p>
+        <p class="bz-tip">${sc >= 76 ? '黄金搭档，重要项目可以一起扛。' : sc >= 56 ? '合作顺利，分工清楚会更好。' : sc >= 51 ? '可以合作，差异处多沟通。' : '磨合较多：公事公办、白纸黑字、少谈私事，就能把冲突降到最低。'}</p>
+        <button class="bz-cancel" data-act="tdel:${k}">✕ 移除 ${esc(m.name)}</button></div></details>`;
+    });
+    if (T.length >= 1) {
+      const list = [{ name: (S.inp.name || '我') + '（你）', ch }].concat(T.map(x => ({ name: x.m.name, ch: x.pc })));
+      const tm = ZEN_T.team(list, E), nm = i => esc(list[i].name);
+      const wx = {}; ELS.forEach(e => wx[e] = Math.round(tm.el[e] * 100));
+      html += `<div class="bz-grid bz-grid2">${wxCard('t-wx', '团队五行配置', wx)}${card('t-wxn', '五行解读', `<p>${tm.lack.length ? `团队缺<b>${tm.lack.map(gzc).join('')}</b>：少了${tm.lack.map(e => ZEN_T.ELJOB[e]).join('、')}方面的人，可以找这类人补位，或刻意分配这方面的工作。` : '五行没有明显缺失，配置算均衡。'}</p><p>${tm.much.length ? `<b>${tm.much.map(gzc).join('')}</b>偏旺：团队风格偏向${tm.much.map(e => ZEN_T.ELJOB[e]).join('、')}，要防一面倒。` : ''}</p><p class="bz-muted">对你来说，团队里${gzc(ch.yong)}多就越帮你：现在占 ${wx[ch.yong]}%。</p>`)}</div>`;
+      html += card('t-roles', '各人擅长与分工建议', `<ul class="bz-list2">${tm.roles.map(r => `<li><b>${esc(r.name)}</b>（${gzc(r.dm)}${r.de}）：擅长${r.tal}；适合负责${r.job}。</li>`).join('')}</ul>`);
+      if (list.length >= 3) html += card('t-pairs', '团队两两合拍度', `<ul class="bz-dlist">${tm.pairs.map(p => `<li class="bz-d-${p.score >= 56 ? 'good' : p.score >= 51 ? 'mid' : 'bad'}"><b>${nm(p.i)} × ${nm(p.j)}</b><span>${p.score} 分 · ${A.level(p.score)}</span></li>`).join('')}</ul><p class="bz-tip">最佳搭档：${nm(tm.pairs[0].i)} × ${nm(tm.pairs[0].j)}。${tm.pairs[tm.pairs.length - 1].score < 51 ? `需留意：${nm(tm.pairs[tm.pairs.length - 1].i)} × ${nm(tm.pairs[tm.pairs.length - 1].j)}，尽量别让两人单独对接重要事。` : ''}</p>`);
+    }
+    return html + form + '<p class="bz-muted">合拍度取双方互看的平均分。八字只是参考，好的团队还是靠沟通、信任和清楚的分工。</p>';
+  }
+  function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null, zmode: S.zmode, team: S.team || null }); }
   function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year', 'zodiac'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
   function track() {
     if (!S.ch || S.editing) return; const sn = snapshot();
@@ -1598,7 +1695,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
   }
   function restore(sn) {
     const o = JSON.parse(sn); const rawChanged = JSON.stringify(o.raw) !== JSON.stringify(S.raw || null);
-    Object.assign(S, { tab: o.tab, date: o.date, lnYear: o.lnYear, dy: o.dy, num: o.num, mbti: o.mbti, partner: o.partner, zmode: o.zmode || '年', editing: false });
+    Object.assign(S, { tab: o.tab, date: o.date, lnYear: o.lnYear, dy: o.dy, num: o.num, mbti: o.mbti, partner: o.partner, zmode: o.zmode || '年', team: o.team || S.team, editing: false }); if (S.team) tSave(S.team);
     if (S.mbti) mSave(S.mbti);
     if (rawChanged && o.raw) { S.raw = o.raw; save(o.raw); const f = document.createElement('div'); f.innerHTML = formHtml(o.raw); const r = readForm(f.querySelector('form')); if (r) { const keep = { date: S.date, lnYear: S.lnYear, dy: S.dy }; compute(r.inp); Object.assign(S, keep); } }
     H.applying = true; render(); H.applying = false; H.cur = sn; updUR();
@@ -1625,7 +1722,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
     app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => `<button class="bz-tab ${S.tab === k ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${t}</button>`).join('');
     const showNav = ['day', 'week', 'month', 'year', 'zodiac'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     app.querySelector('#bz-view').innerHTML = html;
     track();
@@ -1645,6 +1742,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
     if (a === 'mreset') { S.mbti = { ans: [], done: false }; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
     const [k, v] = a.split(':');
     if (k === 'zm') { S.zmode = v; render(); return; }
+    if (k === 'tdel') { S.team.splice(+v, 1); tSave(S.team); S.tOpen = false; render(); return; }
     if (k === 'tab') { S.tab = v; try { history.replaceState(null, '', '#' + v); } catch (e) { location.hash = v; } }
     else if (k === 'day') { S.date = v; S.tab = 'day'; }
     else if (k === 'month') { S.date = v; S.tab = 'month'; }
@@ -1657,7 +1755,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_Z;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
