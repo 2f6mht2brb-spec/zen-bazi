@@ -397,6 +397,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tab{font-size:16px!important;font-weight:700!important;padding:11px 2px!important;gap:5px!important;letter-spacing:1px;border-radius:12px!important}.bz-tab i{font-size:20px!important;line-height:1;font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}
 @media (max-width:360px){.bz-tab{font-size:14.5px!important;letter-spacing:0}}
 .bz-tab i{height:22px;display:flex;align-items:center;justify-content:center}.bz-tab i svg{display:block}
+.bz-evd{margin-top:8px;padding:7px 10px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--line)}.bz-evd summary{cursor:pointer;font-size:12.5px;color:var(--gold2);list-style:none}.bz-evd summary::after{content:' ▾';opacity:.6}.bz-evd h6{margin:10px 0 3px;font-size:12px;color:var(--acc,#e9c46a);letter-spacing:1px}.bz-evd .bz-v{margin-right:4px}
 </style>
 </head>
 <body>
@@ -784,10 +785,11 @@ const ZEN_A = (function (E, GUA) {
     const nn = notes.find(n => NOTEEV[n] && !['六合', '贵人', '合日支'].includes(n)) || notes.find(n => NOTEEV[n]);
     const ne = nn ? NOTEEV[nn] : null;
     const sh = wxShare([[gz, 1]]); const top = ELS.slice().sort((a, b) => sh[b] - sh[a])[0]; let w = WXEV[top];
-    let main = st, sec = ne || STEMEV[tenGod(ch.dm, gz[0])][(h + 1) % 2];
-    if (ne && nn !== '六合' && nn !== '贵人' && nn !== '合日支') { main = ne; sec = st; }
-    if (w[0] === sec[0] || w[0] === main[0]) w = STEMEV[tenGod(ch.dm, HID[gz[1]][0])][h % 2];
-    return [main, sec, w];
+    const S1 = { k: 'stem', s: gz[0] }, S2 = ne ? { k: 'note', n: nn } : { k: 'stem', s: gz[0] };
+    let main = st, sec = ne || STEMEV[tenGod(ch.dm, gz[0])][(h + 1) % 2], ms = S1, ss = S2, ws = { k: 'wx', el: top };
+    if (ne && nn !== '六合' && nn !== '贵人' && nn !== '合日支') { main = ne; sec = st; ms = S2; ss = S1; }
+    if (w[0] === sec[0] || w[0] === main[0]) { w = STEMEV[tenGod(ch.dm, HID[gz[1]][0])][h % 2]; ws = { k: 'stem', s: HID[gz[1]][0], hid: true }; }
+    return [[...main, ms], [...sec, ss], [...w, ws]];
   }
   function yiji(gz, ch) { const g1 = GRP[tenGod(ch.dm, gz[0])], g2 = GRP[tenGod(ch.dm, HID[gz[1]][0])]; const u = (a, b) => [...new Set((a + (b !== a ? '、' + b : '')).split('、'))].join('、');
     return { yi: u(YI[g1], YI[g2]), ji: u(JI[g1], JI[g2]) }; }
@@ -1944,8 +1946,40 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
       <p class="bz-warn">⚠️ 只限 18 岁以上的非穆斯林。根据伊斯兰教义及马来西亚相关规定，穆斯林不可参与任何形式的博彩。小额娱乐，量力而为。</p>`, 'bz-lucky');
   }
   function luckyCard(id, title, l) { return card(id, title, `<div class="bz-nums"><div class="bz-num4"><span class="bz-num4-label">用神组</span><b>${l.a}</b></div><div class="bz-num4"><span class="bz-num4-label">相生组</span><b>${l.b}</b></div></div><p class="bz-tip">${l.note}</p><p class="bz-muted">开奖完全随机，这些号码只是按五行喜用取的幸运数字，不会提高中奖几率。小额娱乐，量力而为。</p>`, 'bz-lucky'); }
-  function eventsCard(ev) { const tag = ['重点留意', '可能遇到', '身体与天气'];
-    return card('d-events', '今日事件预示', ev.map((e, i) => `<div class="bz-ev ${i === 0 ? 'bz-ev-main' : ''}"><span class="bz-ev-tag">${tag[i]}</span><div class="bz-ev-title">${e[0]}</div><div class="bz-ev-tip">${e[1]}</div></div>`).join('') + '<p class="bz-muted">按当日干支与命局的冲合刑害、十神象意推演的生活提示，属趣味参考，不代表一定会发生。</p>', 'bz-event'); }
+  const PAL = { y: ['年柱', '祖上、长辈、外部环境'], m: ['月柱', '工作、事业环境、父母兄弟'], d: ['日柱', '你自己与配偶（夫妻宫）'], h: ['时柱', '子女、下属、晚年与计划'] };
+  const HOURS = { 木: '寅卯时（3–7 点）', 火: '巳午时（9–13 点）', 土: '辰时、未时（7–9、13–15 点）', 金: '申酉时（15–19 点）', 水: '亥子时（21–1 点）' };
+  const ITEM = { 木: '绿植、木质手串', 火: '红色小物、暖光灯', 土: '陶瓷摆件、黄水晶', 金: '金属饰品、白色杯子', 水: '一杯清水、黑曜石' };
+  function evDetail(e, gz, i) {
+    const ch = S.ch, src = e[2] || {}, dmEl = E.elOf(ch.dm), L = l => l === '平' ? '中性' : l + '神';
+    const why = [], out = [], fix = [`<li>✋ <b>行动：</b>${e[1]}</li>`];
+    let lab = '平', tong = null;
+    if (src.k === 'stem') { const tg = E.tenGod(ch.dm, src.s), el = E.elOf(src.s); lab = ch.label(el);
+      why.push(`今日${src.hid ? `地支 ${gzc(gz[1])} 藏干` : '天干'} ${gzc(src.s)}（${el}），对你的日主 ${gzc(ch.dm)}（${dmEl}）是「${tg}」，属${{ 官: '官杀', 印: '印星', 财: '财星', 食: '食伤', 比: '比劫' }[E.GRP[tg]]}；五行${el}对你是${L(lab)}。`);
+      const nat = ['y', 'm', 'd', 'h'].filter(k => ch.P[k] && ch.P[k][0] === src.s).map(k => PAL[k][0]);
+      if (nat.length) why.push(`你的${nat.join('、')}也透出 ${gzc(src.s)}，同气相引，这件事的感受会更明显。`);
+    } else if (src.k === 'note') { const b = gz[1], bel = E.elOf(b);
+      ['y', 'm', 'd', 'h'].forEach(k => { const nb = ch.P[k] && ch.P[k][1]; if (!nb) return; const r = E.chong(b, nb) ? '相冲' : E.HAI[b] === nb ? '相害' : (E.XING[b] || []).includes(nb) || (E.XING[nb] || []).includes(b) ? (b === nb ? '自刑' : '相刑') : E.LIUHE[b] === nb ? '六合' : '';
+        if (!r) return; why.push(`今日地支 ${gzc(b)}（${bel}）与你${PAL[k][0]}地支 ${gzc(nb)}（${E.elOf(nb)}）${r}，牵动「${PAL[k][1]}」。`);
+        const ea = bel, eb = E.elOf(nb); if (r !== '六合' && ea !== eb) { tong = E.CTL[ea] === eb ? E.GEN[ea] : E.CTL[eb] === ea ? E.GEN[eb] : null; } });
+      lab = ch.label(bel); if (!why.length) why.push(`今日地支 ${gzc(b)} 引动你命局的地支（${src.n}）。`);
+    } else if (src.k === 'wx') { const el = src.el, o = ZEN_T2.M[el]; lab = ch.label(el);
+      why.push(`今日干支 ${gzc(gz)} 的五行以「${el}」最旺；${el}在中医对应${o.zang}·${o.fu}、${o.ti}、${o.qiao}。你命局${el}占 ${Math.round(ch.share[el] * 100)}%，对你是${L(lab)}。`); }
+    let good = lab === '用' || lab === '喜', tone = good ? 'g' : lab === '忌' ? 'b' : 'm', tl = good ? '对你有利' : lab === '忌' ? '对你不利' : '中性';
+    if (src.k === 'note') { const bad = /冲|害|刑/.test(src.n), pals = why.map(w => (w.match(/「(.+?)」/) || [])[1]).filter(Boolean);
+      if (bad) { tone = good ? 'm' : 'b'; tl = good ? '有摩擦但可化解' : '需要留意';
+        out.push(`这是${src.n}，主摩擦与变动，最容易出现在「${pals.join('」「') || '人际'}」这些方面。${good ? '好在来的五行是你的喜用，属于小波折，处理得当反而能借机理顺关系。' : '来的五行对你不利，若硬碰或拖延，误会和麻烦容易扩大，提前防范可把影响降到最小。'}`); }
+      else { tone = 'g'; tl = '对你有利'; out.push(`这是${src.n}，主和合与助力，「${pals.join('」「') || '人际'}」方面容易得到配合，适合主动推进。`); }
+    }
+    if (!out.length) out.push(i === 2 ? (good ? '身体反应较轻，休息一下就能恢复。' : '若不理会，容易累积成疲劳或小毛病，宜当天就调整。')
+      : good ? '这股气对你有利：处理得当，最后多半有惊无险，甚至转成好结果。' : '这股气对你不利：若硬碰或疏忽，事情容易扩大；提前防范就能把影响降到最小。');
+    fix.push(`<li>⏰ <b>时辰：</b>重要的事安排在${HOURS[ch.yong]}，这是你用神「${ch.yong}」当旺的时段。</li>`);
+    if (tong) fix.push(`<li>⚖️ <b>五行通关：</b>冲克双方之间用「${tong}」来调和——可随身带${ITEM[tong]}，或多用${A.COLOR[tong]}色。</li>`);
+    fix.push(`<li>🧭 <b>方位与颜色：</b>面向${A.DIR[ch.yong]}方，穿戴${A.COLOR[ch.yong]}色，补强用神。</li>`);
+    if (src.k === 'wx') { const o = ZEN_T2.M[src.el]; fix.push(`<li>🌿 <b>调养：</b>${o.life}；${good ? o.act : '饮食少' + o.wei + '，' + o.act}。</li>`, `<li>🩺 如果不适持续两三天以上，或越来越严重，请看医生，别只靠调养。</li>`); }
+    return `<details class="bz-evd"><summary>🔍 点开看命盘对应与化解</summary><h6>命盘对应</h6><ul class="bz-tcml">${why.map(w => `<li>${w}</li>`).join('')}</ul><h6>可能的结果</h6><p class="bz-small"><i class="bz-v ${tone}">${tl}</i> ${out.join('')}</p><h6>化解方法</h6><ul class="bz-tcml">${fix.join('')}</ul></details>`;
+  }
+  function eventsCard(ev, gz) { const tag = ['重点留意', '可能遇到', '身体与天气'];
+    return card('d-events', '今日事件预示', ev.map((e, i) => `<div class="bz-ev ${i === 0 ? 'bz-ev-main' : ''}"><span class="bz-ev-tag">${tag[i]}</span><div class="bz-ev-title">${e[0]}</div><div class="bz-ev-tip">${e[1]}</div>${evDetail(e, gz, i)}</div>`).join('') + '<p class="bz-muted">按当日干支与命局的冲合刑害、十神象意推演的生活提示，属趣味参考，不代表一定会发生。</p>', 'bz-event'); }
   function nine(items, cls) { return `<div class="bz-fly">${items.map(([d, a, b, c, k]) => `<div class="bz-flycell ${cls(k)}"><div class="bz-flydir">${d}</div><div class="bz-flystar">${a}</div><div class="bz-flymean">${b}${c ? ' · ' + c : ''}</div></div>`).join('')}</div>`; }
   const FC = { 大吉: 'bz-fly-g2', 吉: 'bz-fly-g1', 小吉: 'bz-fly-g1', 凶: 'bz-fly-b2', 大凶: 'bz-fly-b2', 小凶: 'bz-fly-b1' };
   function compassCard(gz) { const c = A.compass(S.ch, gz); const o = ['东南', '南', '西南', '东', '中', '西', '东北', '北', '西北'];
@@ -2056,7 +2090,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
     return hero('当日整体', d.s[0], d.lv[0], `<h2>阳历 ${ymdCN(d.date)} 周${d.wd}</h2>`, [`<p class="bz-muted">流年 ${gzc(d.p.y)} · 流月 ${gzc(d.p.m)} · 流日 ${gzc(d.p.d)}${d.dy ? ' · 大运 ' + gzc(d.dy.gz) : ''}</p>`, `<p>${summary(d.p.d, d.s)}</p>`, `<p class="bz-muted">神煞提示：${d.notes.length ? d.notes.join('、') : '无'}</p>`])
-      + eventsCard(A.events(ch, d.date, d.p.d, d.notes))
+      + eventsCard(A.events(ch, d.date, d.p.d, d.notes), d.p.d)
       + sceneCard('d-scene', '人间百态 · 今日喜怒哀乐', d.p.d, d.s, d.notes)
       + luckyCard4D(ch, d)
       + catsGrid(d.p.d, d.s)
