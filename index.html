@@ -414,6 +414,12 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-hero2{display:flex!important;flex-wrap:nowrap!important;gap:14px!important;align-items:center!important;padding:14px 14px!important}
 .bz-hero2 .bz-hl{flex:0 0 104px;text-align:center}.bz-gauge{width:104px;height:96px;display:block}.bz-hs{font-size:11px;opacity:.7;margin-top:-4px;letter-spacing:1px}
 .bz-hero2 .bz-hr{flex:1;min-width:0!important}.bz-hero2 h2{font-size:16px!important;margin:0 0 4px!important;line-height:1.35}.bz-hero2 .bz-solar{display:none}.bz-hero2 .bz-hr p{margin:4px 0;font-size:13px;line-height:1.55}
+.bz-gflow{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 10px}.bz-gbox{flex:1;max-width:150px;text-align:center}.bz-gbox b{display:block;font-size:15px;color:var(--gold2);margin-top:6px}.bz-gbox small{font-size:10px;opacity:.65}
+.bz-garr{display:flex;flex-direction:column;align-items:center;color:var(--gold2);font-size:20px}.bz-garr span{font-size:10px;padding:1px 6px;border-radius:999px;background:rgba(255,138,115,.18);color:#ffb4a6;white-space:nowrap}
+.bz-hx{display:inline-flex;flex-direction:column;gap:5px;width:58px}.bz-hx i{display:flex;gap:8px;height:7px}.bz-hx i b{flex:1;border-radius:2px;background:var(--gold2)}.bz-hx i.mv b{background:#ff8a73;box-shadow:0 0 8px #ff8a73}.bz-hx.to i.mv b{background:#4cd38a;box-shadow:0 0 8px #4cd38a}
+.bz-g3{display:flex;flex-direction:column;gap:6px;margin:10px 0}.bz-g3>div{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:start;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px;line-height:1.5}
+.bz-g3 em{font-style:normal;font-size:12px;color:var(--acc,#e9c46a);padding-top:1px}.bz-g3 span b{color:#fff}.bz-v{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;white-space:nowrap}.bz-v.g{background:rgba(76,211,138,.18);color:#7fe0aa}.bz-v.m{background:rgba(255,255,255,.1)}.bz-v.b{background:rgba(255,107,107,.18);color:#ffab9a}
+.bz-guacard .bz-comfort{margin:6px 0}
 </style>
 </head>
 <body>
@@ -1781,12 +1787,51 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   function zodiacCard(id, title, b, isYear, scope) { const z = A.zodiacRel(S.ch, b, isYear);
     return card(id, title, `<div class="bz-gua"><div class="bz-hex">${['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'][Z.indexOf(b)]}</div><div><div class="bz-gname">${gzc(b)} · ${z.animal}</div><p class="bz-muted">${scope} · 你属${AN[Z.indexOf(S.ch.P.y[1])]}</p></div></div>
       <dl class="bz-kv"><dt>与你的关系</dt><dd>${z.rel}</dd><dt>相合生肖</dt><dd>${z.good}</dd><dt>相冲生肖</dt><dd>${z.bad}</dd><dt>冲煞</dt><dd>${z.chong}</dd></dl>`); }
-  function guaCard(id, title, n, how) { const g = A.guaInfo(S.ch, n, how);
-    const cf = ZEN_C.GUA[n] || {};
-    return card(id, title, `<div class="bz-gua"><div class="bz-hex">${g.sym}</div><div><div class="bz-gname">${g.full}</div><p class="bz-muted">上卦 ${g.up} · 下卦 ${g.lo}</p><p class="bz-muted">${g.image}</p></div></div>
-      <div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话</div><p class="bz-cf-t">${cf.comfort || ''}</p><div class="bz-cf-a"><b>今天可以做的小事：</b>${cf.act || ''}</div></div>
-      <dl class="bz-kv"><dt>卦辞</dt><dd class="bz-quote">${g.text}</dd><dt>白话</dt><dd>${g.plain}</dd><dt>建议</dt><dd>${g.mean}</dd><dt>对你</dt><dd><b>${ZEN_C.REL(g.sc)}</b><div class="bz-muted">${g.ua}。你的本命卦是${S.ch.kua}卦（${GUA.tri[S.ch.kua].el}），看作“体”，这一卦看作“用”：用卦生体为吉，同五行为比和，体克用为得财，体生用为泄气，用克体为压力。</div></dd></dl>
-      <details class="bz-help"><summary>怎么读这一卦</summary><p>六十四卦由八个基本卦两两上下相叠而成。上卦代表外在环境和他人，下卦代表你自身。卦辞是《周易》原文，白话是它的意思。</p><p>${how}</p></details>`); }
+  const TRL = { 乾: [1, 1, 1], 兑: [1, 1, 0], 离: [1, 0, 1], 震: [1, 0, 0], 巽: [0, 1, 1], 坎: [0, 1, 0], 艮: [0, 0, 1], 坤: [0, 0, 0] };
+  const trOf = a => Object.keys(TRL).find(k => TRL[k].join('') === a.join(''));
+  const hexBy = (u, l) => Object.keys(GUA.hex).find(k => GUA.hex[k].u === u && GUA.hex[k].l === l);
+  const YAOP = ['初', '二', '三', '四', '五', '上'];
+  const YAOM = [
+    ['事情刚开头', '根基未稳，宜低调准备，不急着出手'],
+    ['在内部、在当下的位置', '守住本分、做好配合，多半有好评'],
+    ['内外交界、正在过关', '最容易出错的阶段，谨慎小心、别冒进'],
+    ['接近核心与上级', '离机会很近但多忧惧，做事要周到、懂分寸'],
+    ['居于主导之位', '最有利、最能发挥的位置，可以承担和拍板'],
+    ['走到了尽头', '物极必反，见好就收，准备转换下一步']
+  ];
+  function yaoInfo(n, seed) {
+    const h = GUA.hex[n], L = [...TRL[h.l], ...TRL[h.u]], k = seed % 6, yang = L[k] === 1, pos = k + 1;
+    const dang = (pos % 2 === 1) === yang, M = L.slice(); M[k] = 1 - M[k];
+    const bian = hexBy(trOf(M.slice(3)), trOf(M.slice(0, 3)));
+    const hu = hexBy(trOf(L.slice(2, 5)), trOf(L.slice(1, 4)));
+    const ying = L[k] !== L[(k + 3) % 6];
+    const dir = yang ? '阳爻变阴：由刚转柔，宜收一收、放软身段' : '阴爻变阳：由柔转刚，宜主动一点、拿出决断';
+    return { L, k, pos, name: `${YAOP[k]}${yang ? '九' : '六'}`.replace(/^初(九|六)$/, (m, a) => '初' + a).replace(/^上(九|六)$/, (m, a) => '上' + a), yang, dang, ying, bian, hu, M,
+      t: `${YAOM[k][0]}：${YAOM[k][1]}。${dir}。${dang ? '此爻当位，名正言顺，做起来较顺。' : '此爻不当位，处境有点别扭，更要守正。'}${ying ? '与对应之爻阴阳相应，有人呼应支援。' : '与对应之爻不相应，多靠自己。'}` };
+  }
+  const yname = (k, L) => k === 0 ? '初' + (L[0] ? '九' : '六') : k === 5 ? '上' + (L[5] ? '九' : '六') : (L[k] ? '九' : '六') + YAOP[k];
+  const hexDraw = (L, k, cls) => `<div class="bz-hx ${cls || ''}">${L.slice().reverse().map((v, i) => { const idx = 5 - i; return `<i class="${v ? 'y' : 'n'} ${idx === k ? 'mv' : ''}"><b></b>${v ? '' : '<b></b>'}</i>`; }).join('')}</div>`;
+  function guaCard(id, title, n, how, seed = 0) { const g = A.guaInfo(S.ch, n, how), y = yaoInfo(n, seed), bg = A.guaInfo(S.ch, y.bian, ''), hb = GUA.hex[y.bian];
+    const cf = ZEN_C.GUA[n] || {}, U = id[0] === 'y' ? '今年' : id[0] === 'm' ? '这个月' : id[0] === 'w' ? '这周' : '今天';
+    const verdict = sc => sc >= 2 ? ['吉', 'g'] : sc >= .5 ? ['小吉', 'g'] : sc >= -.5 ? ['平', 'm'] : ['需谨慎', 'b'];
+    const v1 = verdict(g.sc), v2 = verdict(bg.sc);
+    return card(id, title, `<div class="bz-gflow">
+        <div class="bz-gbox">${hexDraw(y.L, y.k)}<b>${g.full}</b><small>本卦 · 现在</small></div>
+        <div class="bz-garr"><span>${yname(y.k, y.L)}动</span>→</div>
+        <div class="bz-gbox">${hexDraw(y.M, y.k, 'to')}<b>${hb.full}</b><small>变卦 · 走向</small></div></div>
+      <div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话</div><p class="bz-cf-t">${cf.comfort || g.mean}</p><div class="bz-cf-a"><b>${U}可以做的小事：</b>${(cf.act || '').replace(/^今天/, '')}</div></div>
+      <div class="bz-g3">
+        <div><em>现在</em><span><b>${g.full}</b> · ${g.mean}</span><i class="bz-v ${v1[1]}">${v1[0]}</i></div>
+        <div><em>关键</em><span><b>${yname(y.k, y.L)}（第${y.pos}爻）</b> · ${y.t}</span></div>
+        <div><em>走向</em><span><b>${hb.full}</b> · ${hb.mean}</span><i class="bz-v ${v2[1]}">${v2[0]}</i></div>
+      </div>
+      <details class="bz-more"><summary>📜 卦辞与详解</summary>
+        <dl class="bz-kv"><dt>本卦</dt><dd><span class="bz-quote">${g.text}</span><div class="bz-small">${g.plain}</div></dd>
+        <dt>变卦</dt><dd><span class="bz-quote">${hb.text}</span><div class="bz-small">${hb.plain}</div></dd>
+        <dt>互卦</dt><dd><b>${GUA.hex[y.hu].full}</b> · ${GUA.hex[y.hu].mean}<div class="bz-small">互卦取本卦中间四爻，看事情内部的过程。</div></dd>
+        <dt>对你</dt><dd class="bz-small">本卦${g.ua}；变卦${bg.ua}。你的本命卦是${S.ch.kua}卦（${GUA.tri[S.ch.kua].el}），看作“体”：用卦生体或比和为吉，体克用为得财，体生用为泄气，用克体为压力。</dd></dl>
+        <p class="bz-small">${how} 动爻按当期干支数起（梅花易数法）：本卦是现在的状态，动爻是转变的关键，变卦是事情的走向。</p>
+      </details>`, 'bz-guacard'); }
   function luckyCard4D(ch, d) {
     const OPS = [['M', '#f5c542'], ['K', '#4f8cff'], ['T', '#ff5a5a']];
     const wd = new Date(d.date + 'T00:00:00').getDay(), draw = [0, 3, 6].includes(wd);
@@ -1875,7 +1920,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       + luckyCard4D(ch, d)
       + catsGrid(d.p.d, d.s)
       + `<div class="bz-grid bz-grid2">${wxCard('d-wx', '五行能量', A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]))}${ssCard('d-ss', '十神', d.p.d)}${zodiacCard('d-sx', '今日生肖', d.p.d[1], false, '今日 · 日支生肖')}</div>`
-      + guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。')
+      + guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。', G.indexOf(d.p.d[0]) + Z.indexOf(d.p.d[1]) + 2 + +d.date.slice(8))
       + compassCard(d.p.d)
       + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`);
   }
@@ -1890,7 +1935,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       + card('w-chart', '每天整体分', bars(days.map(d => ({ v: d.s[0], l1: '周' + d.wd, l2: A.md(d.date), sel: d.date === S.date, act: 'day:' + d.date, tip: `${d.date} ${d.p.d} 整体${d.s[0]}（${d.lv[0]}）` })), { label: '本周每天整体分' }) + '<p class="bz-muted">点柱子查看当天详情。</p>')
       + `<div class="bz-grid">${CATS.map((k, i) => scoreCat(CATN[i], avg[i + 1], A.level(avg[i + 1]))).join('')}</div>`
       + `<div class="bz-grid bz-grid2">${wxCard('w-wx', '五行能量（七天平均）', sh)}${card('w-ss', '本周每日十神', `<p>${days.map(d => `${d.wd} ${gzc(d.p.d[0])}${tenGod(S.ch.dm, d.p.d[0])}`).join(' · ')}</p>`)}${card('w-sx', '本周每日生肖', `<p>${days.map(d => `${d.wd} ${AN[Z.indexOf(d.p.d[1])]}`).join(' · ')}</p><p class="bz-tip">${notable.length ? notable.join('；') : '本周没有特别的冲合日子。'}</p>`)}</div>`
-      + guaCard('w-gua', '易经 · 本周卦（卦气）', A.qiGua(S.B, days[3].date), '本周卦取这一周中间那天（周四）的值日卦。');
+      + guaCard('w-gua', '易经 · 本周卦（卦气）', A.qiGua(S.B, days[3].date), '本周卦取这一周中间那天（周四）的值日卦。', G.indexOf(days[3].p.d[0]) + Z.indexOf(days[3].p.d[1]) + 2 + +days[3].date.slice(8));
   }
   function vMonth() {
     const m = S.B.monthOf(S.date); if (!m) return card('x', '', '<p>超出可推算范围。</p>');
@@ -1903,7 +1948,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       + catsGrid(m.gz, m.s)
       + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
-      + guaCard('m-gua', '易经 · 月令消息卦', GUA.bigua[m.gz[1]], '十二消息卦用阴阳爻的增减表示一年的节气：子月一阳生为复，到巳月六爻皆阳为乾；午月一阴生为姤，到亥月六爻皆阴为坤。')
+      + guaCard('m-gua', '易经 · 月令消息卦', GUA.bigua[m.gz[1]], '十二消息卦用阴阳爻的增减表示一年的节气：子月一阳生为复，到巳月六爻皆阳为乾；午月一阴生为姤，到亥月六爻皆阴为坤。', G.indexOf(m.gz[0]) + Z.indexOf(m.gz[1]) + 2)
       + card('m-cal', '每日运势日历', `<div class="bz-wkh">${'一二三四五六日'.split('').map(x => `<span>${x}</span>`).join('')}</div><div class="bz-cal">${'<div></div>'.repeat(off)}${days.map(d => `<button class="bz-cell ${d.date === S.date ? 'bz-sel' : ''}" data-act="day:${d.date}" style="background:color-mix(in srgb, ${col(d.s[0])} ${Math.round(8 + d.s[0] * .4)}%, transparent)"><small>${A.md(d.date)} ${d.p.d}</small><b>${d.s[0]}</b></button>`).join('')}</div><p class="bz-muted">点日期查看当天详情。</p>`)
       + `<div class="bz-grid bz-grid2">${card('m-best', '本月好日子', `<ol class="bz-list">${top.map(li).join('')}</ol>`)}${card('m-low', '宜低调的日子', `<ol class="bz-list">${low.map(li).join('')}</ol>`)}</div>`;
   }
@@ -1916,7 +1961,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       + catsGrid(x.gz, x.s)
       + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
-      + guaCard('y-gua', '易经 · 流年卦（干支起卦）', A.yearGua(x.gz), '流年卦用干支起卦：天干序数除以 8 的余数取上卦，地支序数除以 8 的余数取下卦，按先天八卦数（乾1 兑2 离3 震4 巽5 坎6 艮7 坤8）。')
+      + guaCard('y-gua', '易经 · 流年卦（干支起卦）', A.yearGua(x.gz), '流年卦用干支起卦：天干序数除以 8 的余数取上卦，地支序数除以 8 的余数取下卦，按先天八卦数（乾1 兑2 离3 震4 巽5 坎6 艮7 坤8）。', G.indexOf(x.gz[0]) + Z.indexOf(x.gz[1]) + 2 + y)
       + flyCard(y)
       + card('y-chart', '全年各月整体分', bars(ms.map(m => ({ v: m.s[0], l1: m.gz, l2: A.md(m.start), sel: m.start <= S.date && S.date <= m.end, act: 'month:' + m.start, tip: `${m.gz}月 ${A.md(m.start)}起 整体${m.s[0]}（${A.level(m.s[0])}）` })), { label: '全年各月整体分' }) + '<p class="bz-muted">点柱子查看那个月。</p>');
   }
