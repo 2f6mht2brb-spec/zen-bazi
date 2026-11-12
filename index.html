@@ -1264,7 +1264,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
-  const TABS = [['day', '☼', '今日'], ['week', '☷', '本周'], ['month', '☾', '本月'], ['year', '✦', '今年'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['team', '⚇', '团队关系'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活'], ['nine', '☲', '九运']];
+  const TABS = [['day', '☼', '今日运程'], ['week', '☷', '本周'], ['month', '☾', '本月运程'], ['year', '✦', '今年运程'], ['liunian', '☰', '流年运程'], ['dayun', '☵', '大运运程'], ['zodiac', '◎', '生肖运势'], ['team', '⚇', '团队关系'], ['love', '♡', '感情婚姻'], ['number', '#', '数字能量'], ['chart', '❖', '命盘'], ['mbti', '◐', '性格测试'], ['life', '❀', '生活提示'], ['nine', '☲', '九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
