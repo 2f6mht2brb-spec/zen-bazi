@@ -382,6 +382,8 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 @media (prefers-reduced-motion:reduce){.za-spin{animation:none}}
 .bz-wbad summary b{color:#ffb4a6}.bz-wdo,.bz-wfix{padding:8px 10px;border-radius:9px;margin-top:6px;font-size:13px;line-height:1.55}.bz-wdo{background:rgba(76,211,138,.12);border-left:3px solid #4cd38a}.bz-wfix{background:rgba(255,138,115,.1);border-left:3px solid #ff8a73}.bz-wdo b,.bz-wfix b{display:block;font-size:12px;margin-bottom:2px}
 .bz-chip{display:inline-block;margin:2px 4px 2px 0;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:12px;cursor:pointer}.bz-wdays td:first-child{white-space:nowrap;font-size:12px}.bz-table td small{display:block;font-size:10px;opacity:.6}.bz-table tr.bz-cur td{background:rgba(212,175,55,.1)}
+html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5),transparent 60%),radial-gradient(1.5px 1.5px at 82% 38%,var(--ystar),transparent 60%),radial-gradient(1px 1px at 46% 72%,rgba(255,255,255,.35),transparent 60%),radial-gradient(1px 1px at 68% 90%,var(--ystar),transparent 60%),radial-gradient(ellipse at 50% -12%,var(--yg1),transparent 62%),radial-gradient(ellipse at 100% 100%,var(--yg2),transparent 55%),radial-gradient(ellipse at 0% 70%,var(--yg1),transparent 50%);background-size:300px 300px,300px 300px,300px 300px,300px 300px,100% 100%,100% 100%,100% 100%;background-attachment:fixed;transition:background-color .6s}
+.bz-bgnote{font-size:.85em;opacity:.6;margin-left:4px}
 </style>
 </head>
 <body>
@@ -1637,6 +1639,21 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   const save = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { } };
 
   // ---------- small renderers ----------
+  // 按用神 / 喜神调配背景
+  const YBG = {
+    火: ['朱紫暖光', '#160609', 'rgba(220,60,60,.38)', 'rgba(255,150,60,.22)', '#ffb37a'],
+    木: ['青翠林光', '#04120b', 'rgba(40,170,100,.34)', 'rgba(150,220,120,.18)', '#9fe6a8'],
+    水: ['玄青海光', '#030a18', 'rgba(40,100,210,.38)', 'rgba(80,200,255,.18)', '#8fd0ff'],
+    金: ['银白月光', '#0e0f13', 'rgba(220,225,235,.2)', 'rgba(230,200,120,.18)', '#f2f0e6'],
+    土: ['琥珀大地', '#120c05', 'rgba(210,150,60,.34)', 'rgba(170,110,50,.22)', '#f0c27a']
+  };
+  function applyBg(ch) {
+    const el = document.documentElement;
+    if (!ch) { el.removeAttribute('data-ybg'); return; }
+    const p = YBG[ch.yong], xi = E.ELS.find(e => ch.label(e) === '喜'), q = xi ? YBG[xi] : p;
+    el.setAttribute('data-ybg', ch.yong);
+    el.style.setProperty('--ybg', p[1]); el.style.setProperty('--yg1', p[2]); el.style.setProperty('--yg2', q[3]); el.style.setProperty('--ystar', p[4]);
+  }
   // ---------- 玄化卷名 ----------
   const SCROLL = {
     day: ['日课 · 天时卷', '取法《奇门遁甲》时家', '天行健，君子以自强不息。', '《易经 · 乾卦》'],
@@ -2035,7 +2052,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       <div class="bz-who"><span class="bz-cname">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button></div>
       <div class="bz-birth"><span><b>阳历</b>${i.y}年${i.m}月${i.d}日 · ${esc(hourTxt)}</span></div>
       <h1 class="bz-title">ZEN 八字大师仪表盘</h1>
-      <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}</p>`;
+      <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}<span class="bz-bgnote">· 背景取用神${YBG[ch.yong][0]}</span></p>`;
   }
 
   // ---------- form ----------
@@ -2209,6 +2226,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
   function compute(inp) { S.inp = inp; S.ch = E.makeChart(inp); S.B = A.build(S.ch, TODAY); if (!S.date) S.date = TODAY; S.dy = null; S.lnYear = null; }
   function render() {
     const app = $('#zen');
+    applyBg(S.ch && !S.editing ? S.ch : null);
     if (!S.ch || S.editing) {
       app.querySelector('#bz-banner').innerHTML = S.ch ? banner() : `<div class="bz-eyebrow">☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷</div><h1 class="bz-title">ZEN 八字大师仪表盘</h1><p class="bz-sub">输入姓名、性别和出生日期时辰，自动排出四柱，推算每日、每月、每年运势，以及大运、流年、易经卦、九宫飞星和开运建议。</p>`;
       app.querySelector('#bz-formwrap').innerHTML = formHtml(S.raw); app.querySelector('#bz-formwrap').hidden = false;
