@@ -2297,22 +2297,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
 
 </script>
 <script>if ('serviceWorker' in navigator && location.protocol === 'https:' && !/claude\.ai|claudeusercontent/.test(location.hostname)) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); }</script>
-<div id="bz-th" class="bz-th"><button id="bz-thn" title="换下一个模板">🎨 <span></span></button><button id="bz-thl" title="固定 / 自动轮换"></button></div>
-<script>(function () {
-  const K = ['', 'jade', 'ocean', 'vermil', 'ink', 'rose', 'aurora', 'amber'], N = ['紫金星空', '墨绿翡翠', '深海青蓝', '朱红宫墙', '水墨山水', '晨曦玫瑰', '北极极光', '琥珀大地'], LK = 'zen-theme-lock';
-  let lock = null; try { lock = localStorage.getItem(LK); } catch (e) { }
-  let cur = -1, man = 0;
-  const el = document.documentElement, nm = document.querySelector('#bz-thn span'), lb = document.getElementById('bz-thl');
-  function apply(i, fade) {
-    if (i === cur) return; const go = () => { cur = i; if (K[i]) el.setAttribute('data-th', K[i]); else el.removeAttribute('data-th'); nm.textContent = N[i]; };
-    if (fade && cur >= 0) { el.classList.add('th-fade'); setTimeout(() => { go(); el.classList.remove('th-fade'); }, 450); } else go();
-  }
-  const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, STEP = RM ? 60000 : 1000;
-  function auto() { return (Math.floor(Date.now() / STEP) + man) % K.length; }
-  function tick(fade) { if (lock !== null && lock !== '') apply(+lock, fade); else apply(auto(), fade); lb.textContent = lock ? '🔒 固定' : (RM ? '⏵ 每分钟换' : '⏵ 每秒换'); }
-  document.getElementById('bz-thn').onclick = () => { const n = (cur + 1) % K.length; if (lock) { lock = String(n); try { localStorage.setItem(LK, lock); } catch (e) { } } else man = (man + 1) % K.length; tick(true); };
-  lb.onclick = () => { lock = lock ? '' : String(cur); try { localStorage.setItem(LK, lock); } catch (e) { } tick(false); };
-  tick(false); setInterval(() => tick(false), RM ? 5000 : 1000);
-})();</script>
+
 </body>
 </html>
