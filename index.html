@@ -291,6 +291,14 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 details.bz-four{margin:6px 0;padding:6px 10px}details.bz-four summary{cursor:pointer;color:#e9c46a;font-size:12px}details.bz-four em{font-style:normal;display:inline-block;margin:2px 4px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(76,211,138,.12)}details.bz-four p{margin:6px 0;font-size:12px}
 .bz-inner h4{margin:12px 0 6px;font-size:13px;color:#e9c46a}.bz-sc2 li{padding:8px 10px!important;margin:0 0 5px!important}.bz-sc2 .bz-st{font-size:12px}
 .bz-mast{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);font-size:13px}.bz-mast b{display:block;color:#e9c46a;font-size:12px;margin-bottom:3px}.bz-curve{width:100%;max-width:420px;display:block;margin:4px 0 8px}.bz-h3{font-size:14px;color:#e9c46a;margin:12px 0 4px}
+.bz-tri2{display:flex;flex-direction:column;border-radius:12px;background:rgba(255,255,255,.035);overflow:hidden}.bz-tri2>div{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;font-size:13px;line-height:1.5}.bz-tri2>div+div{border-top:1px solid rgba(255,255,255,.06)}
+.bz-tri2 i{font-style:normal;width:18px;text-align:center;color:#e9c46a;opacity:.8}.bz-tri2 b{flex:0 0 32px;color:#e9c46a;font-size:12px;font-weight:600}.bz-tri2 span{flex:1}.bz-tri2 strong.g{color:#4cd38a}.bz-tri2 strong.r{color:#ff8a73}.bz-tri2 em{font-style:normal;opacity:.5;margin:0 4px}.bz-tri2 small{display:block;font-size:11px;opacity:.65;margin-top:2px}
+.bz-sky{text-align:center;font-size:12px;opacity:.7;margin:8px 0}
+.bz-flip{display:grid;grid-template-columns:1fr;gap:4px}.bz-flip>div:not(.bz-flipa){padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.5}.bz-flip b{display:block;font-size:11px;font-weight:600;margin-bottom:2px}.bz-flip small{display:block;font-size:11px;opacity:.7;margin-top:2px}
+.bz-flip .old{background:rgba(255,138,115,.06);color:rgba(255,255,255,.6)}.bz-flip .old b{color:#ff8a73}.bz-flip .new{background:linear-gradient(135deg,rgba(76,211,138,.16),rgba(76,211,138,.05));border:1px solid rgba(76,211,138,.35)}.bz-flip .new b{color:#4cd38a}.bz-flip .new span{font-weight:600}
+.bz-flipa{text-align:center;font-size:11px;color:#e9c46a;padding:2px 0;letter-spacing:1px}.bz-flipa .d{display:none}
+@media (min-width:560px){.bz-flip{grid-template-columns:1fr auto 1fr;align-items:stretch}.bz-flipa{align-self:center}.bz-flipa .m{display:none}.bz-flipa .d{display:inline}}
+.bz-do{display:flex;gap:10px;margin-top:8px;padding:9px 12px;border-radius:12px;background:rgba(212,175,55,.1);font-size:13px}.bz-do b{flex:0 0 auto;color:#e9c46a;font-size:12px}
 </style>
 </head>
 <body>
@@ -1486,14 +1494,15 @@ if (typeof module !== 'undefined') module.exports = ZEN_MA;
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
       ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
         return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div>
-        <div class="bz-tri">
-          <div class="${I.feels.some(x => !x.ok) ? 'nk' : 'ok'}"><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('、')}<small>${I.feels.map(x => x.d).join('；')}</small></span></div>
-          <div class="${okc}"><b>经历</b><span>${f.content}</span></div>
-          <div class="${okc}"><b>念头</b><span>${th}</span></div>
+        <div class="bz-tri2">
+          <div><i>♡</i><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('<em>·</em>')}<small>${I.feels.map(x => x.d).join('；')}</small></span></div>
+          <div><i>◷</i><b>经历</b><span>${f.content}</span></div>
+          <div><i>☁</i><b>念头</b><span>${th}</span></div>
         </div>
-        <p class="bz-wit">我有这些感受、经历和念头，但我不是它们。它们像天气一样来去，我是看着天气的那片天空。</p>
-        <div class="bz-shift"><div class="nk"><b>旧语境</b><span>${f.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新语境</b><span>${f.ctx}</span></div></div>
-        ${f.ok ? `<p class="bz-tip">从新语境行动：${/[。？！]$/.test(f.act) ? f.act : f.act + '。'}顺的时候也放进“贡献与感恩”，好运不变骄傲。</p>` : `<details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}
+        <p class="bz-sky">我有这些，但我不是它们 —— 它们是天气，我是天空。</p>
+        ${(() => { const sp = x => { const [m, ...r2] = String(x).split('——'); return `<span>${m}</span>${r2.length ? `<small>${r2.join('——')}</small>` : ''}`; };
+          return `<div class="bz-flip"><div class="old"><b>旧语境 · 自动反应</b>${sp(f.old)}</div><div class="bz-flipa"><span class="m">↓ 转念 ↓</span><span class="d">转念 ➜</span></div><div class="new"><b>新语境 · 我的选择</b>${sp(f.ctx)}</div></div>`; })()}
+        ${f.ok ? `<div class="bz-do"><b>▶ 行动</b><span>${/[。？！]$/.test(f.act) ? f.act : f.act + '。'}</span></div><p class="bz-sky">顺的时候也放进“贡献与感恩”，好运不变骄傲。</p>` : `<details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}
         <details class="bz-four"><summary>怎么练：转念三步</summary><p>① 看见内容：只写事实，不加评判<br>② 觉察旧语境：我自动给了它什么意义<br>③ 选择新语境：从承诺、学习、贡献或感恩出发，然后行动</p><p>感受来时，在心里说“我注意到我有……”，而不是“我就是……”。</p></details>
         ${(() => { const m = ZEN_MA.today(r.g0, r.ok0); return `<div class="bz-mast"><b>今日大师之道 · ${m.k}</b><span>${m.t}</span></div>`; })()}
         <h4>六面心法</h4>
