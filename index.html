@@ -384,6 +384,7 @@ html[data-th="rose"] .bz-card,html[data-th="aurora"] .bz-card{box-shadow:0 10px 
 .bz-chip{display:inline-block;margin:2px 4px 2px 0;padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:12px;cursor:pointer}.bz-wdays td:first-child{white-space:nowrap;font-size:12px}.bz-table td small{display:block;font-size:10px;opacity:.6}.bz-table tr.bz-cur td{background:rgba(212,175,55,.1)}
 html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.5),transparent 60%),radial-gradient(1.5px 1.5px at 82% 38%,var(--ystar),transparent 60%),radial-gradient(1px 1px at 46% 72%,rgba(255,255,255,.35),transparent 60%),radial-gradient(1px 1px at 68% 90%,var(--ystar),transparent 60%),radial-gradient(ellipse at 50% -12%,var(--yg1),transparent 62%),radial-gradient(ellipse at 100% 100%,var(--yg2),transparent 55%),radial-gradient(ellipse at 0% 70%,var(--yg1),transparent 50%);background-size:300px 300px,300px 300px,300px 300px,300px 300px,100% 100%,100% 100%,100% 100%;background-attachment:fixed;transition:background-color .6s}
 .bz-bgnote{font-size:.85em;opacity:.6;margin-left:4px}
+.bz-card,.bz-tab,.bz-hero,.bz-banner,.bz-scroll,.bz-xn,.bz-mk{transition:border-color .8s ease,color .8s ease,box-shadow .8s ease,border-radius .8s ease}
 </style>
 </head>
 <body>
@@ -2306,11 +2307,12 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     if (i === cur) return; const go = () => { cur = i; if (K[i]) el.setAttribute('data-th', K[i]); else el.removeAttribute('data-th'); nm.textContent = N[i]; };
     if (fade && cur >= 0) { el.classList.add('th-fade'); setTimeout(() => { go(); el.classList.remove('th-fade'); }, 450); } else go();
   }
-  function auto() { return (Math.floor(Date.now() / 60000) + man) % K.length; }
-  function tick(fade) { if (lock !== null && lock !== '') apply(+lock, fade); else apply(auto(), fade); lb.textContent = lock ? '🔒 固定' : '⏵ 每分钟换'; }
+  const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, STEP = RM ? 60000 : 1000;
+  function auto() { return (Math.floor(Date.now() / STEP) + man) % K.length; }
+  function tick(fade) { if (lock !== null && lock !== '') apply(+lock, fade); else apply(auto(), fade); lb.textContent = lock ? '🔒 固定' : (RM ? '⏵ 每分钟换' : '⏵ 每秒换'); }
   document.getElementById('bz-thn').onclick = () => { const n = (cur + 1) % K.length; if (lock) { lock = String(n); try { localStorage.setItem(LK, lock); } catch (e) { } } else man = (man + 1) % K.length; tick(true); };
   lb.onclick = () => { lock = lock ? '' : String(cur); try { localStorage.setItem(LK, lock); } catch (e) { } tick(false); };
-  tick(false); setInterval(() => tick(true), 5000);
+  tick(false); setInterval(() => tick(false), RM ? 5000 : 1000);
 })();</script>
 </body>
 </html>
