@@ -395,6 +395,9 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-fseg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 12px;padding:5px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
 .bz-fseg button{padding:10px 2px;border-radius:10px;border:0;background:transparent;color:inherit;font:inherit;font-size:15px;font-weight:600;cursor:pointer}.bz-fseg button i{font-style:normal;display:block;font-size:14px;opacity:.8;color:var(--gold2)}
 .bz-fseg button.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1030}.bz-fseg button.on i{color:#1a1030}
+.bz-tab{font-size:16px!important;font-weight:700!important;padding:11px 2px!important;gap:5px!important;letter-spacing:1px;border-radius:12px!important}.bz-tab i{font-size:20px!important;line-height:1;font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}
+@media (max-width:360px){.bz-tab{font-size:14.5px!important;letter-spacing:0}}
+.bz-tab i{height:22px;display:flex;align-items:center;justify-content:center}.bz-tab i svg{display:block}
 </style>
 </head>
 <body>
@@ -1756,7 +1759,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
-  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '◐', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
+  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯\uFE0E', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒\uFE0E', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '<svg viewBox="0 0 20 20" width="1em" height="1em" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg>', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
