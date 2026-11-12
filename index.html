@@ -277,6 +277,7 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-zd{padding:0 12px 10px;font-size:13px}.bz-zd p{margin:6px 0}
 .bz-tm{padding:0}.bz-tm>summary{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;list-style:none;font-size:13px}.bz-tm>summary::-webkit-details-marker{display:none}.bz-tm>summary b{display:flex;flex-direction:column;min-width:96px}.bz-tm>summary b small{font-weight:400;opacity:.75;font-size:11px}.bz-tm>summary i{font-style:normal;font-size:11px;width:30px;text-align:right}.bz-tm .bz-zd{padding:0 14px 14px}
 .bz-chip2{display:inline-block;margin:3px 4px 0 0;padding:4px 8px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
+.bz-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0;font-size:13px}.bz-chain span{padding:4px 10px;border-radius:999px;border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08)}.bz-chain i{font-style:normal;font-size:12px}.bz-chain i::before{content:'→ ';opacity:.6}.bz-chain i::after{content:' →';opacity:.6}
 </style>
 </head>
 <body>
@@ -1648,7 +1649,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
   const TK = 'zen-bazi-team';
   const tLoad = () => { try { return JSON.parse(localStorage.getItem(TK) || '[]') || []; } catch (e) { return []; } };
   const tSave = v => { try { localStorage.setItem(TK, JSON.stringify(v)); } catch (e) { } };
-  const TREL = ['同事', '上司', '下属', '合作伙伴', '队友', '客户', '朋友'];
+  const TREL = ['同事', '上司', '上司的上司', '下属', '合作伙伴', '队友', '客户', '朋友'];
   function tChart(m) { const [y, mo, d] = m.date.split('-').map(Number); return E.makeChart({ gender: m.gender, y, m: mo, d, hour: m.sh === '' || m.sh == null ? null : SHI[+m.sh][1], tz: S.ch.inp.tz, zishi: '换日' }); }
   function goodDays(pc) {
     const out = [];
@@ -1658,6 +1659,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
       const l = pc.label(elOf(d.p.d[0])); if (l === '用' || l === '喜') v += 5; out.push({ dt, d, v }); }
     return out.sort((x, y) => y.v - x.v).slice(0, 3).sort((x, y) => x.dt < y.dt ? -1 : 1);
   }
+  const RELTIP = {
+    上司: (r, sc) => `<b>向上管理：</b>${sc >= 56 ? '他对你比较认可，主动汇报进度、争取有挑战的任务。' : '你们节奏不同，汇报时先讲结论和数字，重要决定用邮件确认。'}${r.g === '官' ? '他天生对你有督促作用，听进去会进步很快。' : r.g === '印' ? '他是你的贵人型上司，可以请他帮你争取资源或推荐。' : r.g === '比' ? '他把你看作同辈，容易有比较心，功劳记得让他也有份。' : ''}`,
+    上司的上司: (r, sc) => `<b>跨级相处：</b>${sc >= 56 ? '他对你有好感，是潜在的伯乐；在公开场合（会议、汇报）表现自己，让他看见你的成绩。' : '跨级关系较淡或有摩擦，保持礼貌和专业，不必刻意靠近。'}原则是：<b>通过直属上司</b>去接触他，别越级邀功，免得直属上司觉得被绕过。${r.g === '印' || r.g === '官' ? '八字上他对你有提携或栽培的作用，升迁时是关键人物。' : ''}`,
+    下属: (r, sc) => `<b>带人提醒：</b>${sc >= 56 ? '他和你合拍，可以放手让他做。' : '多给明确指示和期限，少用暗示。'}`
+  };
   function vTeam() {
     const ch = S.ch; if (!S.team) S.team = tLoad();
     const T = S.team.map(m => ({ m, pc: tChart(m) }));
@@ -1669,7 +1675,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
       const gd = goodDays(pc);
       html += `<details class="bz-card bz-tm" ${k === T.length - 1 && S.tOpen ? 'open' : ''}><summary><span class="bz-ze">${['🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑', '🐵', '🐔', '🐶', '🐷'][Z.indexOf(pc.P.y[1])]}</span><b>${esc(m.name)}<small>${esc(m.rel)} · ${r.role[0].split(' · ')[0]}</small></b><span class="bz-zbar"><span style="width:${sc}%;background:${col(sc)}"></span></span><span class="bz-zs">${sc}</span><i class="${lvc(lv)}">${lv}</i></summary>
         <div class="bz-zd"><p class="bz-muted">${gzc(pc.P.y)} ${gzc(pc.P.m)} ${gzc(pc.P.d)} ${pc.P.h ? gzc(pc.P.h) : ''} · 属${AN[Z.indexOf(pc.P.y[1])]} · ${gzc(pc.dm)}${pc.de}日主 · 用神${gzc(pc.yong)}</p>
-        <p><b>他是你的「${r.tg}」→ ${r.role[0]}</b><br>${r.role[1]}</p><p class="bz-tip">相处提醒：${r.role[2]}</p>
+        <p><b>他是你的「${r.tg}」→ ${r.role[0]}</b><br>${r.role[1]}</p><p class="bz-tip">相处提醒：${r.role[2]}</p>${RELTIP[m.rel] ? `<p>${RELTIP[m.rel](r, sc)}</p>` : ''}
         <p class="bz-muted">反过来，你是他的「${back.tg}」→ ${back.role[0]}。他擅长${ZEN_T.TALENT[Object.entries(pc.byRel).sort((x, y) => y[1] - x[1])[0][0]]}，适合负责${ZEN_T.ELJOB[pc.de]}。</p>
         <ul class="bz-dlist">${r.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul>
         <p><b>未来 30 天适合一起谈事 / 开会：</b>${gd.map(x => `<button class="bz-chip2" data-act="day:${x.dt}">${A.md(x.dt)} 周${x.d.wd} ${gzc(x.d.p.d)}</button>`).join(' ') || '暂无特别好的日子'}</p>
@@ -1681,6 +1687,24 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
       const tm = ZEN_T.team(list, E), nm = i => esc(list[i].name);
       const wx = {}; ELS.forEach(e => wx[e] = Math.round(tm.el[e] * 100));
       html += `<div class="bz-grid bz-grid2">${wxCard('t-wx', '团队五行配置', wx)}${card('t-wxn', '五行解读', `<p>${tm.lack.length ? `团队缺<b>${tm.lack.map(gzc).join('')}</b>：少了${tm.lack.map(e => ZEN_T.ELJOB[e]).join('、')}方面的人，可以找这类人补位，或刻意分配这方面的工作。` : '五行没有明显缺失，配置算均衡。'}</p><p>${tm.much.length ? `<b>${tm.much.map(gzc).join('')}</b>偏旺：团队风格偏向${tm.much.map(e => ZEN_T.ELJOB[e]).join('、')}，要防一面倒。` : ''}</p><p class="bz-muted">对你来说，团队里${gzc(ch.yong)}多就越帮你：现在占 ${wx[ch.yong]}%。</p>`)}</div>`;
+      const ix = rel => T.map((x, i) => x.m.rel === rel ? i : -1).filter(i => i >= 0);
+      const bs = ix('上司'), ss = ix('上司的上司');
+      if (bs.length && ss.length) {
+        const sco = (a, b) => Math.round((ZEN_T.pair(a, b, E).score + ZEN_T.pair(b, a, E).score) / 2);
+        let rows = '';
+        bs.forEach(bi => ss.forEach(si => {
+          const B = T[bi], K = T[si], yb = sco(ch, B.pc), yk = sco(ch, K.pc), bk = sco(B.pc, K.pc);
+          const lvs = x => `<b class="${lvc(A.level(x))}">${x}</b>`;
+          let adv;
+          if (bk >= 56 && yb >= 56) adv = '整条汇报线都顺：跟紧直属上司，他会把你的成绩带上去，是升迁的好组合。';
+          else if (bk >= 56 && yb < 56) adv = '上司和他的上司很合，但你和直属上司较磨合：先把直属上司这关处理好，他的评价会直接影响大老板对你的看法。';
+          else if (bk < 56 && yk >= 56) adv = '大老板对你比对你上司更合拍：机会在你，但要特别低调，凡事先让直属上司知道，避免卷入两人之间的矛盾。';
+          else if (bk < 56 && yb >= 56) adv = '你和直属上司同一阵线，但他和大老板磨合多：多帮上司准备数据和材料，做他的好帮手，同时保持中立。';
+          else adv = '这条汇报线磨合较多：做好本分、留下书面记录，把精力放在可衡量的成绩上，也可以留意其他部门或外面的机会。';
+          rows += `<div class="bz-chain"><span>你</span><i>${lvs(yb)}</i><span>${esc(B.m.name)}</span><i>${lvs(bk)}</i><span>${esc(K.m.name)}</span></div><p class="bz-muted">你 ↔ ${esc(K.m.name)}（跨级）：${lvs(yk)} 分</p><p class="bz-tip">${adv}</p>`;
+        }));
+        html += card('t-chain', '汇报链 · 你 → 上司 → 上司的上司', rows + '<p class="bz-muted">箭头上的数字是相邻两人的合拍度。</p>');
+      } else if (ss.length && !bs.length) html += card('t-chain', '汇报链', '<p class="bz-muted">再加入你的直属上司（关系选“上司”），就能看整条汇报线：你 → 上司 → 上司的上司 三人之间合不合。</p>');
       html += card('t-roles', '各人擅长与分工建议', `<ul class="bz-list2">${tm.roles.map(r => `<li><b>${esc(r.name)}</b>（${gzc(r.dm)}${r.de}）：擅长${r.tal}；适合负责${r.job}。</li>`).join('')}</ul>`);
       if (list.length >= 3) html += card('t-pairs', '团队两两合拍度', `<ul class="bz-dlist">${tm.pairs.map(p => `<li class="bz-d-${p.score >= 56 ? 'good' : p.score >= 51 ? 'mid' : 'bad'}"><b>${nm(p.i)} × ${nm(p.j)}</b><span>${p.score} 分 · ${A.level(p.score)}</span></li>`).join('')}</ul><p class="bz-tip">最佳搭档：${nm(tm.pairs[0].i)} × ${nm(tm.pairs[0].j)}。${(() => { const w = tm.pairs[tm.pairs.length - 1]; return w.score < 51 ? (w.i === 0 ? `需留意：你和${nm(w.j)}磨合较多，重要事项用文字确认、先讲好分工。` : `需留意：${nm(w.i)} × ${nm(w.j)}，尽量别让两人单独对接重要事。`) : ''; })()}</p>`);
     }
