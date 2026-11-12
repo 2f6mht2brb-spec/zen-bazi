@@ -424,6 +424,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-pchips{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:-4px 0 10px}.bz-pchips button{padding:6px 2px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:inherit;font:inherit;cursor:pointer;line-height:1.2}.bz-pchips b{display:block;font-size:13px}.bz-pchips small{font-size:10px;opacity:.65}.bz-pchips button.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1030;border-color:var(--gold2)}.bz-pchips button.on small{opacity:.85}
 .bz-ztr th,.bz-ztr td{text-align:center;padding:4px 2px!important;font-size:12px;white-space:nowrap}.bz-ztr th small{display:block;font-size:9px;opacity:.6;font-weight:400}.bz-ztr td:first-child{text-align:left}.bz-ztr td span{display:inline-block;min-width:26px;padding:1px 4px;border-radius:6px;font-weight:700}.bz-ztr td small{display:block;font-size:9px;opacity:.55}
 .bz-ztr th.on,.bz-ztr td.on{background:rgba(212,175,55,.12)}.bz-ztr tr.me td{background:rgba(212,175,55,.08);font-weight:700}.bz-ztr tr.me td:first-child{color:var(--gold2)}
+.bz-pchips{gap:7px!important;margin:0 0 12px!important}.bz-pchips button{padding:11px 2px!important;border-radius:12px!important}.bz-pchips b{font-size:16px!important;margin-bottom:2px}.bz-pchips small{font-size:12px!important}
 </style>
 </head>
 <body>
@@ -2255,7 +2256,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
       <dl class="bz-kv"><dt>事业</dt><dd>${esc(x.career)}</dd><dt>财运</dt><dd>${esc(x.wealth)}</dd><dt>感情</dt><dd>${esc(x.love)}</dd><dt>健康</dt><dd>${esc(x.health)}</dd><dt>幸运色</dt><dd>${esc(x.color)}</dd></dl><p class="bz-tip">${esc(x.tip)}</p></div></details>`;
     const good = list.filter(x => x.tone === 'good').map(x => x.an), bad = list.filter(x => x.tone === 'bad').map(x => `${x.an}（${x.r}）`);
     return seg + hero(`你的生肖 ${me.emo}${me.an} · 第 ${me.rank} 名`, me.score, A.level(me.score), `<h2>${when}生肖运势</h2>`, [`<p class="bz-muted">${sub}</p>`, `<p>${esc(me.rel)}。${esc(me.tip)}。</p>`])
-      + card('z-rank', `十二生肖排名 · ${md === '年' ? '今年' : md === '月' ? '本月' : '今日'}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点开任一生肖，看看它这段时间的运势。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
+      + card('z-rank', `十二生肖排名 · ${(() => { const p = PER.find(q => q.on); return p ? `${p.lab} ${p.sub}` : md === '年' ? `${S.B.syOf(S.date)}年` : md === '月' ? `${gz}月` : A.md(S.date); })()}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点开任一生肖，看看它这段时间的运势。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
       + card('z-sum', '一句话总结', `<p><b class="bz-good">较顺：</b>${good.join('、') || '—'}</p><p><b class="bz-bad">需留意：</b>${bad.join('、') || '—'}</p><p class="bz-muted">排名以地支与${md === '年' ? '太岁' : md === '月' ? '月建' : '日辰'}的冲合刑害为主，再加天干五行生克；只看生肖是大方向，个人细节仍以自己的八字为准。</p>`);
   }
   // ---------- 团队关系 ----------
