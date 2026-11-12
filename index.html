@@ -1728,6 +1728,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
+  const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${/^[\x00-\x7F]+$/.test(n) ? n.toUpperCase() : n} 的` : ''; };
   const siteTitle = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${/^[\x00-\x7F]+$/.test(n) ? n.toUpperCase() : n} 八字秘笈` : '八字秘笈'; };
   const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${XUAN[id] ? `<span class="bz-xn">${XUAN[id]}</span>` : ''}${title}</h2>` : ''}${body}</div>`;
   const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
@@ -1923,7 +1924,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
     return hero('当日整体', d.s[0], d.lv[0], `<h2>阳历 ${ymdCN(d.date)} 周${d.wd}</h2>`, [`<p class="bz-muted">流年 ${gzc(d.p.y)} · 流月 ${gzc(d.p.m)} · 流日 ${gzc(d.p.d)}${d.dy ? ' · 大运 ' + gzc(d.dy.gz) : ''}</p>`, `<p>${summary(d.p.d, d.s)}</p>`, `<p class="bz-muted">神煞提示：${d.notes.length ? d.notes.join('、') : '无'}</p>`])
-      + card('d-pan', '八字仪表 · 今日', pan(cols) + '<p class="bz-muted">前四柱是原局，金底的是当前的大运、流年、流月、流日。</p>')
+      + card('d-pan', `${ownerName()}八字仪表 · 今日`, pan(cols) + '<p class="bz-muted">前四柱是原局，金底的是当前的大运、流年、流月、流日。</p>')
       + eventsCard(A.events(ch, d.date, d.p.d, d.notes))
       + sceneCard('d-scene', '人间百态 · 今日喜怒哀乐', d.p.d, d.s, d.notes)
       + luckyCard4D(ch, d)
@@ -1953,7 +1954,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const top = days.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 4), low = days.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 4);
     const li = d => `<li data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)} · <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分 · ${d.notes.join('、') || d.lv[0]}</li>`;
     return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${gzc(m.gz)}月（${A.md(m.start)}–${A.md(m.end)}）</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(m.start)} – ${ymdCN(m.end)}</p>`, `<p class="bz-muted">流年 ${gzc(m.ygz)} · 按节气划分</p>`, `<p>${summary(m.gz, m.s)}</p>`])
-      + card('m-pan', '八字仪表 · 本月', pan(natalCols().concat([['大运', m.dy && m.dy.gz, true], ['流年', m.ygz, true], ['流月', m.gz, true]])))
+      + card('m-pan', `${ownerName()}八字仪表 · 本月`, pan(natalCols().concat([['大运', m.dy && m.dy.gz, true], ['流年', m.ygz, true], ['流月', m.gz, true]])))
       + catsGrid(m.gz, m.s)
       + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
@@ -1966,7 +1967,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const ms = S.B.months.filter(m => m.sy === y); const lc = A.parse(ms[0].start);
     const ky = ZEN_M.keyYears(S.ch, S.B, E, y, y)[0];
     return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} ${gzc(x.gz)}年</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(ms[0].start)} – ${ymdCN(ms[ms.length - 1].end)}（立春起算）</p>`, `<p class="bz-muted">大运 ${x.dy ? gzc(x.dy.gz) : '—'}</p>`, `<p>${summary(x.gz, x.s)}</p>`])
-      + card('y-pan', '八字仪表 · 今年', pan(natalCols().concat([['大运', x.dy && x.dy.gz, true], ['流年', x.gz, true]])))
+      + card('y-pan', `${ownerName()}八字仪表 · 今年`, pan(natalCols().concat([['大运', x.dy && x.dy.gz, true], ['流年', x.gz, true]])))
       + catsGrid(x.gz, x.s)
       + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
