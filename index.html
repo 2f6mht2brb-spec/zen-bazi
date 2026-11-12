@@ -402,6 +402,15 @@ html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient
 .bz-tks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bz-tk{position:relative;text-align:center;padding:16px 4px 8px;border-radius:12px;border:1px dashed rgba(245,215,122,.5);background:rgba(0,0,0,.18)}
 .bz-tk b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:24px;letter-spacing:2px;color:#ffe08a;text-shadow:0 0 12px rgba(255,200,80,.35)}.bz-tk small{display:block;font-size:10px;opacity:.65;margin-top:2px;letter-spacing:1px}
 .bz-tk-k{position:absolute;top:-9px;left:50%;transform:translateX(-50%);min-width:20px;padding:1px 7px;border-radius:999px;background:var(--tk);color:#1a1030;font-weight:900;font-size:12px;box-shadow:0 0 10px var(--tk)}
+.bz-mood{display:flex;gap:12px;align-items:center}.bz-mood>div:first-child{flex:0 0 96px}.bz-dn{width:96px;height:96px;display:block}.bz-mood-r{flex:1;min-width:0}
+.bz-chips4{display:flex;gap:4px;flex-wrap:wrap}.bz-chips4 span{font-size:12px;padding:2px 7px;border-radius:999px;border:1px solid var(--c);color:var(--c)}.bz-chips4 b{margin-right:2px}
+.bz-mood-main{margin:6px 0 2px;font-size:13px;line-height:1.5}.bz-mood-sub{margin:0;font-size:12px;opacity:.75}
+.bz-3{display:flex;flex-direction:column;gap:6px;margin:10px 0}.bz-3i{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.bz-3i>i{font-style:normal;font-size:18px;line-height:1.2}.bz-3i b{display:block;font-size:12px;color:var(--acc,#e9c46a);margin-bottom:1px}.bz-3i span{font-size:14px;line-height:1.5;color:#fff}.bz-3i s{opacity:.5;text-decoration-color:rgba(255,138,115,.7)}
+.bz-3i small{display:block;margin-top:3px;font-size:11px;opacity:.8}.bz-3i small.ok{color:#7fe0aa}.bz-3i small.nk{color:#ffab9a}
+details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid var(--line)}details.bz-more>summary{cursor:pointer;font-size:13px;color:var(--acc,#e9c46a);list-style:none}details.bz-more>summary::after{content:' ▾';opacity:.6}details.bz-more[open]>summary{margin-bottom:8px}
+.bz-h6{margin:10px 0 4px;font-size:12px;color:var(--acc,#e9c46a)}.bz-small{font-size:12px;line-height:1.55;opacity:.85}.bz-turn{display:inline-block;font-style:normal;margin:2px 4px 2px 0;padding:2px 8px;border-radius:999px;background:rgba(76,211,138,.12);font-size:12px}
+.bz-more .bz-quote{font-size:14px;margin:8px 0 0}.bz-six{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.bz-six li{display:grid;grid-template-columns:34px 22px 1fr;gap:6px;align-items:baseline;font-size:12.5px;line-height:1.5}.bz-six .bz-sn{font-size:12px;color:var(--acc,#e9c46a)}.bz-six .bz-sb{font-size:14px;font-weight:700}.bz-six .bz-mk{margin-right:4px}
 </style>
 </head>
 <body>
@@ -1810,33 +1819,42 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
 
 
   function sceneCard(id, title, gz, s, notes) {
-    const r = ZEN_C.scenes(S.ch, E, gz, s, notes);
+    const r = ZEN_C.scenes(S.ch, E, gz, s, notes), I = r.inner, f = I.rf;
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
-    return card(id, title, `${(() => { const ks = ['喜', '乐', '怒', '哀'], C = { 喜: '#4cd38a', 乐: '#f5d77a', 怒: '#ff6b6b', 哀: '#7fa8ff' }, R = 40, L = 2 * Math.PI * R; let off = 0;
-        const top = ks.slice().sort((a, b) => r.emoP[b] - r.emoP[a])[0];
-        const segs = ks.map(k => { const len = r.emoP[k] / 100 * L, gap = r.emoP[k] > 2 ? 2 : 0, s = `<circle r="${R}" fill="none" stroke="${C[k]}" stroke-width="14" stroke-dasharray="${Math.max(0, len - gap)} ${L}" stroke-dashoffset="${-off}" transform="rotate(-90)"><title>${k} ${r.emoP[k]}%</title></circle>`; off += len; return s; }).join('');
-        return `<div class="bz-donut"><svg viewBox="-56 -56 112 112" role="img" aria-label="${ks.map(k => k + r.emoP[k] + '%').join('，')}"><circle r="${R}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="14"/>${segs}<text y="-4" text-anchor="middle" font-size="22" font-weight="700" fill="${C[top]}" font-family="Songti SC,serif">${top}</text><text y="16" text-anchor="middle" font-size="12" fill="#ddd">${r.emoP[top]}%</text></svg>
-          <ul class="bz-dleg">${ks.map(k => `<li><i style="background:${C[k]}"></i><b style="color:${C[k]}">${k}</b><em>${r.emoP[k]}%</em><span>${r.emo[k]}</span></li>`).join('')}</ul></div><p class="bz-muted bz-enote">圆环显示今天喜怒哀乐各占的比重（合计 100%），中间是今天最主要的情绪。</p>`; })()}
-      <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
-      ${(() => { const I = r.inner, f = I.rf, th = f.ok ? I.th.t : `“${f.thought}”`, okc = f.ok ? 'ok' : 'nk';
-        return `<div class="bz-inner"><div class="bz-ih"><h3>内观 · 转念</h3></div><p class="bz-sutra">一切有为法，如梦幻泡影，如露亦如电，应作如是观。<span>——《金刚经》</span></p>
-        <div class="bz-head ${okc}"><small>今日一句话</small><strong>${f.ctx.replace(/^“|”$/g, '').replace(/”——/, '——')}</strong></div>
-        <div class="bz-step"><i>1</i><div><h5>今天可能出现</h5>
-          <div class="bz-tri">
-            <div class="${I.feels.some(x => !x.ok) ? 'nk' : 'ok'}"><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('、')}<small>${I.feels.map(x => x.d).join('；')}</small></span></div>
-            <div class="${okc}"><b>经历</b><span>${f.content}</span></div>
-            <div class="${okc}"><b>念头</b><span>${th}</span></div>
-          </div></div></div>
-        <div class="bz-step"><i>2</i><div><h5>提醒自己</h5><p class="bz-quote">我有这些感受和念头，<br>但<b>我不是它们</b>。</p><p class="bz-muted">它们像天气一样来去，你是看着天气的那片天空。</p></div></div>
-        <div class="bz-step"><i>3</i><div><h5>转念：换个角度看</h5>
-          <div class="bz-from">原本会想：${f.old}</div>
-          <div class="bz-to"><span>改成这样想</span>${f.ctx}</div></div></div>
-        <div class="bz-step"><i>4</i><div><h5>今天就做</h5>${f.ok ? `<div class="bz-do">👉 ${f.act}</div><p class="bz-muted">顺的时候，把好事放进“贡献与感恩”，好运才不会变成骄傲。</p>` : `<div class="bz-do">👉 念头一出现，先问自己：“这是真的吗？”</div><details class="bz-four"><summary>转念四问 + 反转（点开练习）</summary><ol><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><b>反转</b>：${f.turns.map(t => `<em>${t}</em>`).join(' ')}<br><small>每个反转各找三个它同样真实的理由。</small></details>`}</div></div>
-        <details class="bz-four"><summary>怎么练：转念三步</summary><p>① 看见内容：只写事实，不加评判<br>② 觉察旧语境：我自动给了它什么意义<br>③ 选择新语境：从承诺、学习、贡献或感恩出发，然后行动</p><p>感受来时，在心里说“我注意到我有……”，而不是“我就是……”。</p></details>
-        ${(() => { const m = ZEN_MA.today(r.g0, r.ok0, [...gz].reduce((a, c) => a + c.charCodeAt(0), 0)); return `<div class="bz-mast"><b>今日大师之道 · ${m.k}</b><span>${m.t}</span><div class="bz-mx ${m.plateau ? 'nk' : 'ok'}"><em>${m.extra.tag}</em><strong>${m.extra.v[0]}</strong>：${m.extra.v[1]}</div>${m.plateau ? '<small>今天状态一般也没关系，这正是高原期的练习。</small>' : ''}</div>`; })()}
-        <h4>六面心法</h4>
-        <ul class="bz-scenes bz-sc2">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul></div>`; })()}
-      <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
+    const ks = ['喜', '乐', '怒', '哀'], C = { 喜: '#4cd38a', 乐: '#f5d77a', 怒: '#ff6b6b', 哀: '#7fa8ff' }, R = 40, L = 2 * Math.PI * R; let off = 0;
+    const top = ks.slice().sort((a, b) => r.emoP[b] - r.emoP[a])[0];
+    const segs = ks.map(k => { const len = r.emoP[k] / 100 * L, gap = r.emoP[k] > 2 ? 2 : 0, c = `<circle r="${R}" fill="none" stroke="${C[k]}" stroke-width="14" stroke-dasharray="${Math.max(0, len - gap)} ${L}" stroke-dashoffset="${-off}" transform="rotate(-90)"/>`; off += len; return c; }).join('');
+    const donut = `<svg class="bz-dn" viewBox="-56 -56 112 112" role="img" aria-label="${ks.map(k => k + r.emoP[k] + '%').join('，')}"><circle r="${R}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="14"/>${segs}<text y="-3" text-anchor="middle" font-size="24" font-weight="700" fill="${C[top]}" font-family="Songti SC,serif">${top}</text><text y="18" text-anchor="middle" font-size="13" fill="#ddd">${r.emoP[top]}%</text></svg>`;
+    const m = ZEN_MA.today(r.g0, r.ok0, [...gz].reduce((a, c) => a + c.charCodeAt(0), 0));
+    const task = { 拜师: '向一位懂的人请教一个具体问题。', 练习: '同一个基本动作，认真、专注地重复一次。', 臣服: '主动请人指正你一件事，虚心接受。', 意向: '开工前花一分钟，想清楚今天要练好什么。', 边缘: '在熟练的事上多走一步，试一个稍难的版本。' }[m.k.split(' ')[0]];
+    const act = f.ok ? f.act : '念头一出现，先问自己：“这是真的吗？”';
+    const head = f.ctx.replace(/^“|”$/g, '').replace(/”——/, '——');
+    return card(id, title, `
+      <div class="bz-mood"><div>${donut}</div><div class="bz-mood-r">
+        <div class="bz-chips4">${ks.map(k => `<span style="--c:${C[k]}"><b>${k}</b>${r.emoP[k]}%</span>`).join('')}</div>
+        <p class="bz-mood-main"><b style="color:${C[top]}">今天以「${top}」为主：</b>${r.emo[top]}</p>
+        <p class="bz-mood-sub">🤝 ${r.meet}</p></div></div>
+      <div class="bz-head ${f.ok ? 'ok' : 'nk'}"><small>今日一句话</small><strong>${head}</strong></div>
+      <div class="bz-3">
+        <div class="bz-3i"><i>👉</i><div><b>今天就做</b><span>${act}</span></div></div>
+        <div class="bz-3i"><i>🔄</i><div><b>转个念头</b><span><s>${f.old.split('——')[0]}</s> → ${f.ctx.split('——')[0]}</span></div></div>
+        <div class="bz-3i"><i>🎯</i><div><b>练一项功夫 · ${m.k.split(' ')[0]}</b><span>${task}</span><small class="${m.plateau ? 'nk' : 'ok'}">${m.extra.tag}：${m.extra.v[0]}</small></div></div>
+      </div>
+      <details class="bz-more"><summary>🧘 深入练习：我有感受，但我不是感受</summary>
+        <p class="bz-sutra">一切有为法，如梦幻泡影，如露亦如电，应作如是观。<span>——《金刚经》</span></p>
+        <div class="bz-tri">
+          <div class="${I.feels.some(x => !x.ok) ? 'nk' : 'ok'}"><b>感受</b><span>${I.feels.map(x => `<strong class="${x.ok ? 'g' : 'r'}">${x.nm}</strong>`).join('、')}</span></div>
+          <div class="${f.ok ? 'ok' : 'nk'}"><b>经历</b><span>${f.content}</span></div>
+          <div class="${f.ok ? 'ok' : 'nk'}"><b>念头</b><span>${f.ok ? I.th.t : `“${f.thought}”`}</span></div>
+        </div>
+        <p class="bz-quote">我有这些感受和念头，但<b>我不是它们</b>。</p>
+        ${f.ok ? '' : `<p class="bz-h6">转念四问</p><ol class="bz-mlist"><li>这是真的吗？</li><li>我能百分之百确定吗？</li><li>相信这个念头时，我怎么对待自己和别人？</li><li>没有这个念头，我会是怎样的人？</li></ol><p class="bz-h6">反转试试</p><div>${f.turns.map(t => `<em class="bz-turn">${t}</em>`).join('')}</div>`}
+        <p class="bz-h6">转念三步</p><p class="bz-small">① 看见事实，不加评判 → ② 觉察自己给了它什么意义 → ③ 选一个从承诺、学习、贡献或感恩出发的新意义，然后行动。</p>
+      </details>
+      <details class="bz-more"><summary>🌿 六面心法：家庭 · 感情 · 工作 · 朋友 · 金钱 · 健康</summary>
+        <ul class="bz-six">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><span class="bz-mk">${d.mind.k}</span>${d.mind.t}</div></li>`).join('')}</ul>
+      </details>
+      <p class="bz-muted bz-small">按干支十神、喜忌与冲合推演，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
   }
 
   // ---------- views ----------
