@@ -387,6 +387,10 @@ html[data-ybg] body{background-color:var(--ybg);background-image:radial-gradient
 .bz-card,.bz-tab,.bz-hero,.bz-banner,.bz-scroll,.bz-xn,.bz-mk{transition:border-color .8s ease,color .8s ease,box-shadow .8s ease,border-radius .8s ease}
 .bz-music{position:fixed;left:calc(12px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(10,8,20,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--gold2);font:inherit;font-size:12px;cursor:pointer}
 .bz-music.on{border-color:var(--gold);box-shadow:0 0 14px rgba(212,175,55,.35)}.bz-music.on::first-letter{animation:zapulse 1.6s ease-in-out infinite}@keyframes zapulse{50%{opacity:.4}}
+.bz-scroll{margin:14px auto 8px;max-width:420px;padding:8px 14px 7px;min-height:0;border-radius:10px;opacity:.85}
+.bz-scroll::before,.bz-scroll::after{top:6px;bottom:6px;width:2px}.bz-scroll::before{left:6px}.bz-scroll::after{right:6px}
+.bz-scroll-t{font-size:13px;letter-spacing:3px}.bz-scroll-s{font-size:10px;letter-spacing:1px;margin-top:1px}.bz-scroll-q{margin-top:4px;font-size:11px}.bz-scroll-q span{font-size:9px;margin-top:1px}
+.bz-scroll .za-bg{width:90px;height:90px;margin-top:-45px;right:-18px}.bz-scroll .za-corner{width:16px;height:16px}.bz-scroll .za-corner.tl{left:10px;top:4px}.bz-scroll .za-corner.br{right:10px;bottom:4px}
 </style>
 </head>
 <body>
@@ -2242,7 +2246,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
-    app.querySelector('#bz-view').innerHTML = scrollHead(S.tab) + html;
+    app.querySelector('#bz-view').innerHTML = html + scrollHead(S.tab);
     app.querySelectorAll('#bz-view .bz-hero').forEach(h => { if (!h.querySelector('.za-wm')) h.insertAdjacentHTML('beforeend', ZEN_ART.svg(S.tab, 'za-wm')); });
     track();
   }
