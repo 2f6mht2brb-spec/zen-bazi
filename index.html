@@ -1845,7 +1845,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const notable = days.filter(d => d.notes.length).map(d => `周${d.wd} ${gzc(d.p.d)}（${d.notes.join('、')}）`);
     const pairs = CATS.map((k, i) => [CATN[i], avg[i + 1]]);
     return hero('本周平均', avg[0], A.level(avg[0]), `<h2>${A.md(mon)} – ${A.md(A.addDays(mon, 6))}</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(mon)} – ${ymdCN(A.addDays(mon, 6))}</p>`, `<p>本周整体${A.level(avg[0])}。${pairs.sort((a, b) => b[1] - a[1])[0][0]}相对最好。${A.md(best.date)}（周${best.wd}）最适合办要事，${A.md(worst.date)}（周${worst.wd}）宜低调。</p>`])
-      + luckyCard('w-lucky', '本周幸运号码 · 4D', A.lucky(S.ch, 'w' + mon, days[3].p.d))
       + card('w-chart', '每天整体分', bars(days.map(d => ({ v: d.s[0], l1: '周' + d.wd, l2: A.md(d.date), sel: d.date === S.date, act: 'day:' + d.date, tip: `${d.date} ${d.p.d} 整体${d.s[0]}（${d.lv[0]}）` })), { label: '本周每天整体分' }) + '<p class="bz-muted">点柱子查看当天详情。</p>')
       + `<div class="bz-grid">${CATS.map((k, i) => scoreCat(CATN[i], avg[i + 1], A.level(avg[i + 1]))).join('')}</div>`
       + `<div class="bz-grid bz-grid2">${wxCard('w-wx', '五行能量（七天平均）', sh)}${card('w-ss', '本周每日十神', `<p>${days.map(d => `${d.wd} ${gzc(d.p.d[0])}${tenGod(S.ch.dm, d.p.d[0])}`).join(' · ')}</p>`)}${card('w-sx', '本周每日生肖', `<p>${days.map(d => `${d.wd} ${AN[Z.indexOf(d.p.d[1])]}`).join(' · ')}</p><p class="bz-tip">${notable.length ? notable.join('；') : '本周没有特别的冲合日子。'}</p>`)}</div>`
@@ -1859,7 +1858,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const li = d => `<li data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)} · <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分 · ${d.notes.join('、') || d.lv[0]}</li>`;
     return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${gzc(m.gz)}月（${A.md(m.start)}–${A.md(m.end)}）</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(m.start)} – ${ymdCN(m.end)}</p>`, `<p class="bz-muted">流年 ${gzc(m.ygz)} · 按节气划分</p>`, `<p>${summary(m.gz, m.s)}</p>`])
       + card('m-pan', '八字仪表 · 本月', pan(natalCols().concat([['大运', m.dy && m.dy.gz, true], ['流年', m.ygz, true], ['流月', m.gz, true]])))
-      + luckyCard('m-lucky', '本月幸运号码 · 4D', A.lucky(S.ch, 'm' + m.start, m.gz))
       + catsGrid(m.gz, m.s)
       + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
@@ -1873,7 +1871,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_W;
     const ky = ZEN_M.keyYears(S.ch, S.B, E, y, y)[0];
     return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} ${gzc(x.gz)}年</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(ms[0].start)} – ${ymdCN(ms[ms.length - 1].end)}（立春起算）</p>`, `<p class="bz-muted">大运 ${x.dy ? gzc(x.dy.gz) : '—'}</p>`, `<p>${summary(x.gz, x.s)}</p>`])
       + card('y-pan', '八字仪表 · 今年', pan(natalCols().concat([['大运', x.dy && x.dy.gz, true], ['流年', x.gz, true]])))
-      + luckyCard('y-lucky', '本年幸运号码 · 4D', A.lucky(S.ch, 'y' + y, x.gz))
       + catsGrid(x.gz, x.s)
       + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
