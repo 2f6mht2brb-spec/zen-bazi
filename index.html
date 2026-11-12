@@ -438,6 +438,11 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-jp{margin-top:16px}.bz-jp>summary{min-height:70px;flex-direction:row;gap:10px}.bz-jp[open]>summary{padding:16px 4px 0}.bz-jpb{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:4px 0 4px}.bz-jpb i{font-style:normal;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:16px;color:#2a1240;background:radial-gradient(circle at 35% 30%,#fff3c4,#f5c542 60%,#c7901d);box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .bz-warn{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.22);border:1px solid rgba(255,224,138,.35);font-size:12.5px;line-height:1.55}
 .bz-jp2{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 4px}.bz-jp2 b{font-family:Georgia,serif;font-size:26px;letter-spacing:2px;color:#ffe08a;text-shadow:0 0 12px rgba(255,200,80,.35)}.bz-jp2 span{font-size:20px;opacity:.7}
+.bz-tcmr{display:grid;grid-template-columns:18px 64px 1fr 34px 40px;gap:6px;align-items:center;margin:6px 0;font-size:12.5px}.bz-tcmr b{font-size:15px}.bz-tcmo{opacity:.8}.bz-tcmr em{font-style:normal;text-align:right;font-weight:700}
+.bz-tst{font-style:normal;font-size:10.5px;text-align:center;padding:1px 0;border-radius:999px}.bz-tst.b{background:rgba(255,107,107,.18);color:#ffab9a}.bz-tst.w{background:rgba(127,168,255,.18);color:#a9c3ff}.bz-tst.m{background:rgba(255,255,255,.08);opacity:.8}
+.bz-tcmk{margin:10px 0;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.04);border-left:3px solid #ff8a73}.bz-tcmk.df{border-left-color:#7fa8ff}.bz-tcmk h5{margin:0 0 4px;font-size:14px}
+.bz-tcml{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px;line-height:1.6}.bz-tcml li{margin:3px 0}.bz-tcml b{color:var(--acc,#e9c46a);font-weight:600}
+.bz-tcmd{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bz-tcmd>div{padding:9px 8px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center}.bz-tcmd small{display:block;font-size:10.5px;opacity:.7}.bz-tcmd b{display:block;font-size:16px;margin:3px 0;color:var(--gold2);font-family:"Songti SC",serif}.bz-tcmd em{display:block;font-style:normal;font-size:11px;line-height:1.4;opacity:.85}
 </style>
 </head>
 <body>
@@ -1742,6 +1747,50 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
 
 </script>
 <script>
+// ===== 五行中医 · 养生（一般保健参考，非医疗诊断）=====
+const ZEN_T2 = (function () {
+  const M = {
+    木: { zang: '肝', fu: '胆', qiao: '目', ti: '筋', zhi: '怒', se: '青绿', wei: '酸', ji: '春', c: '#4cd38a',
+      ex: ['易急躁、发脾气', '眼睛干涩疲劳', '肩颈筋骨紧绷', '偏头痛'], df: ['容易疲倦、没冲劲', '眼睛易累', '筋骨不灵活'],
+      food: '绿叶菜、西兰花、芹菜、菠菜、少量醋', act: '伸展、瑜伽、太极，多看远处绿色', life: '晚上 11 点前入睡，养肝血' },
+    火: { zang: '心', fu: '小肠', qiao: '舌', ti: '血脉', zhi: '喜', se: '红', wei: '苦', ji: '夏', c: '#ff7a5c',
+      ex: ['心烦、失眠多梦', '口舌生疮', '心跳偏快、易兴奋'], df: ['手脚冰冷、怕冷', '精神不振、提不起劲', '血液循环较差', '情绪偏低落'],
+      food: '红枣、枸杞、番茄、红豆、少量苦瓜', act: '快走、慢跑等让身体微微出汗的有氧运动', life: '中午小憩 15–20 分钟，养心神' },
+    土: { zang: '脾', fu: '胃', qiao: '口', ti: '肌肉', zhi: '思', se: '黄', wei: '甘', ji: '季末（土用）', c: '#e3ac72',
+      ex: ['想太多、钻牛角尖', '腹胀、身体沉重', '容易发胖、湿气重'], df: ['消化不良、胃口差', '肌肉无力、易疲劳', '思虑过度、睡不稳'],
+      food: '小米、南瓜、山药、玉米、番薯', act: '散步、饭后慢走 15 分钟', life: '三餐定时、细嚼慢咽，少吃生冷' },
+    金: { zang: '肺', fu: '大肠', qiao: '鼻', ti: '皮毛', zhi: '悲', se: '白', wei: '辛', ji: '秋', c: '#f2e6c4',
+      ex: ['容易伤感、执着', '皮肤干燥、过敏', '便秘'], df: ['容易感冒、鼻子敏感', '呼吸较浅、气短', '皮肤缺乏光泽'],
+      food: '白萝卜、梨、百合、银耳、莲子', act: '深呼吸、游泳、户外快走', life: '注意保暖颈背，多到空气好的地方走走' },
+    水: { zang: '肾', fu: '膀胱', qiao: '耳', ti: '骨', zhi: '恐', se: '黑', wei: '咸', ji: '冬', c: '#7fa8ff',
+      ex: ['容易担忧、没安全感', '身体寒湿、水肿', '腰膝酸冷、怕冷'], df: ['腰膝酸软、易累', '耳鸣、记性变差', '骨骼较弱、头发易掉'],
+      food: '黑豆、黑芝麻、核桃、海带、少盐', act: '踮脚、深蹲、八段锦等温和的腰腿运动', life: '泡脚暖身，避免熬夜和过劳' }
+  };
+  const GEN = { 木: '火', 火: '土', 土: '金', 金: '水', 水: '木' }, CTL = { 木: '土', 火: '金', 土: '水', 金: '木', 水: '火' };
+  // 子午流注（十二时辰对应经络）
+  const CLOCK = [['子', 23, '胆', '睡觉养胆，最好已入睡'], ['丑', 1, '肝', '深睡养肝血'], ['寅', 3, '肺', '肺经当令，深睡养气'], ['卯', 5, '大肠', '起床喝温水、排便'],
+    ['辰', 7, '胃', '一定要吃早餐'], ['巳', 9, '脾', '脑力最好，处理重要工作'], ['午', 11, '心', '午饭后小憩，养心神'], ['未', 13, '小肠', '多喝水，帮助吸收'],
+    ['申', 15, '膀胱', '多喝水、适合学习和工作'], ['酉', 17, '肾', '少劳累，适合轻松活动'], ['戌', 19, '心包', '放松心情，和家人相处'], ['亥', 21, '三焦', '准备入睡，少看手机']];
+  function body(ch) {
+    const sh = ch.share, els = Object.keys(sh), avg = .2;
+    const ex = els.filter(e => sh[e] >= .3).sort((a, b) => sh[b] - sh[a]), df = els.filter(e => sh[e] < .12).sort((a, b) => sh[a] - sh[b]);
+    const notes = [];
+    ex.forEach(e => { const v = CTL[e]; if (df.includes(v) || sh[v] < avg) notes.push(`${e}旺克${v}：${M[e].zang}系统偏盛，容易牵连${M[v].zang}（${M[v].fu}）功能偏弱。`); });
+    return { sh, ex, df, notes };
+  }
+  function clockNow(h) { const i = Math.floor(((h + 1) % 24) / 2); return CLOCK[i]; }
+  function day(ch, gzEls, seasonEl, h) {
+    // 今日最旺五行与它影响的脏腑
+    const top = gzEls[0], lab = ch.label(top), o = M[top];
+    const warn = lab === '忌' || ch.share[top] >= .3;
+    return { top, o, warn, clock: clockNow(h), sea: M[seasonEl] };
+  }
+  return { M, GEN, CTL, CLOCK, body, day, clockNow };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_T2;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1801,7 +1850,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
   const XUAN = {
     'd-pan': '天盘', 'm-pan': '月盘', 'y-pan': '岁盘', 'd-compass': '八门方位', 'd-events': '玄机预示', 'd-other': '趋吉避凶',
     'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
-    'y-fly': '九宫飞星', 'd-jq': '节气', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
+    'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
     'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
@@ -1968,6 +2017,30 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
       <p class="bz-small">${SF.filter(x => x.l === '用' || x.l === '喜').map(x => x.s).join('、') || '—'}季是你的旺季，重要的事、跳槽、出行可优先安排；${SF.filter(x => x.l === '忌').map(x => x.s).join('、') || '—'}季宜保养、守成。每季最后约 18 天是“土用”，宜收尾整理。</p>
       <details class="bz-more"><summary>📅 ${y}年二十四节气日期</summary><div class="bz-jqgrid">${grid}</div><p class="bz-small">节气按太阳黄经计算（每 15° 一个），八字的月份以“节”（立春、惊蛰、清明……）为界。</p></details>`);
   }
+  function tcmBodyCard() {
+    const ch = S.ch, b = ZEN_T2.body(ch), M = ZEN_T2.M, els = ['木', '火', '土', '金', '水'];
+    const bars = els.map(e => { const p = Math.round(b.sh[e] * 100), st = b.ex.includes(e) ? ['偏旺', 'b'] : b.df.includes(e) ? ['偏弱', 'w'] : ['平衡', 'm'];
+      return `<div class="bz-tcmr"><b style="color:${M[e].c}">${e}</b><span class="bz-tcmo">${M[e].zang}·${M[e].fu}</span><span class="bz-zbar"><span style="width:${Math.min(100, p * 2)}%;background:${M[e].c}"></span></span><em>${p}%</em><i class="bz-tst ${st[1]}">${st[0]}</i></div>`; }).join('');
+    const blk = (e, kind) => { const o = M[e], list = kind === 'ex' ? o.ex : o.df;
+      return `<div class="bz-tcmk ${kind}"><h5><span style="color:${o.c}">${e}</span> ${kind === 'ex' ? '偏旺' : '偏弱'} · ${o.zang}（${o.fu}）系统</h5><p class="bz-small">较容易出现：${list.join('、')}</p>
+        <ul class="bz-tcml"><li>🥢 <b>饮食：</b>${kind === 'ex' ? `少吃过${o.wei}，多吃${M[ZEN_T2.GEN[e]].food.split('、').slice(0, 2).join('、')}等来疏泄` : o.food}</li><li>🏃 <b>运动：</b>${o.act}</li><li>🌙 <b>作息：</b>${o.life}</li><li>💭 <b>情绪：</b>${kind === 'ex' ? `留意过度的“${o.zhi}”` : `${o.zhi}的情绪要适度表达`}</li></ul></div>`; };
+    return card('c-tcm', '五行中医 · 先天体质', `<p class="bz-small">中医用五行对应五脏：木肝、火心、土脾、金肺、水肾。按你八字的五行比例，看哪些系统天生较强或较弱。</p>${bars}
+      ${b.ex.map(e => blk(e, 'ex')).join('')}${b.df.slice(0, 2).map(e => blk(e, 'df')).join('')}
+      ${b.notes.length ? `<p class="bz-tip">⚖️ ${b.notes.join(' ')}</p>` : ''}
+      <p class="bz-tip">💊 调养重点：多补用神「${ch.yong}」——${M[ch.yong].food}；${M[ch.yong].act}。</p>
+      <p class="bz-warn">以上是传统五行养生的一般参考，不是医疗诊断。身体有任何不适，请咨询医生。</p>`);
+  }
+  function tcmDayCard(d) {
+    const sh = A.wxShare([[d.p.d, 1], [d.p.m, .5]]), top = Object.keys(sh).sort((a, b) => sh[b] - sh[a])[0];
+    const sea = ZEN_S.at(E, A, S.ch, d.date, TZ()), now = new Date(), cl = ZEN_T2.clockNow(now.getHours()), M = ZEN_T2.M, o = M[top], lab = S.ch.label(top);
+    const warn = lab === '忌' || S.ch.share[top] >= .3, ctl = ZEN_T2.CTL[top];
+    return card('d-tcm', '今日养生 · 五行中医', `<div class="bz-tcmd">
+        <div><small>${d.date === TODAY ? '现在' : '今天'} ${cl[0]}时（${String(cl[1]).padStart(2, '0')}–${String((cl[1] + 2) % 24).padStart(2, '0')}点）</small><b>${cl[2]}经当令</b><em>${cl[3]}</em></div>
+        <div><small>今日五行偏${top}</small><b style="color:${o.c}">${o.zang} · ${o.fu}</b><em>${warn ? `${top}气对你偏重，留意${o.ex[0]}` : `${top}气对你有益，${o.zang}气较顺`}</em></div>
+        <div><small>${sea.sea}季养生</small><b style="color:${M[sea.el].c}">养${M[sea.el].zang}</b><em>${M[sea.el].life}</em></div></div>
+      <ul class="bz-tcml"><li>🥢 <b>今天适合吃：</b>${warn ? M[S.ch.yong].food : o.food}</li><li>💭 <b>情绪提醒：</b>${warn ? `今天${o.zhi}的情绪容易被放大，也容易牵连${M[ctl].zang}，先深呼吸再回应` : `心情较顺，适合把这份好心情分享给身边的人`}</li><li>🏃 <b>小动作：</b>${M[S.ch.yong].act.split('，')[0]}</li></ul>
+      <p class="bz-muted">传统五行养生参考，不代替医生意见。</p>`);
+  }
   function flyCard(y) { const f = A.flyStars(y); const o = ['东南', '南', '西南', '东', '中', '西', '东北', '北', '西北'];
     return card('y-fly', `${y}年九宫飞星`, nine(o.map(d => [d === '中' ? '中宫' : d, f.pos[d].name, f.pos[d].lv, f.pos[d].m, f.pos[d].lv]), k => FC[k] || '') + `<p class="bz-tip">${f.note}</p>`); }
   function bars(rows, opt) { // rows: {k, v, l1, l2, tip, act}
@@ -2035,6 +2108,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
       + catsGrid(d.p.d, d.s)
       + `<div class="bz-grid bz-grid2">${wxCard('d-wx', '五行能量', A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]))}${ssCard('d-ss', '十神', d.p.d)}${zodiacCard('d-sx', '今日生肖', d.p.d[1], false, '今日 · 日支生肖')}</div>`
       + jqCard(d.date)
+      + tcmDayCard(d)
       + guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。', G.indexOf(d.p.d[0]) + Z.indexOf(d.p.d[1]) + 2 + +d.date.slice(8))
       + compassCard(d.p.d)
       + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`);
@@ -2128,6 +2202,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
       + card('c-deep', '全盘十神解析', ZEN_D(E).deep(ch).map(sec => `<div class="bz-dsec"><h3>${sec.title}</h3><ul class="bz-dlist">${sec.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul></div>`).join('') + '<p class="bz-muted">按十神、干支生克和冲合刑害自动推演，绿色为有利、红色为需留意、金色为中性。复杂命局建议再请人细看。</p>', 'bz-deepcard')
       + card('c-pan', '原局四柱', pan(natalCols()))
       + wxCard('c-wx', '原局五行', sh)
+      + tcmBodyCard()
       + card('c-dy', '大运', `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>大运</th><th>年龄</th><th>年份</th><th>天干十神</th><th>地支十神</th><th>分数</th><th>吉凶</th></tr></thead><tbody>${ch.dayun.map(d => `<tr class="${d === cur ? 'bz-cur' : ''}" data-act="dy:${d.gz}"><td>${gzc(d.gz)}</td><td>${d.ageFrom}–${d.ageTo}岁</td><td>${d.yearFrom}–${d.yearTo}</td><td>${tenGod(ch.dm, d.gz[0])}</td><td>${tenGod(ch.dm, HID[d.gz[1]][0])}</td><td class="${lvc(A.level(d.s[0]))}">${d.s[0]}</td><td class="${lvc(A.level(d.s[0]))}">${A.level(d.s[0])}</td></tr>`).join('')}</tbody></table></div><p class="bz-muted">${ch.fwd ? '顺' : '逆'}排大运，约 ${Math.floor(ch.startAge)} 岁 ${Math.round((ch.startAge % 1) * 12)} 个月起运。点任一行看大运运程。</p>`)
       + card('c-ln', '流年运势', `<div class="bz-tablewrap"><table class="bz-table"><thead><tr><th>年份</th><th>流年</th><th>大运</th><th>整体</th><th>吉凶</th><th>太岁</th></tr></thead><tbody>${S.B.years.filter(x => x.y >= ty - 3 && x.y <= ty + 12).map(x => `<tr class="${x.y === ty ? 'bz-cur' : ''}" data-act="ln:${x.y}"><td>${x.y}</td><td>${gzc(x.gz)}</td><td>${x.dy ? gzc(x.dy.gz) : '—'}</td><td class="${lvc(A.level(x.s[0]))}">${x.s[0]}</td><td class="${lvc(A.level(x.s[0]))}">${A.level(x.s[0])}</td><td>${(A.zodiacRel(ch, x.gz[1], true).rel.match(/【(.+?)】/) || [, ''])[1]}</td></tr>`).join('')}</tbody></table></div><p class="bz-muted">点任一行看流年运程。</p>`);
   }
