@@ -430,6 +430,11 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-jq2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bz-jq2>div{padding:9px 11px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line)}.bz-jq2 small{display:block;font-size:11px;opacity:.65}.bz-jq2 b{display:block;font-size:20px;color:var(--gold2);font-family:"Songti SC",serif;margin:2px 0}.bz-jq2 em{font-style:normal;font-size:11.5px;opacity:.8;line-height:1.45;display:block}
 .bz-wheel{display:block;width:100%;max-width:300px;margin:0 auto}.bz-sf{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.bz-sf>div{text-align:center;padding:8px 2px;border-radius:11px;border:1px solid var(--c);background:rgba(255,255,255,.03)}.bz-sf b{display:block;font-size:18px;color:var(--c);font-family:"Songti SC",serif}.bz-sf small{display:block;font-size:10.5px;opacity:.7;margin:2px 0 4px}
 .bz-jqgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.bz-jqcol{display:flex;flex-direction:column;gap:3px;text-align:center}.bz-jqcol>b{font-size:14px}.bz-jqcol span{font-size:12px;padding:3px 0;border-radius:7px;background:rgba(255,255,255,.04)}.bz-jqcol span small{display:block;font-size:10px;opacity:.6}.bz-jqcol span.on{background:rgba(212,175,55,.25);font-weight:700}
+.bz-tkguide{text-align:center;font-size:13px;margin:0 0 14px;opacity:.9}
+.bz-tkd{padding:0!important;cursor:pointer}.bz-tkd>summary{list-style:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:92px;padding:18px 4px 10px;gap:4px}.bz-tkd>summary::-webkit-details-marker{display:none}
+.bz-tk-q{font-size:28px;line-height:1;animation:tkbob 2.4s ease-in-out infinite}.bz-tk-h{font-size:12px;letter-spacing:2px;color:#ffe08a}@keyframes tkbob{50%{transform:translateY(-3px) rotate(-4deg)}}
+.bz-tkd[open]>summary{min-height:0;padding:14px 4px 0}.bz-tkd[open] .bz-tk-q,.bz-tkd[open] .bz-tk-h{display:none}.bz-tk-r{padding:2px 4px 10px;animation:tkopen .55s ease-out}@keyframes tkopen{from{opacity:0;transform:scale(.6) rotateX(70deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.bz-tk-q,.bz-tk-r{animation:none}}
 </style>
 </head>
 <body>
@@ -1918,9 +1923,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_S;
     const OPS = [['M', '#f5c542'], ['K', '#4f8cff'], ['T', '#ff5a5a']];
     const wd = new Date(d.date + 'T00:00:00').getDay(), draw = [0, 3, 6].includes(wd);
     const used = new Set(); const uniq = s => { let t = s, i = 0; while (used.has(t) && i < 4) { t = t.slice(1) + t[0]; i++; } used.add(t); return t; };
-    const tk = OPS.map(([k, c]) => { const l0 = A.lucky(ch, k + d.date, d.p.d), l = { a: uniq(l0.a), b: uniq(l0.b) }; return `<div class="bz-tk" style="--tk:${c}"><span class="bz-tk-k">${k}</span><b>${l.a}</b><small>备选 ${l.b}</small></div>`; }).join('');
+    const tk = OPS.map(([k, c]) => { const l0 = A.lucky(ch, k + d.date, d.p.d), l = { a: uniq(l0.a), b: uniq(l0.b) }; return `<details class="bz-tk bz-tkd" style="--tk:${c}"><summary><span class="bz-tk-k">${k}</span><span class="bz-tk-q">🧧</span><span class="bz-tk-h">点我求号</span></summary><div class="bz-tk-r"><b>${l.a}</b><small>备选 ${l.b}</small></div></details>`; }).join('');
     const l0 = A.lucky(ch, 'M' + d.date, d.p.d);
-    return card('d-lucky', '今日幸运号码 · 4D', `<div class="bz-tks">${tk}</div>
+    return card('d-lucky', '今日幸运号码 · 4D', `<p class="bz-tkguide">先静下心，默念你的心愿，再点开你想求的那一张。</p><div class="bz-tks">${tk}</div>
       <p class="bz-tip">${draw ? '今天是开彩日（周三、六、日为常规开彩日，特别开彩以官方公布为准）。' : '今天不是常规开彩日（常规为周三、六、日）。'}${l0.note}</p>
       <details class="bz-four"><summary>数学上的真相（建议一读）</summary>
         <ul class="bz-mlist"><li>每期开奖都是独立、随机的：任何一个 4D 号码中头奖的几率都是 <b>1/10,000</b>，不管它过去开过几次。</li>
