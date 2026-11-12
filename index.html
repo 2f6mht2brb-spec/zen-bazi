@@ -278,6 +278,7 @@ button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .bz-tm{padding:0}.bz-tm>summary{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;list-style:none;font-size:13px}.bz-tm>summary::-webkit-details-marker{display:none}.bz-tm>summary b{display:flex;flex-direction:column;min-width:96px}.bz-tm>summary b small{font-weight:400;opacity:.75;font-size:11px}.bz-tm>summary i{font-style:normal;font-size:11px;width:30px;text-align:right}.bz-tm .bz-zd{padding:0 14px 14px}
 .bz-chip2{display:inline-block;margin:3px 4px 0 0;padding:4px 8px;border-radius:8px;border:1px solid rgba(212,175,55,.4);background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
 .bz-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0;font-size:13px}.bz-chain span{padding:4px 10px;border-radius:999px;border:1px solid rgba(212,175,55,.45);background:rgba(212,175,55,.08)}.bz-chain i{font-style:normal;font-size:12px}.bz-chain i::before{content:'→ ';opacity:.6}.bz-chain i::after{content:' →';opacity:.6}
+.bz-mk{display:inline-block;margin:2px 6px 2px 0;padding:1px 8px;border-radius:999px;background:rgba(212,175,55,.14);color:#e9c46a;font-size:11px;font-weight:700}.bz-mk em{font-style:normal;font-weight:400;opacity:.75;margin-left:4px}
 </style>
 </head>
 <body>
@@ -928,6 +929,30 @@ const ZEN_C = (function () {
     ['工作', 'career', '努力被看见，任务顺利完成', '被加压或被挑错，觉得委屈', '怒', '把事实列清楚，情绪留到下班再消化。'], ['朋友', 'social', '老朋友联络，有人雪中送炭', '朋友借钱或疏远，人情难处理', '哀', '帮得到就帮，帮不到就温和说明。'],
     ['金钱', 'wealth', '有进账，或省下一笔钱', '意外开销，为钱发愁', '哀', '先记账再决定，不冲动消费。'], ['健康', 'health', '精神好、睡得香', '疲累，小病小痛', '哀', '早点睡，给身体留点余地。']];
   const CI = ['career', 'social', 'wealth', 'health', 'love'];
+
+  // 心法：mastery, mindfulness, self-awareness, self-acceptance, surrender, acceptance, be-do-have, gratitude, contribution, rigor, presence
+  const PR = { 精进: 'Mastery', 正念: 'Mindfulness', 觉察: 'Self-awareness', 自我接纳: 'Self-acceptance', 臣服: 'Surrender', 接受当下: 'Accept what is', '是·做·有': 'Be · Do · Have', 知足: 'Accept what we have', 贡献: 'Contribution', 严谨: 'Rigor', 活在当下: 'Present' };
+  const MIND = {
+    家庭: { g: [['活在当下', '吃饭时放下手机，看着家人的眼睛说话；此刻的团聚，就是最好的时光。'], ['知足', '家里本来就有的温暖，常被视为理所当然。今天说一句“有你们真好”。'], ['贡献', '把好心情带回家：主动洗碗、陪长辈散步，用行动付出，不求回报。']],
+            m: [['正念', '平淡的日子才是家的底色。煮一顿饭、泡一壶茶，专心做好一件小事。'], ['知足', '没有争吵、大家平安，本身就是福气。']],
+            b: [['觉察', '想开口反驳前先停三秒，问自己：我是想赢，还是想被理解？'], ['接受当下', '家人有他们的局限，你也有你的。先接受“他就是这样”，再谈改变。'], ['自我接纳', '吵完心里难受也没关系，你不需要完美。冷静后先道歉的人，最有力量。']] },
+    感情: { g: [['活在当下', '好好陪伴，不翻旧账、不担心将来，把注意力全部给眼前的人。'], ['是·做·有', '先成为（Be）温柔可靠的人，自然会做（Do）贴心的事，也会拥有（Have）好的关系。'], ['知足', '珍惜对方本来的样子，而不是你希望他变成的样子。']],
+            m: [['正念', '感情平淡时，留意对方一个小优点，今晚说出来。'], ['觉察', '问自己：我在关系里最需要的是什么？说清楚比让对方猜更好。']],
+            b: [['臣服', '感情不能用力控制。放松抓紧的手，给彼此一点空间，关系反而会回来。'], ['自我接纳', '被冷落或误会时，先照顾好自己的情绪，你的价值不由对方的态度决定。'], ['觉察', '让你难受的那句话，碰到的是你哪一个旧伤口？看见它，就不容易被它带着走。']] },
+    工作: { g: [['精进', '顺的时候最适合练基本功：复盘今天做对了什么，把它变成可复制的方法。'], ['贡献', '把成果分享给团队、带一带新人；你的价值在于让别人也变好。'], ['严谨', '越顺越要细心：数字核对两次、承诺写进日程，好运才留得住。']],
+            m: [['精进', '没有大事的日子，正好专心磨一项技能，一万小时就是这样一天一天累积的。'], ['严谨', '把手上的事做到 100%，而不是 90%。平凡的日子靠细节拉开差距。'], ['活在当下', '一次只做一件事，做完再看下一件。']],
+            b: [['接受当下', '被挑错、被加压是事实，抗拒只会加倍痛苦。先承认现状，再问：现在我能做的下一步是什么？'], ['严谨', '把事实、数据、时间线写清楚，用专业回应情绪。'], ['臣服', '控制你能控制的（态度、努力、准备），放下你控制不了的（别人的看法、结果）。'], ['是·做·有', '先做回那个专业、沉稳的自己（Be），行动（Do）和成果（Have）会跟上来。']] },
+    朋友: { g: [['贡献', '主动关心一位最近较安静的朋友；你给出的善意，会以别的方式回来。'], ['知足', '真心朋友不必多，记得谢谢那个一直在的人。'], ['活在当下', '见面时专心聊天，不急着拍照打卡。']],
+            m: [['觉察', '留意哪些人让你充电、哪些人让你耗电，把时间多给前者。'], ['正念', '安静的日子适合独处，也是和自己做朋友的时候。']],
+            b: [['接受当下', '人来人往是常态，有人走远不代表你不好。'], ['自我接纳', '不必讨好每一个人，被少数人不理解，是做自己的代价。'], ['臣服', '误会一时解释不清就先放下，时间会让真相浮现。']] },
+    金钱: { g: [['知足', '有进账时先感恩，再规划：存一部分、用一部分、给一部分。'], ['贡献', '拿出一点点帮助有需要的人，钱流动起来才有福气。'], ['严谨', '财来的时候最要守纪律：记账、不冲动加码。']],
+            m: [['知足', '算一算你已经拥有的，你会发现自己比想象中富足。'], ['严谨', '收支平衡的日子适合检视账单、取消不需要的订阅。']],
+            b: [['接受当下', '钱已经花出去，就不再自责；接受它，从下一笔开始调整。'], ['觉察', '想冲动消费时问自己：我是需要它，还是想用它填补情绪？'], ['是·做·有', '财富是结果（Have）。先成为有纪律的人（Be），每天做对的小决定（Do）。']] },
+    健康: { g: [['正念', '精神好时去走走，感受呼吸、脚步和阳光，身体会记住这份轻松。'], ['精进', '趁状态好建立一个小习惯：每天十分钟伸展或步行。'], ['知足', '谢谢身体一直默默为你工作。']],
+            m: [['活在当下', '吃饭时只吃饭，走路时只走路。专心本身就是休息。'], ['觉察', '留意身体的小信号：肩颈紧、呼吸浅，就是该停一下的提醒。']],
+            b: [['自我接纳', '累了就承认自己累，休息不是偷懒，是对自己负责。'], ['臣服', '身体要你慢下来时，就顺着它慢下来；早点睡，明天再战。'], ['正念', '做三次深呼吸：吸气数四、停四、呼气数六，让紧绷的神经松一松。']] }
+  };
+  function mind(n, state, gz, i) { const L = MIND[n][state]; const h = [...gz].reduce((a, c) => a + c.charCodeAt(0), 0) + i * 7; const [k, t] = L[h % L.length]; return { k, en: PR[k], t }; }
   function scenes(ch, E, gz, s, notes) {
     const { tenGod, GRP, HID, elOf, ELS } = E;
     const gs = [gz[0], HID[gz[1]][0]].map(c => ({ g: GRP[tenGod(ch.dm, c)], ok: ch.favE[elOf(c)] >= 0 }));
@@ -939,8 +964,8 @@ const ZEN_C = (function () {
     };
     const meet = notes.some(n => /合|贵人/.test(n)) ? '有人主动靠近，可能是久别重逢、贵人相助或合作谈成' : s[2] >= 60 ? '和朋友、同事的互动多，容易结下新缘分' : '人际平淡，适合和亲近的人好好相处';
     const part = notes.some(n => /冲/.test(n)) ? '可能有告别、搬迁、出差分离，或关系一时冷淡' : notes.some(n => /害|刑/.test(n)) ? '小误会让人心里有疙瘩，及早说开就好' : '没有明显的分离，珍惜身边的人';
-    const doms = DOM.map(([n, k, g, b, be, tip]) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
-      return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '珍惜这份好，记得道谢或分享。' : mid ? '保持平常心。' : tip }; });
+    const doms = DOM.map(([n, k, g, b, be, tip], di) => { const v = s[1 + CI.indexOf(k)]; const good = v >= 56, mid = v >= 51 && v < 56;
+      return { n, v, emo: good ? (n === '金钱' || n === '工作' ? '喜' : '乐') : mid ? '平' : be, text: good ? g : mid ? '平平淡淡，没有大起伏' : b, tip: good ? '' : mid ? '' : tip, mind: mind(n, good ? 'g' : mid ? 'm' : 'b', gz, di) }; });
     return { emo, meet, part, doms };
   }
   return { GUA, REL, scenes };
@@ -1369,7 +1394,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
     const EC = { 喜: 'bz-e-joy', 怒: 'bz-e-anger', 哀: 'bz-e-sad', 乐: 'bz-e-fun', 平: 'bz-e-calm' };
     return card(id, title, `<div class="bz-emo">${['喜', '怒', '哀', '乐'].map(k => `<div class="bz-emot ${EC[k]}"><b>${k}</b><span>${r.emo[k]}</span></div>`).join('')}</div>
       <div class="bz-lihe"><div><b class="bz-he">聚</b><span>${r.meet}</span></div><div><b class="bz-li">离</b><span>${r.part}</span></div></div>
-      <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st">心法：${d.tip}</div></div></li>`).join('')}</ul>
+      <ul class="bz-scenes">${r.doms.map(d => `<li><span class="bz-sn">${d.n}</span><span class="bz-sb ${EC[d.emo]}">${d.emo}</span><div><div>${d.text}</div><div class="bz-st"><span class="bz-mk">心法 · ${d.mind.k}<em>${d.mind.en}</em></span>${d.mind.t}${d.tip ? `<br><span class="bz-muted">小行动：${d.tip}</span>` : ''}</div></div></li>`).join('')}</ul>
       <p class="bz-muted">按干支十神、喜忌与冲合推演的生活情境，帮助你提前调整心态，不代表一定会发生。</p>`, 'bz-scene');
   }
 
