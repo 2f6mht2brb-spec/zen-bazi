@@ -459,6 +459,16 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 #bz-view .bz-coQ{font-size:20px!important;font-weight:700;line-height:1.5;color:#ffe08a;padding:10px 14px!important;margin:-2px 0 10px;border-left:4px solid var(--gold)!important;border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(212,175,55,.18),rgba(212,175,55,.02))}
 #bz-view .bz-coQ::before{content:'你说';display:block;font-size:11px;font-weight:400;letter-spacing:2px;color:var(--gold2);opacity:.75;margin-bottom:2px;font-family:inherit}
 .bz-crisis{border-color:#ff8a73!important;background:rgba(255,138,115,.08)!important}
+#bz-view .bz-ladder{position:relative;margin:12px 0;padding:12px;border-radius:14px;border:1.5px solid var(--gold);background:linear-gradient(180deg,rgba(255,138,115,.06),rgba(76,211,138,.08));box-shadow:0 0 14px rgba(212,175,55,.15)}
+#bz-view .bz-ld{display:flex;gap:10px;padding:8px 4px}#bz-view .bz-ld>i{flex:0 0 24px;height:24px;border-radius:50%;background:rgba(212,175,55,.25);color:var(--gold2);font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+#bz-view .bz-ld.ok>i{background:#4cd38a;color:#10251a}#bz-view .bz-ld>div{flex:1;min-width:0}#bz-view .bz-ld h6{margin:0 0 4px!important;color:var(--gold2)}#bz-view .bz-ld p{margin:3px 0!important}#bz-view .bz-ld small{display:block;opacity:.7;margin-top:3px}
+#bz-view .bz-ld s{opacity:.8;text-decoration-color:rgba(255,120,110,.75);text-decoration-thickness:1.5px}
+.bz-tagf,.bz-tags{display:inline-block;font-size:11px;padding:0 7px;border-radius:999px;margin-right:6px;vertical-align:1px}.bz-tagf{background:rgba(127,168,255,.2);color:#a9c3ff}.bz-tags{background:rgba(255,138,115,.2);color:#ffab9a}
+#bz-view .bz-belief{font-family:"Songti SC","STSong",serif;color:#ffcf9a;font-size:var(--t2)!important}#bz-view .bz-neu{font-size:16px!important;font-weight:700;color:#fff;line-height:1.6}
+#bz-view .bz-ld.ok{background:rgba(76,211,138,.1);border-radius:10px}
+#bz-view .bz-ladder>.bz-arr{position:relative;display:flex;justify-content:center;align-items:center;margin:6px 0;height:30px}
+#bz-view .bz-ladder>.bz-arr::before{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:1px dashed rgba(212,175,55,.5)}
+#bz-view .bz-ladder>.bz-arr::after{content:'⇣ 转念 ⇣';position:relative;padding:4px 16px;border-radius:999px;background:linear-gradient(135deg,#f5d77a,#c9a227);color:#1a1030;font-size:15px;font-weight:800;letter-spacing:3px;box-shadow:0 0 12px rgba(245,215,122,.45)}
 </style>
 </head>
 <body>
@@ -1963,6 +1973,15 @@ const ZEN_CO = (function () {
       ['自信不是想出来的，是一次次做到小事累积出来的。', '等我有信心了才开始。', '我先开始，信心会跟着来。', '练习', '每天完成一件说好要做的小事，睡前记下来。'],
       ['接受现在的自己，并不代表停止成长，而是成长的起点。', '我要先变完美才值得被喜欢。', '我可以带着不完美，继续往前走。', '臣服', '对自己说一句你会对好朋友说的鼓励话，并写下来。']]]
   ];
+  // 每一类困扰背后常见的“深层信念”——转念要转到根上
+  const BEL = { pressure: '我的价值，取决于能不能满足别人的要求。', overload: '只有把事情全部做完，我才值得休息。', plateau: '努力就应该马上看到成果。', quit: '要先有感觉、有动力，才能开始行动。',
+    fail: '犯错，就代表我这个人不够好。', compare: '人的价值可以拿来排名比较。', anxiety: '只要我够担心，坏事就不会发生。', anger: '别人应该照我认为对的方式做。',
+    family: '要被家人认同，我才算是对的。', love: '真正爱我的人，应该不用说就懂我。', money: '钱的多少，代表我这个人的价值。', health: '停下来照顾身体，就是软弱。',
+    learn: '有天分的人才学得会。', work: '环境决定了我，我无能为力。', self: '我必须先够好，才配被肯定。', grief: '要好好放下，就必须停止难过。', general: '这件事只有一种看法。' };
+  const BELNEW = { pressure: '我的价值本来就在，满足别人是选择，不是条件。', overload: '我做完最重要的事，就值得休息。', plateau: '成果会在看不见的地方累积，时间到了自然显现。', quit: '行动会带来感觉，不必等感觉来了才行动。',
+    fail: '犯错是我在做事的证明，不是我是谁的结论。', compare: '每个人走在自己的路上，没有同一条起跑线。', anxiety: '担心不能改变结果，准备才能。', anger: '别人有别人的方式，我只能决定我的回应。',
+    family: '我可以在不被理解的时候，依然相信自己。', love: '把需要说出来，是给对方懂我的机会。', money: '钱是工具，我的价值不在存款里。', health: '照顾身体，是走得更远的智慧。',
+    learn: '能力是练出来的，天分只是起点。', work: '环境影响我，但怎么回应由我决定。', self: '我现在的样子，已经值得被好好对待。', grief: '难过和放下可以同时存在，思念是爱的延续。', general: '换一个角度，这件事会有新的样子。' };
   const KEYS = { 拜师: '找对的老师与示范，借别人的经验少走弯路，别一个人硬撑。', 练习: '把练习当作路本身，不为结果而练，每天回到路上。', 臣服: '接受现在的状态与限制，放下面子和控制，先照顾好自己再前进。', 意向: '先看清楚什么最重要，在心里看见它，再把力气集中在那一件事上。', 边缘: '在稳定的基础上，温和地挑战一点点极限，不冒进。' };
   // 每把钥匙的自问（多组轮换，第一题都先检视旧念头）
   const Q = {
@@ -2079,7 +2098,7 @@ const ZEN_CO = (function () {
     let vi = pool.find(i => !used.includes(i)); if (vi == null) vi = pool[(used.length + turn++) % pool.length];
     const [e, old, neu, key, act] = V[vi];
     const n = (prev || []).length, wan = (MET[h[0]] && MET[h[0]][vi]) || WAN[key][(vi * 2 + n) % WAN[key].length], open = OPEN[(n + vi) % OPEN.length];
-    return { soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
+    return { bel: BEL[h[0]], belNew: BELNEW[h[0]], soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
       four: (() => { const qs = Q[key][(vi + (prev || []).length) % Q[key].length]; return [`“${old}”——${qs[0]}`, ...qs.slice(1)]; })() };
   }
   return { reply };
@@ -2561,7 +2580,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
       : `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
       <p><b>🫂 ${r.soft ? '我在这里' : (r.open || '我听见了')}：</b>${r.empathy.startsWith(r.theme) ? '' : r.theme + (r.also ? `，也牵涉到${r.also}` : '') + '。'}${r.empathy}</p>
       ${r.wan ? `<div class="bz-wan"><span>${r.wan[0]}</span><div><b>万物之道 · ${r.wan[1]}</b><p>${r.wan[2]}</p></div></div>` : ''}
-      <div class="bz-shift"><div class="nk"><b>旧念头</b><span>${r.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新念头</b><span>${r.neu}</span></div></div>
+      <div class="bz-ladder">
+        <div class="bz-ld"><i>1</i><div><h6>看见 · 分开事实与故事</h6><p><span class="bz-tagf">事实</span>${esc(r.quote)}</p><p><span class="bz-tags">故事</span><s>${r.old}</s></p><small>事实是发生的事；故事是你给它加上的意义。痛苦多半来自故事。</small></div></div>
+        <div class="bz-ld"><i>2</i><div><h6>找根 · 背后的信念</h6><p class="bz-belief">「${r.bel}」</p><small>问自己：这条规则是谁定的？它一直都是真的吗？</small></div></div>
+        <div class="bz-arr"></div>
+        <div class="bz-ld ok"><i>3</i><div><h6>转念 · 换一个更真实的看法</h6><p class="bz-neu">${r.neu}</p><small>深层信念也跟着转：${r.belNew}</small></div></div>
+        <div class="bz-ld"><i>4</i><div><h6>找证据 · 让新念头站稳</h6><small>写下三个“新念头”在你生活里已经成立的例子，哪怕很小。新念头要有证据，才不会只是口号。</small></div></div>
+      </div>
       <details class="bz-four"><summary>💭 问问自己 · ${r.key}四问</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
       <p><b>🗝️ ${r.soft ? '心的功课' : '大师功课'} · ${r.key}：</b>${r.keyT}</p>
       <div class="bz-do">👉 今天就做：${r.act}</div>
