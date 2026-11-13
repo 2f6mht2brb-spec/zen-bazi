@@ -1576,7 +1576,7 @@ const ZEN_ART = (function () {
   const lotus = () => `<g>${[-60, -30, 0, 30, 60].map((a, i) => `<path transform="rotate(${a})" d="M0,40 C-${i === 2 ? 22 : 18},-10 -8,-60 0,-80 C8,-60 ${i === 2 ? 22 : 18},-10 0,40 Z" fill="currentColor" fill-opacity="${i === 2 ? .35 : .18}"/>`).join('')}<path d="M-90,52 C-40,40 40,40 90,52" fill="none"/><path d="M-70,64 C-30,56 30,56 70,64" fill="none" stroke-opacity=".5"/></g>`;
   const jiugong = () => { const ord = [5, 6, 7, 8, 9, 1, 2, 3, 4], pos = { 4: [-1, -1], 9: [0, -1], 2: [1, -1], 3: [-1, 0], 5: [0, 0], 7: [1, 0], 8: [-1, 1], 1: [0, 1], 6: [1, 1] }; const pt = n => pos[n].map(v => v * 52); return `<g><rect x="-78" y="-78" width="156" height="156" fill="none"/><line x1="-26" y1="-78" x2="-26" y2="78"/><line x1="26" y1="-78" x2="26" y2="78"/><line x1="-78" y1="-26" x2="78" y2="-26"/><line x1="-78" y1="26" x2="78" y2="26"/><polyline points="${ord.map(n => pt(n).join(',')).join(' ')}" fill="none" stroke-dasharray="3 3" stroke-opacity=".7"/>${Object.entries(pos).map(([n, [x, y]]) => `<text x="${x * 52}" y="${y * 52}" font-size="16" text-anchor="middle" dominant-baseline="central">${'一二三四五六七八九'[n - 1]}</text>`).join('')}</g>`; };
   function cloud(x, y) { return `<path transform="translate(${x},${y})" d="M0,0 c0,-10 14,-10 14,0 c0,-14 20,-14 20,0 c0,-10 14,-10 14,0 c6,0 6,8 0,8 h-48 c-6,0 -6,-8 0,-8 z" fill="none"/>`; }
-  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, astro: () => `<g class="za-spin">${ticks(84, 94, 12)}<circle r="94" fill="none"/>${ring(76, '♈♉♊♋♌♍♎♏♐♑♒♓'.split('').map(c => c + '\uFE0E'), 12)}<circle r="64" fill="none"/></g>${stars(16, 52)}`, work: () => `<g>${ticks(88, 96, 60)}<circle r="96" fill="none"/>${ring(74, '开休生伤杜景死惊'.split(''), 13)}<circle r="62" fill="none"/>${ring(46, TRI, 12)}<rect x="-22" y="-22" width="44" height="44" fill="none"/><text y="2" font-size="16" text-anchor="middle" dominant-baseline="central">禄</text></g>`, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
+  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, wealth: () => `<g>${ticks(86, 94, 48)}<circle r="94" fill="none"/><circle r="62" fill="none"/><rect x="-22" y="-22" width="44" height="44" fill="none" stroke-width="2"/>${ring(76, '金木水火土財祿壽'.split(''), 12)}<text y="2" font-size="22" text-anchor="middle" dominant-baseline="central">財</text></g>`, astro: () => `<g class="za-spin">${ticks(84, 94, 12)}<circle r="94" fill="none"/>${ring(76, '♈♉♊♋♌♍♎♏♐♑♒♓'.split('').map(c => c + '\uFE0E'), 12)}<circle r="64" fill="none"/></g>${stars(16, 52)}`, work: () => `<g>${ticks(88, 96, 60)}<circle r="96" fill="none"/>${ring(74, '开休生伤杜景死惊'.split(''), 13)}<circle r="62" fill="none"/>${ring(46, TRI, 12)}<rect x="-22" y="-22" width="44" height="44" fill="none"/><text y="2" font-size="16" text-anchor="middle" dominant-baseline="central">禄</text></g>`, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
   function svg(k, cls = '') { const f = MAP[k] || luopan; return `<svg class="za ${cls}" viewBox="-110 -110 220 220" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1" font-family="serif">${f()}</svg>`; }
   const corner = `<svg class="za-corner" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2,58 V18 a16,16 0 0 1 16,-16 H58"/><path d="M8,58 V22 a14,14 0 0 1 14,-14 H58" stroke-opacity=".5"/><path d="M14,30 c0,-8 8,-8 8,0 c0,-6 10,-6 10,0" /><circle cx="18" cy="18" r="3"/></svg>`;
   return { svg, corner, luopan: () => svg('day') };
@@ -1869,7 +1869,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
   const GROUPS = [
     ['fort', '☯\uFE0E', '运程', '今日·周·月·年', [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']]],
     ['ming', '❖', '命盘', '本命·流年·大运', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲']]],
-    ['qiu', '✧', '求事', '事业·人和·姻缘', [['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['love', '姻缘', '♡'], ['number', '好数', '#']]],
+    ['qiu', '✧', '求事', '财运·事业·姻缘', [['wealth', '财运', '¥'], ['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['love', '姻缘', '♡'], ['number', '好数', '#']]],
     ['tan', '✶', '探索', '生肖·星象·本心', [['zodiac', '生肖', '◎'], ['astro', '星象', '✶'], ['mbti', '本心', '◑'], ['life', '开运', '❀']]]];
   const GOF = k => (GROUPS.find(g => g[4].some(s => s[0] === k)) || GROUPS[0]);
   const TABS = GROUPS.flatMap(g => g[4].map(s => [s[0], s[2], s[1]]));
@@ -1907,6 +1907,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     liunian: ['流年 · 六壬卷', '取意《大六壬》课传', '穷则变，变则通，通则久。', '《易经 · 系辞下》'],
     dayun: ['大运 · 乾坤卷', '十年一运，阴阳迭用', '一阴一阳之谓道。', '《易经 · 系辞上》'],
     zodiac: ['十二元辰 · 山海卷', '取意《山海经》百兽', '方以类聚，物以群分。', '《易经 · 系辞上》'],
+    wealth: ['财帛 · 聚宝卷', '财为养命之源', '君子爱财，取之有道。', '古训'],
     work: ['事业 · 官禄卷', '取法《子平》官星为禄', '君子藏器于身，待时而动。', '《易经 · 系辞下》'],
     team: ['合和 · 众生卷', '同气相求，同声相应', '二人同心，其利断金。', '《易经 · 系辞上》'],
     love: ['月老 · 红线卷', '姻缘天定，经营在人', '执子之手，与子偕老。', '《诗经 · 邶风 · 击鼓》'],
@@ -1922,7 +1923,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
-    'lv-match': '合婚', 'lv-time': '红鸾天喜', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
+    'lv-match': '合婚', 'lv-time': '红鸾天喜', 'wl-natal': '财格', 'wl-way': '财路', 'wl-days': '择吉', 'wl-months': '月令', 'wl-years': '十年', 'wl-act': '开财', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
     'n-code': '数字密码', 'a-natal': '星盘', 'a-today': '天象', 'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
@@ -2515,6 +2516,39 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
   // ---------- 撤销 / 重做 ----------
   const H = { past: [], future: [], cur: null, applying: false };
   const TABNAME = Object.assign(Object.fromEntries(TABS.map(t => [t[0], t[2]])), { day: '问今日', week: '问本周', month: '问本月', year: '问今年' });
+  function vWealth() {
+    const ch = S.ch, de = E.elOf(ch.dm), cai = E.CTL[de], lab = ch.label(cai), tot = Object.values(ch.byRel).reduce((a, b) => a + b, 0) || 1;
+    const pct = g => Math.round(ch.byRel[g] / tot * 100), cP = pct('财'), sP = pct('食'), bP = pct('比');
+    const stems = ['y', 'm', 'd', 'h'].filter(k => ch.P[k]).flatMap(k => [k === 'd' ? null : ch.P[k][0], ...E.HID[ch.P[k][1]]]).filter(Boolean);
+    const zc = stems.filter(s => E.tenGod(ch.dm, s) === '正财').length, pc = stems.filter(s => E.tenGod(ch.dm, s) === '偏财').length;
+    const KU = { 木: '未', 火: '戌', 土: '辰', 金: '丑', 水: '辰' }[cai], hasKu = ['y', 'm', 'd', 'h'].some(k => ch.P[k] && ch.P[k][1] === KU);
+    const pats = [];
+    if (sP >= 25 && cP > 0) pats.push(['食伤生财', '靠才华、技术、作品赚钱最顺：手艺越精，收入越稳。副业、接案、创作都适合你。']);
+    if (ch.weak && cP >= 25) pats.push(['财多身弱', '机会多但自己扛不住，宜借平台、团队或合伙，别一个人包揽。']);
+    if (bP >= 25 && cP > 0) pats.push(['比劫夺财', '朋友同辈容易分走你的钱：不借贷、不担保，合伙要白纸黑字。']);
+    if (cP < 10) pats.push(['财星不显', '钱不会自己找上门，要主动经营：存钱比赚快钱更适合你。']);
+    if (hasKu) pats.push(['财库在命', `命中有财库（${KU}），天生会守财、能存钱，适合长期储蓄与置产。`]);
+    if (!pats.length) pats.push(['财星平稳', '收支平衡型：按部就班累积，避免高风险投机。']);
+    const kind = zc >= pc ? ['正财型', '稳定工资、长期客户、按部就班的收入最适合你。'] : ['偏财型', '投资、业务提成、副业、意外之财的机会较多，但起伏也大。'];
+    const IND = { 木: '教育、出版、园艺、设计、医疗保健', 火: '科技、电子、传媒、摄影、餐饮、美业', 土: '房地产、建筑、农业、仓储、顾问', 金: '金融、机械、汽车、珠宝、法律', 水: '物流、贸易、旅游、电讯、水产饮品' };
+    const fav = E.ELS.filter(e => ['用', '喜'].includes(ch.label(e)));
+    const dT = S.B.day(TODAY), sy = S.B.syOf(S.date), yr = S.B.yearOf(sy), mo = S.B.monthOf(S.date);
+    const ms = S.B.months.filter(m => m.sy === sy), ys = Array.from({ length: 10 }, (_, i) => S.B.syOf(TODAY) - 1 + i).map(y => ({ y, x: S.B.yearOf(y) }));
+    const days = Array.from({ length: 30 }, (_, i) => S.B.day(A.addDays(TODAY, i))), best = days.slice().sort((a, b) => b.s[3] - a.s[3]).slice(0, 4).sort((a, b) => a.date < b.date ? -1 : 1), worst = days.slice().sort((a, b) => a.s[3] - b.s[3]).slice(0, 2);
+    const tg = E.tenGod(ch.dm, dT.p.d[0]), FS = A.flyStars(sy), where = n => Object.keys(FS.pos).find(k => FS.pos[k].n === n);
+    const tip = s => s >= 76 ? '财气旺，可以主动谈钱、成交、收款' : s >= 56 ? '财运顺，适合推进业务与理财规划' : s >= 51 ? '小有进账，量入为出' : s >= 21 ? '开销易增，暂缓大额消费与投资' : '守财为上，不借贷、不投机';
+    return hero('今日财运', dT.s[3], A.level(dT.s[3]), `<h2>财运 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${tg}」。${tip(dT.s[3])}。</p>`, `<p class="bz-muted">本月 ${mo.s[3]} 分 · ${sy}年 ${yr.s[3]} 分</p>`])
+      + card('wl-natal', '先天财格', `<div class="bz-dcmain" style="grid-template-columns:repeat(3,1fr)"><div><small>财星五行</small><b>${gzc(cai)}</b><em>对你是${lab === '平' ? '中性' : lab + '神'}</em></div><div><small>财星比重</small><b>${cP}%</b><em>正财 ${zc} · 偏财 ${pc}</em></div><div><small>求财类型</small><b style="font-size:18px">${kind[0]}</b><em>${zc >= pc ? '稳定收入为主' : '机会收入为主'}</em></div></div>
+        <div class="bz-3">${pats.map(([t, d]) => `<div class="bz-3i"><i>💰</i><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div><p class="bz-small">${kind[1]}</p>`)
+      + card('wl-way', '怎么求财最顺', `<dl class="bz-kv"><dt>适合行业</dt><dd>${fav.map(e => `<b>${gzc(e)}</b>：${IND[e]}`).join('<br>')}</dd><dt>财方位</dt><dd>本命财方在${A.DIR[cai]}；${sy}年八白财星在${where(8)}、九紫喜庆星在${where(9)}，可把收银、钱包、保险箱放这两方。</dd>
+        <dt>开财颜色</dt><dd>${A.COLOR[ch.yong]}色（用神）${lab !== '忌' ? `、${A.COLOR[cai]}色（财星）` : ''}</dd><dt>财运数字</dt><dd>${A.NUM[ch.yong].join('、')}${lab !== '忌' ? '、' + A.NUM[cai].join('、') : ''}</dd>
+        <dt>守财提醒</dt><dd>${bP >= 25 ? '比劫重，最忌借钱给人和替人担保。' : ch.weak ? '身弱担财，大额投资前先问自己扛不扛得住最坏情况。' : '身强能担财，可以适度投资，但要分散风险。'}</dd></dl>`)
+      + card('wl-days', '未来 30 天财运好日子', `<p>${best.map(d => `<button class="bz-chip ${lvc(A.level(d.s[3]))}" data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} · ${d.s[3]}</button>`).join('')}</p><p class="bz-small">适合谈加薪、收款、签约、开张、买重要物品。</p>
+        <p class="bz-small"><b class="bz-bad">留意：</b>${worst.map(d => `${A.md(d.date)}（${d.s[3]}）`).join('、')}，暂缓大额消费、借贷与投资。</p>`)
+      + card('wl-months', `${sy}年 · 十二个月财运`, bars(ms.map(m => ({ v: m.s[3], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 财运 ${m.s[3]}（${A.level(m.s[3])}）：${tip(m.s[3])}` })), { label: '各月财运' }) + `<p class="bz-small">最旺：${ms.slice().sort((a, b) => b.s[3] - a.s[3]).slice(0, 2).map(m => gzc(m.gz) + '月').join('、')}；最弱：${ms.slice().sort((a, b) => a.s[3] - b.s[3])[0].gz}月。</p>`)
+      + card('wl-years', '十年财运走势', bars(ys.map(o => ({ v: o.x.s[3], l1: String(o.y), l2: o.x.gz, act: 'ln:' + o.y, tip: `${o.y} ${o.x.gz}年 财运 ${o.x.s[3]}：${tip(o.x.s[3])}` })), { label: '十年财运' }) + `<p class="bz-small">财运高峰：${ys.slice().sort((a, b) => b.x.s[3] - a.x.s[3]).slice(0, 3).map(o => o.y + '年').join('、')}。高峰年适合置产、扩大收入；低谷年以储蓄、学习、打底为主。</p>`)
+      + card('wl-act', '开财运小行动', `<ul class="bz-tcml"><li>💳 每月先存后花：收入一到先转 10–20% 到储蓄。</li><li>📒 记账一周，找出最不必要的一项开销。</li><li>🧭 钱包、收银放在${where(8)}或${A.DIR[ch.yong]}方。</li><li>🙏 赚到钱拿一小部分回馈或帮助人，财要流动才会来。</li></ul><p class="bz-warn">命理财运只是时机参考，不是投资建议；重大财务决定请咨询专业理财顾问。</p>`);
+  }
   function vWork() {
     const md = S.wmode || '日', ch = S.ch, lvTag = v => { const l = A.level(v); return `<i class="${lvc(l)}">${l}</i>`; };
     let gz, s, when, unit;
@@ -2701,11 +2735,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     app.querySelector('#bz-tabs').innerHTML = GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${n}</span><small>${cap}</small></button>`).join('');
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
-    sub.innerHTML = `<div class="bz-fseg" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>`;
+    sub.innerHTML = `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>`;
     let vh = html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
     if (S.tab === 'month' && S.B.monthOf(S.date).start !== S.B.monthOf(TODAY).start) vh = vh.replace(/本月/g, '当月').replace(/这个月/g, '那个月');
