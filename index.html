@@ -428,6 +428,15 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-coform button{padding:11px;border-radius:12px;border:0;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1030;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
 .bz-cochips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.bz-cochips button{padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:12px;cursor:pointer}
 .bz-coA{margin:12px 0;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13.5px;line-height:1.6}.bz-coA p{margin:8px 0}.bz-coQ{font-family:"Songti SC",serif;font-size:15px;color:var(--gold2);padding-left:10px;border-left:3px solid var(--gold)}
+/* ===== 统一字体层级 ===== */
+#bz-view{--t1:17px;--t2:15.5px;--t3:14px;--t4:13px}
+#bz-view .bz-card>h2{font-size:var(--t1)!important}
+#bz-view .bz-card p,#bz-view .bz-card li,#bz-view .bz-card dd,#bz-view .bz-3i span,#bz-view .bz-coA,#bz-view .bz-tri3i p,#bz-view .bz-g3>div,#bz-view .bz-shift span,#bz-view .bz-tri>div,#bz-view .bz-ev-tip,#bz-view .bz-mood-main,#bz-view .bz-kv dd{font-size:var(--t3)!important;line-height:1.65}
+#bz-view .bz-small,#bz-view .bz-muted,#bz-view .bz-tip,#bz-view .bz-warn,#bz-view .bz-3i small,#bz-view .bz-mood-sub,#bz-view .bz-tri small,#bz-view .bz-kv dt,#bz-view .bz-3i b,#bz-view .bz-shift b,#bz-view h5,#bz-view h6,#bz-view .bz-h3,#bz-view summary,#bz-view .bz-cochips button,#bz-view .bz-chip,#bz-view .bz-tri3i small{font-size:var(--t4)!important}
+#bz-view .bz-do,#bz-view .bz-to,#bz-view .bz-head strong,#bz-view .bz-quote,#bz-view .bz-coQ,#bz-view .bz-ev-title,#bz-view .bz-cf-t{font-size:var(--t2)!important;line-height:1.55}
+#bz-view textarea,#bz-view input:not([type=radio]):not([type=checkbox]),#bz-view form button,#bz-view .bz-coform button{font-size:var(--t3)!important}
+#bz-view .bz-coform textarea::placeholder{font-size:var(--t3)}
+#bz-view .bz-coA{padding:12px 14px}#bz-view .bz-coA>p{margin:6px 0}#bz-view .bz-coform button{padding:10px}
 </style>
 </head>
 <body>
@@ -1866,6 +1875,7 @@ const ZEN_CO = (function () {
     ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给/, '和别人比较而感到失落', '比较会偷走你的快乐。别人展示的是终点，而你看到的是自己的过程。', '别人比我好，我落后了。', '我只跟昨天的自己比；别人的好提醒我想成为什么样的人。', '意向', '列出你这个月比上个月多会的三件小事。'],
     ['anxiety', /焦虑|担心|害怕|不安|紧张|怕|恐惧|压力大|睡不着/, '焦虑或担心', '焦虑多半来自还没发生的未来。你的身体在这里，心却跑去了明天。', '万一事情变得很糟怎么办？', '我能照顾好的是现在这一步，其余的到时候再面对。', '意向', '做三次深呼吸：吸气数 4、停 4、呼气数 6；然后写下现在能做的一个小动作。'],
     ['anger', /生气|愤怒|气死|不爽|讨厌|烦|不公平|被欺负/, '生气或不满', '愤怒里有能量，也有你在乎的东西。先别急着出手，让它变成推动你的力量。', '他太过分了，我一定要讨回来。', '我在乎的是公平和尊重；我可以冷静地把需要说清楚。', '臣服', '先离开现场 10 分钟，再用“我感到…因为…我希望…”的句式表达。'],
+    ['family', /家人|父母|爸|妈|孩子|儿子|女儿|兄弟|姐妹|不信我|不理解我|误解|不支持/, '家人或亲近的人不理解你', '被最亲的人误解，往往比被外人否定更难受，因为你在乎他们。', '他们不相信我，说明我不够好。', '他们的担心来自爱和不了解；我可以用行动和沟通慢慢让他们看见。', '意向', '找一个平静的时候，用三句话说清楚你在做什么、为什么、需要他们怎样支持。'],
     ['work', /工作|上司|老板|同事|升职|加薪|跳槽|面试|公司|职场|客户/, '工作上的困扰', '工作是最好的修行场：每一个难题，都是在练你的专业和心性。', '这份工作不公平，我被困住了。', '我在这里磨练的能力，会跟着我去任何地方。', '拜师', '找一位你欣赏的前辈，问他一个关于你目前难题的具体问题。'],
     ['love', /感情|伴侣|老婆|老公|男朋友|女朋友|分手|吵架|婚姻|喜欢的人|暗恋/, '感情上的困扰', '关系也是一门要练的功夫，没有人一开始就会爱得刚刚好。', '他应该懂我，不然就是不在乎我。', '我可以把需要说清楚，不用让对方猜。', '臣服', '今天对伴侣说一句具体的感谢，再说一个你真正的需要。'],
     ['money', /钱|财|收入|负债|欠|投资|亏|存款|穷|花费/, '金钱压力', '钱的焦虑很真实。先把注意力从“不够”拉回到“我现在能管理什么”。', '钱不够，我很失败。', '钱是可以学习管理的技能；我正在练。', '练习', '把这个月的支出列出来，找一项可以先停掉的。'],
