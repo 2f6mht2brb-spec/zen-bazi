@@ -443,6 +443,17 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-shift .bz-arr::after{content:'⇣ 转念 ⇣';position:relative;padding:4px 16px;border-radius:999px;background:linear-gradient(135deg,#f5d77a,#c9a227);color:#1a1030;font-size:15px;font-weight:800;letter-spacing:3px;box-shadow:0 0 12px rgba(245,215,122,.45)}
 .bz-shift .nk span,.bz-3i s,.bz-from{opacity:.8!important;text-decoration:line-through!important;text-decoration-color:rgba(255,120,110,.75)!important;text-decoration-thickness:1.5px!important}
 #bz-view .bz-shift span{font-size:16px!important;line-height:1.6}#bz-view .bz-shift .ok span{font-weight:600}#bz-view .bz-shift b{font-size:14px!important;flex:0 0 auto!important;white-space:nowrap}
+/* 可点开的小框：统一做成按钮 */
+#bz-view details.bz-four,#bz-view details.bz-more,#bz-view details.bz-evd{padding:0!important;border-radius:12px!important;border:1px solid rgba(212,175,55,.55)!important;background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(212,175,55,.04))!important;overflow:hidden}
+#bz-view details.bz-four>summary,#bz-view details.bz-more>summary,#bz-view details.bz-evd>summary{display:flex!important;align-items:center;gap:8px;padding:11px 14px!important;margin:0!important;list-style:none;cursor:pointer;color:var(--gold2)!important;font-weight:700;font-size:var(--t3)!important}
+#bz-view details.bz-four>summary::-webkit-details-marker,#bz-view details.bz-more>summary::-webkit-details-marker,#bz-view details.bz-evd>summary::-webkit-details-marker{display:none}
+#bz-view details.bz-four>summary::after,#bz-view details.bz-more>summary::after,#bz-view details.bz-evd>summary::after{content:'点开 ▾';margin-left:auto;flex:0 0 auto;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--gold2);color:#1a1030;opacity:1!important}
+#bz-view details[open].bz-four>summary::after,#bz-view details[open].bz-more>summary::after,#bz-view details[open].bz-evd>summary::after{content:'收起 ▴';background:rgba(255,255,255,.12);color:var(--gold2)}
+#bz-view details.bz-four>summary:active,#bz-view details.bz-more>summary:active,#bz-view details.bz-evd>summary:active{background:rgba(212,175,55,.18)}
+#bz-view details[open].bz-four>*:not(summary),#bz-view details[open].bz-more>*:not(summary),#bz-view details[open].bz-evd>*:not(summary){margin-left:14px;margin-right:14px}
+#bz-view details[open].bz-four>:last-child,#bz-view details[open].bz-more>:last-child,#bz-view details[open].bz-evd>:last-child{margin-bottom:12px}
+#bz-view details[open]>summary{border-bottom:1px dashed rgba(212,175,55,.3)}
+#bz-view details[open] ol,#bz-view details[open] ul.bz-mlist{padding-left:20px!important;margin-top:10px!important}
 </style>
 </head>
 <body>
@@ -2375,14 +2386,14 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
     const ans = r => `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
       <p><b>🫂 我听见了：</b>${r.theme}${r.also ? `，也牵涉到${r.also}` : ''}。${r.empathy}</p>
       <div class="bz-shift"><div class="nk"><b>旧念头</b><span>${r.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新念头</b><span>${r.neu}</span></div></div>
-      <details class="bz-four"><summary>问问自己（转念四问）</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
+      <details class="bz-four"><summary>💭 问问自己 · 转念四问</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
       <p><b>🗝️ 大师功课 · ${r.key}：</b>${r.keyT}</p>
       <div class="bz-do">👉 今天就做：${r.act}</div>
       <p class="bz-small">⏰ 安排在你用神「${S.ch.yong}」当旺的 ${hrs[S.ch.yong]} 去做，事半功倍。</p></div>`;
     return card('l-coach', '大师教练 · 说说你的心事', `<p class="bz-small">把困扰写下来，例如“我练摄影很久都没进步”“和上司吵架很生气”。教练会陪你转念，给你一个今天能做的小行动。</p>
       <form id="bz-coform" class="bz-coform"><textarea name="q" rows="3" maxlength="300" placeholder="此刻，你心里最放不下的是什么？"></textarea><button type="submit">请教练</button></form>
       <div class="bz-cochips">${['练习很久没进步', '想放弃', '工作压力大', '和别人比较', '感情吵架', '钱不够用'].map(t => `<button type="button" data-act="coq:${t}">${t}</button>`).join('')}</div>
-      ${last ? ans(last) : ''}${L.length > 1 ? `<details class="bz-more"><summary>之前的对话（${L.length - 1}）</summary>${L.slice(0, -1).reverse().map(ans).join('')}</details>` : ''}
+      ${last ? ans(last) : ''}${L.length > 1 ? `<details class="bz-more"><summary>🕘 之前的对话（${L.length - 1}）</summary>${L.slice(0, -1).reverse().map(ans).join('')}</details>` : ''}
       <p class="bz-muted">这是网站内建的自助引导，按关键词给出转念方法，不是真人教练，也不能代替心理或医疗专业协助。如果你感到撑不住，请找信任的人或专业人士聊聊。</p>`);
   }
   function masteryCard() {
