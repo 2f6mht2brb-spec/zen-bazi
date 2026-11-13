@@ -413,6 +413,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .tpn circle:not(.top){animation:tpglow 2.4s ease-in-out infinite}@keyframes tpglow{50%{stroke:rgba(255,224,138,.9)}}@media (prefers-reduced-motion:reduce){.tpn circle{animation:none}}
 .bz-tphint{color:var(--gold2);font-size:12.5px!important;opacity:.95}.bz-tri3i:not([hidden]){animation:tkopen .35s ease-out}
 .bz-tri3i[hidden]{display:none!important}
+.bz-astw{display:block;width:100%;max-width:280px;margin:0 auto 8px}.bz-astw text{text-anchor:middle;dominant-baseline:central;fill:var(--gold2);font-size:14px;font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}.bz-astw text.on{fill:#fff;font-size:17px}.bz-astw text.lb{font-size:8px;fill:#ddd;font-family:inherit}.bz-astw text.c{font-size:15px;fill:#fff;font-weight:700;font-family:"Songti SC",serif}.bz-astw text.c2{font-size:9px;fill:#bbb;font-family:inherit}
 </style>
 </head>
 <body>
@@ -1565,7 +1566,7 @@ const ZEN_ART = (function () {
   const lotus = () => `<g>${[-60, -30, 0, 30, 60].map((a, i) => `<path transform="rotate(${a})" d="M0,40 C-${i === 2 ? 22 : 18},-10 -8,-60 0,-80 C8,-60 ${i === 2 ? 22 : 18},-10 0,40 Z" fill="currentColor" fill-opacity="${i === 2 ? .35 : .18}"/>`).join('')}<path d="M-90,52 C-40,40 40,40 90,52" fill="none"/><path d="M-70,64 C-30,56 30,56 70,64" fill="none" stroke-opacity=".5"/></g>`;
   const jiugong = () => { const ord = [5, 6, 7, 8, 9, 1, 2, 3, 4], pos = { 4: [-1, -1], 9: [0, -1], 2: [1, -1], 3: [-1, 0], 5: [0, 0], 7: [1, 0], 8: [-1, 1], 1: [0, 1], 6: [1, 1] }; const pt = n => pos[n].map(v => v * 52); return `<g><rect x="-78" y="-78" width="156" height="156" fill="none"/><line x1="-26" y1="-78" x2="-26" y2="78"/><line x1="26" y1="-78" x2="26" y2="78"/><line x1="-78" y1="-26" x2="78" y2="-26"/><line x1="-78" y1="26" x2="78" y2="26"/><polyline points="${ord.map(n => pt(n).join(',')).join(' ')}" fill="none" stroke-dasharray="3 3" stroke-opacity=".7"/>${Object.entries(pos).map(([n, [x, y]]) => `<text x="${x * 52}" y="${y * 52}" font-size="16" text-anchor="middle" dominant-baseline="central">${'一二三四五六七八九'[n - 1]}</text>`).join('')}</g>`; };
   function cloud(x, y) { return `<path transform="translate(${x},${y})" d="M0,0 c0,-10 14,-10 14,0 c0,-14 20,-14 20,0 c0,-10 14,-10 14,0 c6,0 6,8 0,8 h-48 c-6,0 -6,-8 0,-8 z" fill="none"/>`; }
-  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, work: () => `<g>${ticks(88, 96, 60)}<circle r="96" fill="none"/>${ring(74, '开休生伤杜景死惊'.split(''), 13)}<circle r="62" fill="none"/>${ring(46, TRI, 12)}<rect x="-22" y="-22" width="44" height="44" fill="none"/><text y="2" font-size="16" text-anchor="middle" dominant-baseline="central">禄</text></g>`, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
+  const MAP = { day: luopan, week: qiyao, month: moons, year: xiu, liunian: luoshu, dayun: bagua, zodiac: zodiacWheel, team: tongxin, astro: () => `<g class="za-spin">${ticks(84, 94, 12)}<circle r="94" fill="none"/>${ring(76, '♈♉♊♋♌♍♎♏♐♑♒♓'.split('').map(c => c + '\uFE0E'), 12)}<circle r="64" fill="none"/></g>${stars(16, 52)}`, work: () => `<g>${ticks(88, 96, 60)}<circle r="96" fill="none"/>${ring(74, '开休生伤杜景死惊'.split(''), 13)}<circle r="62" fill="none"/>${ring(46, TRI, 12)}<rect x="-22" y="-22" width="44" height="44" fill="none"/><text y="2" font-size="16" text-anchor="middle" dominant-baseline="central">禄</text></g>`, love: hongxian, number: luoshu, chart: pillars, mbti: enso, life: lotus, nine: jiugong };
   function svg(k, cls = '') { const f = MAP[k] || luopan; return `<svg class="za ${cls}" viewBox="-110 -110 220 220" aria-hidden="true" fill="currentColor" stroke="currentColor" stroke-width="1" font-family="serif">${f()}</svg>`; }
   const corner = `<svg class="za-corner" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2,58 V18 a16,16 0 0 1 16,-16 H58"/><path d="M8,58 V22 a14,14 0 0 1 14,-14 H58" stroke-opacity=".5"/><path d="M14,30 c0,-8 8,-8 8,0 c0,-6 10,-6 10,0" /><circle cx="18" cy="18" r="3"/></svg>`;
   return { svg, corner, luopan: () => svg('day') };
@@ -1799,6 +1800,49 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
 
 </script>
 <script>
+// ===== 西洋星象（太阳、月亮星座与今日星象）原创解读 =====
+const ZEN_AS = (function () {
+  const SG = [
+    ['白羊座', '♈', '火', '开创', '热情直接、勇于开始', '冲动、缺乏耐心'],
+    ['金牛座', '♉', '土', '固定', '踏实稳重、重视品质与安全感', '固执、慢热'],
+    ['双子座', '♊', '风', '变动', '好奇灵活、善于沟通', '分心、善变'],
+    ['巨蟹座', '♋', '水', '开创', '重感情、顾家、有保护欲', '敏感、情绪起伏'],
+    ['狮子座', '♌', '火', '固定', '大方自信、有领袖魅力', '爱面子、需要被肯定'],
+    ['处女座', '♍', '土', '变动', '细心务实、追求完善', '挑剔、容易焦虑'],
+    ['天秤座', '♎', '风', '开创', '优雅公正、重视和谐', '犹豫不决、怕冲突'],
+    ['天蝎座', '♏', '水', '固定', '专注深刻、意志力强', '占有欲、不易放下'],
+    ['射手座', '♐', '火', '变动', '乐观自由、爱探索', '粗心、承诺感不足'],
+    ['摩羯座', '♑', '土', '开创', '自律有责任感、目标明确', '压抑、过于严肃'],
+    ['水瓶座', '♒', '风', '固定', '独立创新、重视理想', '疏离、我行我素'],
+    ['双鱼座', '♓', '水', '变动', '温柔有同理心、想象力丰富', '逃避现实、界线模糊']
+  ];
+  const EL = { 火: '行动与热情', 土: '务实与稳定', 风: '思考与沟通', 水: '情感与直觉' };
+  const ASP = { 0: ['同星座', '能量叠加：状态与你很合拍，但也容易把优缺点一起放大', 'm'], 1: ['半六合', '小摩擦中有小成长', 'm'], 2: ['六合', '顺手的一天，适合沟通与合作', 'g'], 3: ['四分', '有张力，容易遇到阻碍，宜放慢', 'b'], 4: ['三分', '顺流的一天，灵感与运气都不错', 'g'], 5: ['梅花相位', '需要调整心态，别钻牛角尖', 'm'], 6: ['对分', '外界与你拉扯，宜多倾听、找平衡', 'b'] };
+  const norm = x => ((x % 360) + 360) % 360, rad = x => x * Math.PI / 180;
+  function moonLon(jd) {
+    const d = jd - 2451545.0, L = 218.316 + 13.176396 * d, M = rad(134.963 + 13.064993 * d), D = rad(297.850 + 12.190749 * d), Ms = rad(357.529 + 0.98560028 * d), F = rad(93.272 + 13.229350 * d);
+    return norm(L + 6.289 * Math.sin(M) + 1.274 * Math.sin(2 * D - M) + 0.658 * Math.sin(2 * D) + 0.214 * Math.sin(2 * M) - 0.186 * Math.sin(Ms) - 0.114 * Math.sin(2 * F));
+  }
+  const sign = lon => Math.floor(norm(lon) / 30);
+  function phase(sl, ml) { const a = norm(ml - sl), i = Math.round(a / 45) % 8;
+    return { a, n: ['新月', '眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月'][i], ic: ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'][i], t: ['适合许愿、定新目标', '小步开始、累积行动', '面对挑战、做决定', '修正细节、持续努力', '成果显现、情绪也较满，宜感恩与收尾', '分享与回馈', '检讨、放下不需要的', '休息、沉淀、为下个循环准备'][i] }; }
+  function natal(E, inp) {
+    const known = inp.hour != null, h = known ? inp.hour : 12, j = E.jd(inp.y, inp.m, inp.d, h) - (inp.tz ?? 8) / 24;
+    const sl = E.sunLon(j), ml = moonLon(j), ms = sign(ml);
+    // 时间不明时，检查月亮是否可能跨星座
+    const m0 = sign(moonLon(j - .5)), m1 = sign(moonLon(j + .5));
+    return { sl, ml, sun: sign(sl), moon: ms, moonSure: known || (m0 === ms && m1 === ms), alt: m0 !== ms ? m0 : m1 !== ms ? m1 : null };
+  }
+  function today(E, dIso, tz) { const [y, m, d] = dIso.split('-').map(Number), j = E.jd(y, m, d, 12) - tz / 24, sl = E.sunLon(j), ml = moonLon(j); return { sl, ml, sun: sign(sl), moon: sign(ml), ph: phase(sl, ml) }; }
+  function aspect(a, b) { const k = Math.min((b - a + 12) % 12, (a - b + 12) % 12); return ASP[k]; }
+  function compat(a, b) { const sa = SG[a][2], sb = SG[b][2], ok = { 火: '风', 风: '火', 土: '水', 水: '土' };
+    return sa === sb ? '同元素，很懂彼此' : ok[sa] === sb ? '互补元素，彼此滋养' : '元素不同，需要多理解'; }
+  return { SG, EL, natal, today, aspect, compat, sign, moonLon, phase };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_AS;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1812,7 +1856,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
-  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯\uFE0E', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒\uFE0E', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '<svg viewBox="0 0 20 20" width="1em" height="1em" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg>', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运']];
+  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯\uFE0E', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒\uFE0E', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '<svg viewBox="0 0 20 20" width="1em" height="1em" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg>', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运'], ['astro', '✶', '观星象']];
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
@@ -1854,6 +1898,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     chart: ['四柱 · 天机卷', '取法《渊海子平》', '观天之道，执天之行，尽矣。', '《黄帝阴符经》'],
     mbti: ['本来面目卷', '取意《六祖坛经》', '知人者智，自知者明。', '《道德经》'],
     life: ['日用即道卷', '取意《金刚经》', '应无所住，而生其心。', '《金刚经》'],
+    astro: ['星宿 · 天文卷', '仰观天文，俯察地理', '在天成象，在地成形，变化见矣。', '《易经 · 系辞上》'],
     nine: ['三元九运卷', '取法玄空飞星', '变动不居，周流六虚。', '《易经 · 系辞下》']
   };
   const XUAN = {
@@ -1862,7 +1907,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
-    'n-code': '数字密码', 'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
+    'n-code': '数字密码', 'a-natal': '星盘', 'a-today': '天象', 'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
@@ -2493,6 +2538,26 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     return html;
   }
 
+  function vAstro() {
+    const AS = ZEN_AS, SG = AS.SG, n = AS.natal(E, S.ch.inp), t = AS.today(E, S.date, TZ()), s = SG[n.sun], m = SG[n.moon];
+    const asp = AS.aspect(n.sun, t.moon), asp2 = AS.aspect(n.sun, t.sun);
+    const P = (deg, r) => { const a = rad2(180 - deg); return [(Math.cos(a) * r).toFixed(1), (-Math.sin(a) * r).toFixed(1)]; }, rad2 = x => x * Math.PI / 180;
+    const ring = SG.map((g, i) => { const [x, y] = P(i * 30 + 15, 86), [x1, y1] = P(i * 30, 100), [x2, y2] = P(i * 30, 72); return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(212,175,55,.35)"/><text x="${x}" y="${y}" class="${i === n.sun ? 'on' : ''}">${g[1]}︎</text>`; }).join('');
+    const dot = (lon, r, c, lab) => { const [x, y] = P(lon, r); return `<circle cx="${x}" cy="${y}" r="6" fill="${c}"/><text x="${x}" y="${(+y + 15).toFixed(1)}" class="lb">${lab}</text>`; };
+    const wheel = `<svg class="bz-astw" viewBox="-110 -110 220 220" role="img" aria-label="星盘：太阳${s[0]}，月亮${m[0]}"><circle r="100" fill="rgba(0,0,0,.2)" stroke="rgba(212,175,55,.5)"/><circle r="72" fill="none" stroke="rgba(212,175,55,.35)"/><circle r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-dasharray="2 3"/>${ring}
+      ${dot(n.sl, 58, '#ffcc4d', '☉ 太阳')}${dot(n.ml, 46, '#cfd8ff', '☽ 月亮')}<text y="-4" class="c">${s[0]}</text><text y="12" class="c2">${s[2]}象 · ${s[3]}</text></svg>`;
+    const html = card('a-natal', '我的星盘', `${wheel}
+      <div class="bz-jq2"><div><small>☉ 太阳星座 · 外在的你</small><b>${s[1]}︎ ${s[0]}</b><em>${s[4]}；要留意${s[5]}。</em></div><div><small>☽ 月亮星座 · 内心的你</small><b>${m[1]}︎ ${m[0]}</b><em>${m[4]}；要留意${m[5]}。${n.moonSure ? '' : `<br>（出生时辰不详，月亮也可能在${SG[n.alt][0]}）`}</em></div></div>
+      <div class="bz-3"><div class="bz-3i"><i>${{ 火: '🔥', 土: '🪨', 风: '🌬️', 水: '💧' }[s[2]]}</i><div><b>${s[2]}象星座 · ${AS.EL[s[2]]}</b><span>${s[3]}宫型：${{ 开创: '擅长起头、带动新局', 固定: '擅长坚持、把事做深', 变动: '擅长调整、适应变化' }[s[3]]}。</span></div></div>
+        <div class="bz-3i"><i>☯</i><div><b>日月组合</b><span>外在${s[0]}的「${s[4].split('、')[0]}」，内在${m[0]}的「${m[4].split('、')[0]}」——${AS.compat(n.sun, n.moon)}。${s[2] === m[2] ? '内外一致，做决定很快。' : '内外节奏不同，给自己一点切换时间。'}</span></div></div>
+        <div class="bz-3i"><i>☯</i><div><b>与八字对照</b><span>星座${s[2]}象对应五行「${{ 火: '火', 土: '土', 风: '金', 水: '水' }[s[2]]}」；你的八字用神是「${S.ch.yong}」。${{ 火: '火', 土: '土', 风: '金', 水: '水' }[s[2]] === S.ch.yong ? '两套系统指向同一股力量，这正是你的天赋所在。' : '两套系统从不同角度看你，可以互相补充。'}</span></div></div></div>`)
+      + card('a-today', `${S.date === TODAY ? '今日' : A.md(S.date) + ' '}星象`, `<div class="bz-tcmd"><div><small>太阳在</small><b>${SG[t.sun][1]}︎ ${SG[t.sun][0]}</b><em>${SG[t.sun][4].split('、')[0]}的季节</em></div><div><small>月亮在</small><b>${SG[t.moon][1]}︎ ${SG[t.moon][0]}</b><em>情绪偏${SG[t.moon][2]}象：${AS.EL[SG[t.moon][2]]}</em></div><div><small>月相</small><b>${t.ph.ic} ${t.ph.n}</b><em>${t.ph.t}</em></div></div>
+        <div class="bz-3"><div class="bz-3i"><i>☽</i><div><b>月亮与你的太阳：${asp[0]}</b><span><i class="bz-v ${asp[2]}">${asp[2] === 'g' ? '顺' : asp[2] === 'b' ? '有张力' : '平'}</i> ${asp[1]}。</span></div></div>
+        <div class="bz-3i"><i>☉</i><div><b>这个月的太阳：${asp2[0]}</b><span>${{ 同星座: '你的生日月份：能量回到原点，适合许下新一年的心愿', 半六合: '这个月有些小调整，顺手处理就好', 六合: '这个月人缘与沟通顺，适合多交流', 四分: '这个月压力较大，先顾好身体与节奏', 三分: '这个月整体顺流，是推进计划的好时机', 梅花相位: '这个月需要妥协与调整，别硬撑', 对分: '这个月与外界的拉扯较多，学习换位思考' }[asp2[0]]}。</span></div></div></div>
+        <p class="bz-muted">月亮约两天半换一个星座，是每天情绪起伏最快的指标；用上方的日期可以翻看其他日子。</p>`)
+      + card('a-note', '', `<p class="bz-muted">星座位置按天文公式计算（太阳精确到约 0.01°，月亮约 1°）。上升星座需要准确的出生时间和出生地点，这里暂不计算。星象解读为本站原创，与八字互相参照，仅供自我认识参考。</p>`);
+    return html;
+  }
   function vZodiac() {
     const md = S.zmode || '年'; let gz, when, sub;
     if (md === '年') { const y = S.B.syOf(S.date), x = S.B.yearOf(y); gz = x.gz; when = `${y} ${gzc(gz)}年`; sub = `太岁 ${AN[Z.indexOf(gz[1])]} · 以立春为界`; }
@@ -2618,9 +2683,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
     app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => { const on = S.tab === k || (k === 'fort' && FORTK.includes(S.tab)); return `<button class="bz-tab ${on ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${on}"><i>${ic}</i>${t}</button>`; }).join('');
-    const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work'].includes(S.tab);
+    const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     let vh = (FORTK.includes(S.tab) ? `<div class="bz-fseg" role="tablist" aria-label="选择运程">${FORT.map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>` : '') + html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
@@ -2632,7 +2697,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     track();
   }
   function step(dir) {
-    const t = S.tab === 'zodiac' ? { 年: 'year', 月: 'month', 日: 'day' }[S.zmode || '年'] : S.tab === 'work' ? { 年: 'year', 月: 'month', 日: 'day' }[S.wmode || '日'] : S.tab, s = S.date; let n;
+    const t = S.tab === 'zodiac' ? { 年: 'year', 月: 'month', 日: 'day' }[S.zmode || '年'] : S.tab === 'work' ? { 年: 'year', 月: 'month', 日: 'day' }[S.wmode || '日'] : S.tab === 'astro' ? 'day' : S.tab, s = S.date; let n;
     if (t === 'day') n = A.addDays(s, dir); else if (t === 'week') n = A.addDays(s, 7 * dir);
     else if (t === 'month') { const m = S.B.monthOf(s); n = m ? (dir < 0 ? A.addDays(m.start, -1) : A.addDays(m.end, 1)) : A.addDays(s, 30 * dir); }
     else { const [y, m, d] = A.parse(s); n = A.iso(y + dir, m, Math.min(d, 28)); }
