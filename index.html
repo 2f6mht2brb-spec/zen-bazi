@@ -424,6 +424,10 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-fold>*:not(h2){display:none!important}.bz-fold{padding-bottom:14px!important}.bz-fold>h2{margin-bottom:0!important}
 #bz-sub .bz-fseg{margin:0 0 10px}
 .bz-grid>.bz-fold{align-self:start}
+.bz-coform{display:flex;flex-direction:column;gap:8px}.bz-coform textarea{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--gold);background:rgba(0,0,0,.3);color:inherit;font:inherit;font-size:15px;resize:vertical}
+.bz-coform button{padding:11px;border-radius:12px;border:0;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1030;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.bz-cochips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.bz-cochips button{padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:inherit;font:inherit;font-size:12px;cursor:pointer}
+.bz-coA{margin:12px 0;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13.5px;line-height:1.6}.bz-coA p{margin:8px 0}.bz-coQ{font-family:"Songti SC",serif;font-size:15px;color:var(--gold2);padding-left:10px;border-left:3px solid var(--gold)}
 </style>
 </head>
 <body>
@@ -1478,7 +1482,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T;
 
 </script>
 <script>
-// ===== George Leonard《Mastery》大师之道（内容为中文意译与整理）=====
+// ===== 大师之道（修行与学习理论，中文意译与整理）=====
 const ZEN_MA = (function () {
   const KEYS = {
     印: ['拜师 Instruction', '找对老师、教练或前辈。好老师不只示范，更懂得在你进步时肯定你、在你出错时清楚指出；也别忽略向书本、同伴和自己的身体学习。今天向一位懂的人请教一个具体问题。'],
@@ -1853,6 +1857,37 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
 
 </script>
 <script>
+// ===== 大师教练：规则式转念与修行引导（离线，不联网）=====
+const ZEN_CO = (function () {
+  const TH = [
+    ['plateau', /没(有)?进步|进步很慢|停滞|瓶颈|卡住|原地|没效果|没用|练了很久|高原/, '感觉卡在原地', '进步停下来的时候，最容易怀疑自己。其实这正是大部分人放弃的地方。', '我一直没进步，我不是这块料。', '我正走在高原期，功夫在看不见的地方沉淀。', '练习', '今天照常练 15 分钟，不看结果，只看自己有没有专注。'],
+    ['quit', /放弃|不想做了|坚持不下去|没动力|半途|三分钟|懒|拖延|不想动/, '想放弃或提不起劲', '没动力是正常的，热情本来就会起落。重要的不是心情，而是有没有回到路上。', '我没动力，所以做不到。', '动力是行动之后才来的，先做五分钟就好。', '练习', '设一个 5 分钟的计时器，只做第一步，做完就算赢。'],
+    ['fail', /失败|搞砸|做错|出错|犯错|丢脸|被骂|被批评|没做好/, '刚经历失败或挫折', '跌倒很痛，但它也证明你真的在做事。每一位高手都比新手失败过更多次。', '我搞砸了，我不行。', '这次的结果不等于我这个人；它是一份免费的回馈。', '臣服', '写下这次学到的一件事，然后请一位懂的人给你一个具体建议。'],
+    ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给/, '和别人比较而感到失落', '比较会偷走你的快乐。别人展示的是终点，而你看到的是自己的过程。', '别人比我好，我落后了。', '我只跟昨天的自己比；别人的好提醒我想成为什么样的人。', '意向', '列出你这个月比上个月多会的三件小事。'],
+    ['anxiety', /焦虑|担心|害怕|不安|紧张|怕|恐惧|压力大|睡不着/, '焦虑或担心', '焦虑多半来自还没发生的未来。你的身体在这里，心却跑去了明天。', '万一事情变得很糟怎么办？', '我能照顾好的是现在这一步，其余的到时候再面对。', '意向', '做三次深呼吸：吸气数 4、停 4、呼气数 6；然后写下现在能做的一个小动作。'],
+    ['anger', /生气|愤怒|气死|不爽|讨厌|烦|不公平|被欺负/, '生气或不满', '愤怒里有能量，也有你在乎的东西。先别急着出手，让它变成推动你的力量。', '他太过分了，我一定要讨回来。', '我在乎的是公平和尊重；我可以冷静地把需要说清楚。', '臣服', '先离开现场 10 分钟，再用“我感到…因为…我希望…”的句式表达。'],
+    ['work', /工作|上司|老板|同事|升职|加薪|跳槽|面试|公司|职场|客户/, '工作上的困扰', '工作是最好的修行场：每一个难题，都是在练你的专业和心性。', '这份工作不公平，我被困住了。', '我在这里磨练的能力，会跟着我去任何地方。', '拜师', '找一位你欣赏的前辈，问他一个关于你目前难题的具体问题。'],
+    ['love', /感情|伴侣|老婆|老公|男朋友|女朋友|分手|吵架|婚姻|喜欢的人|暗恋/, '感情上的困扰', '关系也是一门要练的功夫，没有人一开始就会爱得刚刚好。', '他应该懂我，不然就是不在乎我。', '我可以把需要说清楚，不用让对方猜。', '臣服', '今天对伴侣说一句具体的感谢，再说一个你真正的需要。'],
+    ['money', /钱|财|收入|负债|欠|投资|亏|存款|穷|花费/, '金钱压力', '钱的焦虑很真实。先把注意力从“不够”拉回到“我现在能管理什么”。', '钱不够，我很失败。', '钱是可以学习管理的技能；我正在练。', '练习', '把这个月的支出列出来，找一项可以先停掉的。'],
+    ['health', /身体|生病|累|疲倦|失眠|头痛|健康|体重|运动/, '身体疲累或健康困扰', '身体是你走大师之路的工具，照顾它不是偷懒，而是练习的一部分。', '我太累了，什么都做不好。', '休息也是练习；照顾好身体，我才能走得远。', '边缘', '今晚提早 30 分钟睡，明天起床先喝一杯温水、伸展 5 分钟。如不适持续，请看医生。'],
+    ['learn', /学习|考试|考证|技能|学不会|练习|摄影|画|乐器|运动|语言|英文/, '想学好一项技能', '想学好一件事，最重要的不是天分，而是愿意一次又一次回到基本功。', '我学得太慢了。', '慢慢来就是最快的路；我正在打好地基。', '拜师', '找一个好老师或好示范，今天只练一个最基本的动作，练到专注为止。'],
+    ['self', /我是谁|没价值|自卑|没信心|讨厌自己|不够好|迷茫|方向|意义/, '对自己没信心或感到迷茫', '迷茫说明你在寻找，不是停下。你不需要先变好，才配得上去做。', '我不够好。', '我已经在路上了；每天一点点，就是在成为更好的自己。', '意向', '写下一个你想成为的样子，以及今天能为它做的一件小事。']
+  ];
+  const KEYS = { 拜师: '找对的老师与示范，别一个人瞎摸索。', 练习: '把练习当作路本身，不为结果而练。', 臣服: '放下“我应该已经会了”，像初学者一样接受指导。', 意向: '先在心里看清楚你要的画面，再全神贯注去做。', 边缘: '在稳定的基础上，温和地挑战一点点极限。' };
+  function reply(text, ch, lab) {
+    const t = (text || '').trim(); if (!t) return null;
+    let hits = TH.filter(x => x[1].test(t)); if (!hits.length) hits = [TH.find(x => x[0] === 'self')];
+    const h = hits[0], also = hits[1];
+    const quote = t.length > 30 ? t.slice(0, 30) + '…' : t;
+    return { quote, theme: h[2], empathy: h[3], old: h[4], neu: h[5], key: h[6], keyT: KEYS[h[6]], act: h[7], also: also ? also[2] : null,
+      four: [`“${h[4]}”——这是真的吗？`, '你能百分之百确定吗？', '当你相信这个念头时，你怎么对待自己？', '如果没有这个念头，此刻的你会是什么样子？'] };
+  }
+  return { reply };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_CO;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1925,7 +1960,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'wl-natal': '财格', 'wl-way': '财路', 'wl-days': '择吉', 'wl-months': '月令', 'wl-years': '十年', 'wl-act': '开财', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
     'n-code': '数字密码', 'a-natal': '星盘', 'a-today': '天象', 'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
-    'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
+    'l-mastery': '修行卷', 'l-coach': '教练', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
   const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? (/^[\x00-\x7F]+$/.test(n) ? `${n.toUpperCase()} 的` : `${n}的`) : ''; };
@@ -2316,6 +2351,21 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
   const MSK = 'zen-bazi-mastery';
   const mlLoad = () => { try { return JSON.parse(localStorage.getItem(MSK) || 'null') || { skill: '', days: [] }; } catch (e) { return { skill: '', days: [] }; } };
   const mlSave = v => { try { localStorage.setItem(MSK, JSON.stringify(v)); } catch (e) { } };
+  function coachCard() {
+    const L = S.coach || [], last = L[L.length - 1], d = S.B.day(TODAY), hrs = { 木: '3–7 点', 火: '9–13 点', 土: '7–9、13–15 点', 金: '15–19 点', 水: '21–1 点' };
+    const ans = r => `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
+      <p><b>🫂 我听见了：</b>${r.theme}${r.also ? `，也牵涉到${r.also}` : ''}。${r.empathy}</p>
+      <div class="bz-shift"><div class="nk"><b>旧念头</b><span>${r.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新念头</b><span>${r.neu}</span></div></div>
+      <details class="bz-four"><summary>问问自己（转念四问）</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
+      <p><b>🗝️ 大师功课 · ${r.key}：</b>${r.keyT}</p>
+      <div class="bz-do">👉 今天就做：${r.act}</div>
+      <p class="bz-small">⏰ 安排在你用神「${S.ch.yong}」当旺的 ${hrs[S.ch.yong]} 去做，事半功倍。</p></div>`;
+    return card('l-coach', '大师教练 · 说说你的心事', `<p class="bz-small">把困扰写下来，例如“我练摄影很久都没进步”“和上司吵架很生气”。教练会陪你转念，给你一个今天能做的小行动。</p>
+      <form id="bz-coform" class="bz-coform"><textarea name="q" rows="3" maxlength="300" placeholder="此刻，你心里最放不下的是什么？"></textarea><button type="submit">请教练</button></form>
+      <div class="bz-cochips">${['练习很久没进步', '想放弃', '工作压力大', '和别人比较', '感情吵架', '钱不够用'].map(t => `<button type="button" data-act="coq:${t}">${t}</button>`).join('')}</div>
+      ${last ? ans(last) : ''}${L.length > 1 ? `<details class="bz-more"><summary>之前的对话（${L.length - 1}）</summary>${L.slice(0, -1).reverse().map(ans).join('')}</details>` : ''}
+      <p class="bz-muted">这是网站内建的自助引导，按关键词给出转念方法，不是真人教练，也不能代替心理或医疗专业协助。如果你感到撑不住，请找信任的人或专业人士聊聊。</p>`);
+  }
   function masteryCard() {
     const t = ZEN_MA.type(S.ch), K = ZEN_MA.KEYS, L = S.mlog || (S.mlog = mlLoad());
     const set = new Set(L.days); let streak = 0; for (let d = TODAY; set.has(d); d = A.addDays(d, -1)) streak++;
@@ -2325,7 +2375,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     const curve = `<svg viewBox="0 0 320 96" class="bz-curve" role="img" aria-label="大师曲线：短暂突破，接着是长长的高原期，有时会小退步"><path d="M5 86 L38 86 Q46 86 48 70 Q50 63 54 67 L58 70 L96 68 Q104 68 106 50 Q108 43 112 47 L116 50 L168 48 Q176 48 178 30 Q180 23 184 27 L188 30 L262 28 Q270 28 272 12 L315 10" fill="none" stroke="#d4af37" stroke-width="2.5"/><text x="64" y="82" fill="#bbb" font-size="9">高原期</text><text x="126" y="64" fill="#bbb" font-size="9">高原期</text><text x="206" y="44" fill="#bbb" font-size="9">高原期</text><text x="88" y="40" fill="#4cd38a" font-size="9">突破</text><text x="160" y="22" fill="#4cd38a" font-size="9">突破</text></svg>`;
     const sec = (title, inner, open) => `<details class="bz-four bz-msec" ${open ? 'open' : ''}><summary>${title}</summary>${inner}</details>`;
     const list = arr => `<ol class="bz-mlist">${arr.map(([a, b]) => `<li><b>${a}</b>：${b}</li>`).join('')}</ol>`;
-    return card('l-mastery', '大师之道 · George Leonard《Mastery》', `${curve}<p class="bz-mlead">${ZEN_MA.PLATEAU}</p>
+    return card('l-mastery', '大师之道 · 修行地图', `${curve}<p class="bz-mlead">${ZEN_MA.PLATEAU}</p>
       <div class="bz-mtrack"><h3 class="bz-h3">我的练习打卡</h3>
         <form id="bz-mform" class="bz-mform"><input name="skill" maxlength="20" placeholder="我在练的技能，例如：摄影、跑步、英语" value="${esc(L.skill)}"><button type="submit">保存</button></form>
         <button class="bz-mbtn ${done ? 'on' : ''}" data-act="mlog">${done ? '✓ 今天已练习' : '＋ 今天练了' + (L.skill ? ' · ' + esc(L.skill) : '')}</button>
@@ -2340,13 +2390,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
       ${sec('路上的十三个陷阱', list(ZEN_MA.PITFALLS))}
       ${sec('日常即修行', `<p>${ZEN_MA.COMMON}</p>`)}
       ${sec('旅途小礼物：身心练习', list(ZEN_MA.GIFTS))}
-      <p class="bz-muted">内容整理自 George Leonard《Mastery: The Keys to Success and Long-Term Fulfillment》，为中文意译。学习倾向按命盘十神推算，只供参考。每天在“问今日”里会提示一把钥匙，以及能量来源或要留意的陷阱。</p>`);
+      <p class="bz-muted">内容参考经典修行与学习理论整理，为中文意译。学习倾向按命盘十神推算，只供参考。每天在“问今日”里会提示一把钥匙，以及能量来源或要留意的陷阱。</p>`);
   }
   function vLife() {
     const ch = S.ch, good = ELS.filter(e => ['用', '喜'].includes(ch.label(e))).sort((a, b) => ch.favE[b] - ch.favE[a]), bad = ELS.filter(e => ch.label(e) === '忌');
     const li = (arr, map) => arr.map(e => `<li><b>${gzc(e)}：</b>${map[e]}</li>`).join('');
     const yb = ch.P.y[1]; const z = A.zodiacRel(ch, yb, false);
-    return masteryCard() + `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
+    return coachCard() + masteryCard() + `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
       <div class="bz-grid bz-grid2">${card('l-career', '适合的职业', `<ul class="bz-list2">${li(good, CAREER)}${bad.length ? `<li><b>不太合适：</b>${bad.map(e => CAREER[e]).join('；')}</li>` : ''}</ul>`)}
       ${card('l-hobby', '适合的兴趣', `<ul class="bz-list2">${li(good, HOBBY)}${bad.length ? `<li><b>少做：</b>${bad.map(e => HOBBY[e]).join('、')}</li>` : ''}</ul>`)}
       ${card('l-travel', '适合的旅游国家', `<ul class="bz-list2">${li(good, TRAVEL)}<li><b>最佳出行季节：</b>${SEASON[ch.yong]}</li></ul>`)}
@@ -2761,6 +2811,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     S.date = n; render();
   }
   function act(a) {
+    if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4)); S.coach = (S.coach || []).concat([r]).slice(-6); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (a.startsWith('tp:')) { const k = a.slice(3), box = document.querySelector('#n-code'); if (!box) return; const cur = box.querySelector(`.bz-tri3i[data-tp="${k}"]`), was = cur && !cur.hidden;
       box.querySelectorAll('.bz-tri3i').forEach(x => x.hidden = true); box.querySelectorAll('.tpn').forEach(x => x.classList.remove('on'));
       if (cur && !was) { cur.hidden = false; box.querySelector(`.tpn[data-act="tp:${k}"]`).classList.add('on'); cur.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -2790,7 +2841,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const q = e.target.q.value; const r = ZEN_CO.reply(q); if (r) { S.coach = (S.coach || []).concat([r]).slice(-6); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
