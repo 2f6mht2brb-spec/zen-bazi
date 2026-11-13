@@ -405,6 +405,10 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tri3{display:block;width:100%;max-width:340px;margin:4px auto 0}.bz-tri3 text{text-anchor:middle;dominant-baseline:central;font-family:Georgia,serif;font-weight:700;fill:#fff;font-size:14px}.bz-tri3 text.b{fill:var(--gold2);font-size:23px;font-weight:800}.bz-tri3 text.l{font-size:10px;fill:#bbb;font-weight:400;font-family:inherit}
 .bz-tri3 circle{fill:rgba(255,255,255,.06);stroke:var(--line)}.bz-tri3 circle.top{fill:rgba(212,175,55,.3);stroke:var(--gold2);stroke-width:1.5}.bz-tri3 text.top{font-size:18px;fill:#ffe08a}.bz-tri3n{text-align:center;margin:2px 0 6px;font-size:11.5px}
 .bz-dcsm{margin:10px 0 6px;gap:6px}.bz-dcsm input{padding:6px 10px!important;font-size:13px!important;min-height:0!important;height:36px}.bz-dcsm button{height:36px;font-size:13px!important;padding:0 12px!important;border-radius:10px!important}
+.bz-trip{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}.bz-tri3i{display:flex;gap:8px;padding:8px 9px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.bz-tri3k{flex:0 0 28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:800;font-size:16px;color:#ffe08a;border:1px solid var(--gold);background:rgba(212,175,55,.12)}
+.bz-tri3i b{display:block;font-size:13px;color:var(--gold2)}.bz-tri3i small{display:block;font-size:10.5px;opacity:.6;line-height:1.35}.bz-tri3i p{margin:4px 0 0;font-size:12px;line-height:1.5}
+@media (max-width:370px){.bz-trip{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2310,7 +2314,20 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
       <text x="46" y="-5" class="l">日</text><text x="114" y="-5" class="l">月</text><text x="220" y="-5" class="l">年</text>
       ${[[46, tA], [114, tB], [186, tC], [254, tD]].map(([x, v]) => nd(x, 64, v)).join('')}${nd(80, 108, tE)}${nd(220, 108, tF)}${nd(150, 152, tG, 'top')}
       <path d="M30 36 L42 54 M62 36 L50 54 M98 36 L110 54 M130 36 L118 54 M170 36 L182 54 M202 36 L190 54 M238 36 L250 54 M270 36 L258 54 M46 75 L80 97 M114 75 L80 97 M186 75 L220 97 M254 75 L220 97 M80 119 L150 137 M220 119 L150 137" stroke="rgba(212,175,55,.45)" fill="none"/></svg>`;
-    return card('n-code', '生命数字密码', `<p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>${tri}<p class="bz-muted bz-tri3n">▽ 生日、月、年两两相加，一层层往下合成，最下面就是主命数 ${tG}。</p>
+    return card('n-code', '生命数字密码', `<p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>${tri}<p class="bz-muted bz-tri3n">▽ 生日、月、年两两相加，一层层往下合成，最下面就是主命数 ${tG}。</p>${(() => { const T = Object.assign({ 0: ['空白潜能', '可塑性大、不受定型限制', '方向不明时容易迷惘', '主动为这一面设定目标，它会照你选的方向长'] }, ZEN_DC.T), K = n => T[n][0], P = [
+        ['日', tA, '本性底色', '你天生的个性、直觉反应', n => `遇事第一反应偏「${K(n)}」：${T[n][1]}。`],
+        ['月', tB, '情感与人际', '你对家人、朋友、伴侣的相处方式', n => `在关系里像「${K(n)}」，${['相处模式随对象而变，弹性很大', '喜欢主导、给方向', '重视陪伴与默契', '用幽默和表达拉近距离', '用行动和可靠证明在乎', '需要空间与新鲜感', '会照顾、付出很多', '需要独处，慢热但深交', '务实，用实际支持表达关心', '包容、大方，愿意成全别人'][n]}。`],
+        ['年前', tC, '家族与根基', '祖辈、成长环境带给你的底子', n => `家庭给你的底子是「${K(n)}」的特质，这是你可以随时取用的资源。`],
+        ['年后', tD, '社会与工作', '你在外面、在职场面对世界的方式', n => `在工作上展现「${K(n)}」的一面：${T[n][1]}。`],
+        ['内', tE, '内在世界', '私下的你：自己、家庭、感情', n => `私下的你是「${K(n)}」。${T[n][3]}。`],
+        ['外', tF, '外在世界', '公开的你：事业、社交、名声', n => `别人眼中的你是「${K(n)}」。留意：${T[n][2]}。`]];
+      const all = [tA, tB, tC, tD, tE, tF, tG], rep = [...new Set(all)].filter(n => n > 0).map(n => [n, all.filter(x => x === n).length]).filter(x => x[1] >= 2).sort((a, b) => b[1] - a[1]);
+      const io = tE === tF ? `内外都是 ${tE}：私下和在外表现一致，真诚、容易让人信任；但也少了切换，累的时候要留给自己独处的空间。`
+        : `内在 ${tE}（${K(tE)}）、外在 ${tF}（${K(tF)}）：私下与在外是两种模式。好处是能适应不同场合，提醒是别让外在的「${K(tF)}」压过内心真正需要的「${K(tE)}」。`;
+      return `<div class="bz-trip">${P.map(([w, n, t, d, f]) => `<div class="bz-tri3i"><span class="bz-tri3k">${n}</span><div><b>${t}</b><small>${d}</small><p>${f(n)}</p></div></div>`).join('')}</div>
+        <div class="bz-3"><div class="bz-3i"><i>⚖️</i><div><b>内外对照</b><span>${io}</span></div></div>
+        ${rep.length ? `<div class="bz-3i"><i>🔁</i><div><b>重复数字</b><span>${rep.map(([n, c]) => `${n} 出现 ${c} 次`).join('、')}：这些特质在你身上被放大，${rep.map(([n]) => `${n} 的「${T[n][1].split('、')[0]}」是你最大的本钱，也要留意「${T[n][2].split('，')[0]}」`).join('；')}。</span></div></div>` : ''}
+        <div class="bz-3i"><i>🎯</i><div><b>整合到主命数 ${tG}</b><span>以上各面最后都汇成「${K(tG)}」。专业提示：${T[tG][3]}；当内在 ${tE} 与外在 ${tF} 都被照顾到，${K(tG)}的力量才会完全发挥。</span></div></div></div>`; })()}
       <div class="bz-dcmain"><div><small>主命数</small><b>${r.life}</b><em>${t[0]}</em></div><div><small>天赋数</small><b>${r.talent}</b><em>${r.talent}/${r.life}</em></div><div><small>生日数</small><b>${r.birth}</b><em>${tb[0]}</em></div><div><small>${ny}流年数</small><b>${r.py}</b><em>${D.PY[r.py].split('：')[0]}</em></div></div>
       <div class="bz-3"><div class="bz-3i"><i>🌟</i><div><b>天赋</b><span>${t[1]}</span></div></div><div class="bz-3i"><i>⚠️</i><div><b>功课</b><span>${t[2]}</span></div></div><div class="bz-3i"><i>🔑</i><div><b>开运钥匙</b><span>${t[3]}</span></div></div></div>
       <h3 class="bz-h3">九宫格 · 数字分布</h3><div class="bz-dcwrap">${grid}<div class="bz-dcside">${r.lines.length ? `<p><b>✅ 连线：</b>${r.lines.map(([k, [n, v]]) => `<span class="bz-chip">${k.split('').join('-')} ${n}</span><br><small>${v}</small>`).join('<br>')}</p>` : '<p class="bz-small">没有完整连线：能力分散在各方面，适合多元发展，但要刻意培养专长。</p>'}
