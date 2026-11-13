@@ -1883,34 +1883,79 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
 
 </script>
 <script>
-// ===== 大师教练：规则式转念与修行引导（离线，不联网）=====
+// ===== 大师教练：规则式转念与修行引导（离线）。每类多种回答，按五把钥匙对应 =====
 const ZEN_CO = (function () {
+  // [id, 关键词, 主题, [ [同理, 旧念头, 新念头, 钥匙, 今天就做], ... ] ]
   const TH = [
-    ['overload', /做不完|太多事|忙不过来|忙死|加班|工作量|赶不及|deadline|截止|压力山大|压力大|压力好大|喘不过气|好累|很累|太累|累死|心累|burnout|倦怠/, '事情太多、身心很累', '事情一件接一件压过来，累是身体在提醒你：不是你不够好，是负荷超过了节奏。', '我必须把所有事都做完，做不完就是我不行。', '我不需要一次做完所有事，只需要先做好最重要的那一件。', '意向', '列出手上所有事，只圈出今天最重要的 1–3 件；其余的延后、交给别人，或直接说“这周做不到”。今晚准时休息。'],
-    ['plateau', /没(有)?进步|进步很慢|停滞|瓶颈|卡住|原地|没效果|没用|练了很久|高原/, '感觉卡在原地', '进步停下来的时候，最容易怀疑自己。其实这正是大部分人放弃的地方。', '我一直没进步，我不是这块料。', '我正走在高原期，功夫在看不见的地方沉淀。', '练习', '今天照常练 15 分钟，不看结果，只看自己有没有专注。'],
-    ['quit', /放弃|不想做了|坚持不下去|没动力|半途|三分钟|懒|拖延|不想动/, '想放弃或提不起劲', '没动力是正常的，热情本来就会起落。重要的不是心情，而是有没有回到路上。', '我没动力，所以做不到。', '动力是行动之后才来的，先做五分钟就好。', '练习', '设一个 5 分钟的计时器，只做第一步，做完就算赢。'],
-    ['fail', /失败|搞砸|做错|出错|犯错|丢脸|被骂|骂我|批评我|被批评|没做好/, '刚经历失败或挫折', '跌倒很痛，但它也证明你真的在做事。每一位高手都比新手失败过更多次。', '我搞砸了，我不行。', '这次的结果不等于我这个人；它是一份免费的回馈。', '臣服', '写下这次学到的一件事，然后请一位懂的人给你一个具体建议。'],
-    ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给/, '和别人比较而感到失落', '比较会偷走你的快乐。别人展示的是终点，而你看到的是自己的过程。', '别人比我好，我落后了。', '我只跟昨天的自己比；别人的好提醒我想成为什么样的人。', '意向', '列出你这个月比上个月多会的三件小事。'],
-    ['anxiety', /焦虑|担心|害怕|不安|紧张|恐惧|睡不着/, '焦虑或担心', '焦虑多半来自还没发生的未来。你的身体在这里，心却跑去了明天。', '万一事情变得很糟怎么办？', '我能照顾好的是现在这一步，其余的到时候再面对。', '意向', '做三次深呼吸：吸气数 4、停 4、呼气数 6；然后写下现在能做的一个小动作。'],
-    ['anger', /生气|愤怒|气死|不爽|讨厌|烦|不公平|被欺负/, '生气或不满', '愤怒里有能量，也有你在乎的东西。先别急着出手，让它变成推动你的力量。', '他太过分了，我一定要讨回来。', '我在乎的是公平和尊重；我可以冷静地把需要说清楚。', '臣服', '先离开现场 10 分钟，再用“我感到…因为…我希望…”的句式表达。'],
-    ['family', /家人|父母|爸|妈|孩子|儿子|女儿|兄弟|姐妹|不信我|不理解我|误解|不支持/, '家人或亲近的人不理解你', '被最亲的人误解，往往比被外人否定更难受，因为你在乎他们。', '他们不相信我，说明我不够好。', '他们的担心来自爱和不了解；我可以用行动和沟通慢慢让他们看见。', '意向', '找一个平静的时候，用三句话说清楚你在做什么、为什么、需要他们怎样支持。'],
-    ['work', /工作|上司|老板|同事|升职|加薪|跳槽|面试|公司|职场|客户/, '工作上的困扰', '工作是最好的修行场：每一个难题，都是在练你的专业和心性。', '工作的事我无能为力，只能忍。', '我掌握得了的是自己的专业、态度和下一步；在这里练出的能力会跟着我。', '拜师', '找一位你欣赏的前辈，问他一个关于你目前难题的具体问题，借他的经验少走弯路。'],
-    ['love', /感情|伴侣|老婆|老公|男朋友|女朋友|分手|吵架|婚姻|喜欢的人|暗恋/, '感情上的困扰', '关系也是一门要练的功夫，没有人一开始就会爱得刚刚好。', '他应该懂我，不然就是不在乎我。', '我可以把需要说清楚，不用让对方猜。', '臣服', '今天对伴侣说一句具体的感谢，再说一个你真正的需要。'],
-    ['money', /钱|财|收入|负债|欠|投资|亏|存款|穷|花费/, '金钱压力', '钱的焦虑很真实。先把注意力从“不够”拉回到“我现在能管理什么”。', '钱不够，我很失败。', '钱是可以学习管理的技能；我正在练。', '练习', '把这个月的支出列出来，找一项可以先停掉的。'],
-    ['health', /身体|生病|疲倦|失眠|头痛|健康|体重|生病|不舒服/, '身体疲累或健康困扰', '身体是你走大师之路的工具，照顾它不是偷懒，而是练习的一部分。', '我太累了，什么都做不好。', '休息也是练习；照顾好身体，我才能走得远。', '臣服', '今晚提早 30 分钟睡，明天起床先喝一杯温水、伸展 5 分钟。如不适持续，请看医生。'],
-    ['learn', /学习|考试|考证|技能|学不会|练习|摄影|画|乐器|运动|语言|英文/, '想学好一项技能', '想学好一件事，最重要的不是天分，而是愿意一次又一次回到基本功。', '我学得太慢了。', '慢慢来就是最快的路；我正在打好地基。', '拜师', '找一个好老师或好示范，今天只练一个最基本的动作，练到专注为止。'],
-    ['self', /我是谁|没价值|自卑|没信心|讨厌自己|不够好|迷茫|方向|意义/, '对自己没信心或感到迷茫', '迷茫说明你在寻找，不是停下。你不需要先变好，才配得上去做。', '我不够好。', '我已经在路上了；每天一点点，就是在成为更好的自己。', '意向', '写下一个你想成为的样子，以及今天能为它做的一件小事。']
+    ['overload', /做不完|太多事|忙不过来|忙死|加班|工作量|赶不及|deadline|截止|压力山大|压力大|压力好大|喘不过气|好累|很累|太累|累死|心累|burnout|倦怠/, '事情太多、身心很累', [
+      ['事情一件接一件压过来，累是身体在提醒你：不是你不够好，是负荷超过了节奏。', '我必须把所有事都做完，做不完就是我不行。', '我不需要一次做完所有事，只需要先做好最重要的那一件。', '意向', '列出手上所有事，只圈出今天最重要的 1–3 件；其余的延后、交给别人，或直接说“这周做不到”。'],
+      ['你已经撑了很久。真正走得远的人，懂得在疲惫时停一停，而不是硬拼到倒下。', '休息就是偷懒，别人都在拼。', '休息是练习的一部分；照顾好身体，我才走得长远。', '臣服', '今晚提早 30 分钟关掉工作讯息，做 5 分钟深呼吸或伸展，然后去睡。'],
+      ['事情多时，最耗能的往往不是工作本身，而是脑子里一直转着“还有很多没做”。', '我要同时顾好每一件事。', '一次只做一件事，做完一件，心就轻一点。', '练习', '用 25 分钟专心做一件事，期间不看手机；做完休息 5 分钟，再开始下一件。']]],
+    ['plateau', /没(有)?进步|进步很慢|停滞|瓶颈|卡住|原地|没效果|练了很久|高原/, '感觉卡在原地', [
+      ['进步停下来的时候，最容易怀疑自己，这也正是大部分人放弃的地方。', '我一直没进步，我不是这块料。', '我正走在高原期，功夫在看不见的地方沉淀。', '练习', '今天照常练 15 分钟，不看结果，只看自己有没有专注。'],
+      ['长时间没突破，常常是因为一直用同一种方法打转，而不是你不行。', '我已经很努力了，还是一样。', '也许需要的不是更用力，而是换个角度看自己的练习。', '拜师', '请一位比你厉害的人看你练一次，只问一句：“我最该改的一个地方是什么？”'],
+      ['高原期最难熬的是“看不见成果”。可是每一次回到练习，本身就是成果。', '没有成果，练习就没意义。', '我是为了练习本身而练习，成果只是顺便来的。', '意向', '练习前闭上眼 1 分钟，清楚想象自己做得最好的样子，再开始。']]],
+    ['quit', /放弃|不想做了|坚持不下去|没动力|半途|三分钟|懒|拖延|不想动/, '想放弃或提不起劲', [
+      ['没动力是正常的，热情本来就会起落。重要的不是心情，而是有没有回到路上。', '我没动力，所以做不到。', '动力是行动之后才来的，先做五分钟就好。', '练习', '设一个 5 分钟的计时器，只做第一步，做完就算赢。'],
+      ['想放弃的时候，常常是因为一开始期待太快看到结果。', '这么慢，还不如别做。', '慢慢来没有关系，愿意继续，就已经在成为高手。', '臣服', '把目标缩小到“今天只做一点点”，并原谅自己昨天没做。'],
+      ['拖延通常不是懒，而是这件事太大、太模糊，让人不知道从哪里开始。', '等我准备好了再开始。', '先开始，准备会在路上完成。', '意向', '把这件事拆成三个小步骤，写下来，今天只完成第一步。']]],
+    ['fail', /失败|搞砸|做错|出错|犯错|丢脸|被骂|骂我|批评我|被批评|没做好/, '刚经历失败或挫折', [
+      ['跌倒很痛，但它也证明你真的在做事。每一位高手都比新手失败过更多次。', '我搞砸了，我不行。', '这次的结果不等于我这个人；它是一份免费的回馈。', '臣服', '写下这次学到的一件事，原谅自己，然后把注意力放回下一步。'],
+      ['被批评会刺痛，可是批评里往往藏着别人看得到、你还没看到的盲点。', '他们就是看我不顺眼。', '我可以把情绪和内容分开，只取对我有用的部分。', '拜师', '把对方的批评改写成一句具体的建议，找一个信任的人确认是否合理。'],
+      ['真正的高手不是不失败，而是失败后能很快回到练习。', '再试一次也只会再失败。', '每一次重来，我都比上次多懂一点。', '练习', '今天找一个小机会，把同一件事再做一次，只改一个地方。']]],
+    ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给/, '和别人比较而感到失落', [
+      ['比较会偷走你的快乐。别人展示的是终点，你看到的却是自己的过程。', '别人比我好，我落后了。', '我只跟昨天的自己比；别人的好提醒我想成为什么样的人。', '意向', '列出你这个月比上个月多会的三件小事。'],
+      ['羡慕其实是一个信号：它告诉你，你心里真正想要什么。', '我永远赶不上他。', '他走过的路，我也可以一步步学。', '拜师', '去了解你羡慕的那个人是怎么练成的，找出一个可以学的习惯。'],
+      ['每个人的路程和起点都不同，用别人的时间表来衡量自己，只会让人心急。', '我应该早就做到了。', '我在自己的节奏上前进，这样就够了。', '臣服', '今天少看社交媒体 30 分钟，把时间用在自己的练习上。']]],
+    ['anxiety', /焦虑|担心|害怕|不安|紧张|恐惧|睡不着/, '焦虑或担心', [
+      ['焦虑多半来自还没发生的未来。你的身体在这里，心却跑去了明天。', '万一事情变得很糟怎么办？', '我能照顾好的是现在这一步，其余的到时候再面对。', '意向', '吸气数 4、停 4、呼气数 6，做三次；然后写下现在能做的一个小动作。'],
+      ['紧张不一定是坏事，它说明你在乎，也说明你正站在舒适区的边缘。', '我太紧张了，一定会出错。', '这份紧张是我在成长的感觉，我可以带着它前进。', '边缘', '把让你紧张的事先在小范围里练一次，例如对着一个朋友先讲一遍。'],
+      ['越想控制所有结果，心就越不安。有些事情只能尽力，然后放手。', '我必须确保一切都不出错。', '我做好我能做的部分，结果交给时间。', '臣服', '写下“我能控制的”和“我不能控制的”两栏，今天只处理第一栏。']]],
+    ['anger', /生气|愤怒|气死|不爽|讨厌|烦|不公平|被欺负/, '生气或不满', [
+      ['愤怒里有能量，也有你在乎的东西。先别急着出手，让它变成推动你的力量。', '他太过分了，我一定要讨回来。', '我在乎的是公平和尊重；我可以冷静地把需要说清楚。', '臣服', '先离开现场 10 分钟，再用“我感到…因为…我希望…”的句式表达。'],
+      ['生气时最容易说出后悔的话。能停一停的人，才是情绪的主人。', '不发脾气就会被看扁。', '冷静本身就是一种力量。', '练习', '感觉火气上来时，先数到十、喝一口水，再决定要不要回应。'],
+      ['把怒气变成方向：想清楚你真正想要的结果是什么。', '我就是要让他知道我有多生气。', '我要的是事情变好，不只是出一口气。', '意向', '写下这件事你最希望出现的结果，再想一个最能达到它的做法。']]],
+    ['family', /家人|父母|爸|妈|孩子|儿子|女儿|兄弟|姐妹|不信我|不理解我|误解|不支持/, '家人或亲近的人不理解你', [
+      ['被最亲的人误解，往往比被外人否定更难受，因为你在乎他们。', '他们不相信我，说明我不够好。', '他们的担心来自爱和不了解；我可以用行动慢慢让他们看见。', '意向', '找一个平静的时候，用三句话说清楚你在做什么、为什么、需要他们怎样支持。'],
+      ['想被理解很自然，但别人能不能马上理解，不是你能控制的。', '他们一定要支持我，我才能做下去。', '我可以先支持自己，家人的理解可以慢慢来。', '臣服', '今天做一件和家人相处的小事（陪吃饭、聊天），先不谈争议。'],
+      ['行动比解释更有说服力，持续的小成果最能让家人安心。', '多说几次他们就会懂。', '让成果替我说话。', '练习', '订一个一个月的小目标，完成后跟家人分享过程。']]],
+    ['love', /感情|伴侣|老婆|老公|男朋友|女朋友|分手|吵架|婚姻|喜欢的人|暗恋/, '感情上的困扰', [
+      ['关系也是一门要练的功夫，没有人一开始就会爱得刚刚好。', '他应该懂我，不然就是不在乎我。', '我可以把需要说清楚，不用让对方猜。', '意向', '今天对伴侣说一句具体的感谢，再说一个你真正的需要。'],
+      ['吵架时双方都想被理解，所以谁也听不进去。先听，就是先赢。', '一定要争出谁对谁错。', '我们是一起的，要解决的是问题，不是对方。', '臣服', '下次讨论时，先复述对方的意思，确认没听错，再说自己的看法。'],
+      ['好的关系需要每天一点点经营，就像练功一样。', '感情好的人不需要努力。', '用心经营关系，是一种值得练的能力。', '练习', '这周每天花 10 分钟，放下手机专心和对方聊天。']]],
+    ['money', /钱|财|收入|负债|欠|投资|亏|存款|穷|花费|不够用/, '金钱压力', [
+      ['钱的焦虑很真实。先把注意力从“不够”拉回到“我现在能管理什么”。', '钱不够，我很失败。', '钱是可以学习管理的技能；我正在练。', '练习', '把这个月的支出列出来，找一项可以先停掉的。'],
+      ['理财和任何技能一样，跟着懂的人学，会少走很多弯路。', '我天生不会理财。', '理财是可以学会的，我只是还没学。', '拜师', '找一本理财入门书或请教一位会存钱的朋友，学一个方法来试一个月。'],
+      ['与其想着一下子赚很多，不如先看清楚你真正想要的生活需要多少钱。', '我要赶快赚很多钱。', '我先看清目标，再一步一步走。', '意向', '写下一个三个月内的具体存钱目标，以及每周要存多少。']]],
+    ['health', /身体|生病|疲倦|失眠|头痛|健康|体重|不舒服/, '身体疲累或健康困扰', [
+      ['身体是你走大师之路的工具，照顾它不是偷懒，而是练习的一部分。', '我太累了，什么都做不好。', '休息也是练习；照顾好身体，我才能走得远。', '臣服', '今晚提早 30 分钟睡，明天起床先喝一杯温水、伸展 5 分钟。'],
+      ['健康不是一次大改变，而是每天的小习惯。', '我没时间运动。', '每天 10 分钟，也是在为自己储蓄。', '练习', '每天固定一个时间散步或伸展 10 分钟，连续一周。'],
+      ['身体的讯号很重要，懂的人能帮你更快找到原因。', '忍一忍就过去了。', '及早听身体的话，是对自己负责。', '拜师', '如果不适已经持续几天，请预约医生检查，别只靠硬撑。']]],
+    ['learn', /学习|考试|考证|技能|学不会|摄影|画画|乐器|语言|英文/, '想学好一项技能', [
+      ['想学好一件事，最重要的不是天分，而是愿意一次又一次回到基本功。', '我学得太慢了。', '慢慢来就是最快的路；我正在打好地基。', '拜师', '找一个好老师或好示范，今天只练一个最基本的动作，练到专注为止。'],
+      ['熟练之后，适度挑战一点点更难的，才会继续成长。', '我已经会了，不用再练基本功。', '基本功越扎实，挑战难的东西才越稳。', '边缘', '在熟练的基础上，今天试一个只比平常难一点点的版本。'],
+      ['学习时最怕的是急着看到成果，反而无法专注在当下。', '学了这么久还不够好。', '每一次练习都在累积，我不急。', '练习', '订一个固定的练习时间，每天同一时段练 20 分钟。']]],
+    ['work', /工作|上司|老板|同事|升职|加薪|跳槽|面试|公司|职场|客户/, '工作上的困扰', [
+      ['工作是最好的修行场：每一个难题，都是在练你的专业和心性。', '工作的事我无能为力，只能忍。', '我掌握得了的是自己的专业、态度和下一步。', '拜师', '找一位你欣赏的前辈，问他一个关于你目前难题的具体问题。'],
+      ['与其被工作推着走，不如先想清楚这份工作能让你练成什么。', '这份工作只是为了赚钱。', '每份工作都能让我练一项未来用得上的能力。', '意向', '写下你想在这份工作里练成的一项能力，以及这周能为它做的一件事。'],
+      ['职场里最有价值的人，是愿意多学一点、多走一步的人。', '做好分内事就够了。', '稍微超出要求，是我成长最快的地方。', '边缘', '这周主动承担一个比平时稍有挑战的小任务。']]],
+    ['self', /我是谁|没价值|自卑|没信心|讨厌自己|不够好|迷茫|方向|意义/, '对自己没信心或感到迷茫', [
+      ['迷茫说明你在寻找，不是停下。你不需要先变好，才配得上去做。', '我不够好。', '我已经在路上了；每天一点点，就是在成为更好的自己。', '意向', '写下一个你想成为的样子，以及今天能为它做的一件小事。'],
+      ['自信不是想出来的，是一次次做到小事累积出来的。', '等我有信心了才开始。', '我先开始，信心会跟着来。', '练习', '每天完成一件说好要做的小事，睡前记下来。'],
+      ['接受现在的自己，并不代表停止成长，而是成长的起点。', '我要先变完美才值得被喜欢。', '我可以带着不完美，继续往前走。', '臣服', '对自己说一句你会对好朋友说的鼓励话，并写下来。']]]
   ];
-  const KEYS = { 拜师: '找对的老师与示范，借别人的经验少走弯路，别一个人硬撑。', 练习: '把练习当作路本身，不为结果而练。', 臣服: '接受现在的状态与限制，不硬撑、不逞强，先照顾好自己再前进。', 意向: '先看清楚什么最重要，把力气集中在那一件事上。', 边缘: '在稳定的基础上，温和地挑战一点点极限。' };
-  function reply(text, ch, lab) {
+  const KEYS = { 拜师: '找对的老师与示范，借别人的经验少走弯路，别一个人硬撑。', 练习: '把练习当作路本身，不为结果而练，每天回到路上。', 臣服: '接受现在的状态与限制，放下面子和控制，先照顾好自己再前进。', 意向: '先看清楚什么最重要，在心里看见它，再把力气集中在那一件事上。', 边缘: '在稳定的基础上，温和地挑战一点点极限，不冒进。' };
+  const W = { work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
+  let turn = 0;
+  function reply(text, prev) {
     const t = (text || '').trim(); if (!t) return null;
-    const W = { work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
-    const sc = TH.map(x => { const g = new RegExp(x[1].source, 'g'), m = t.match(g); return [x, m ? m.length * (W[x[0]] || 1) : 0]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
-    let hits = sc.map(x => x[0]); if (!hits.length) hits = [TH.find(x => x[0] === 'self')];
-    const h = hits[0], also = hits[1];
-    const quote = t.length > 30 ? t.slice(0, 30) + '…' : t;
-    return { quote, theme: h[2], empathy: h[3], old: h[4], neu: h[5], key: h[6], keyT: KEYS[h[6]], act: h[7], also: also ? also[2] : null,
-      four: [`“${h[4]}”——这是真的吗？`, '你能百分之百确定吗？', '当你相信这个念头时，你怎么对待自己？', '如果没有这个念头，此刻的你会是什么样子？'] };
+    const sc = TH.map(x => { const m = t.match(new RegExp(x[1].source, 'g')); return [x, m ? m.length * (W[x[0]] || 1) : 0]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+    const hits = sc.length ? sc.map(x => x[0]) : [TH.find(x => x[0] === 'self')], h = hits[0], also = hits[1];
+    const used = (prev || []).filter(r => r.id === h[0]).map(r => r.vi), V = h[3];
+    let vi = [...Array(V.length).keys()].find(i => !used.includes(i)); if (vi == null) vi = (used.length + turn++) % V.length;
+    const [e, old, neu, key, act] = V[vi];
+    return { id: h[0], vi, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: KEYS[key], act, also: also ? also[2] : null,
+      four: [`“${old}”——这是真的吗？`, '你能百分之百确定吗？', '当你相信这个念头时，你怎么对待自己？', '如果没有这个念头，此刻的你会是什么样子？'] };
   }
   return { reply };
 })();
@@ -2841,7 +2886,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
     S.date = n; render();
   }
   function act(a) {
-    if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4)); S.coach = (S.coach || []).concat([r]).slice(-6); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
+    if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4), S.coach); S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (a.startsWith('tp:')) { const k = a.slice(3), box = document.querySelector('#n-code'); if (!box) return; const cur = box.querySelector(`.bz-tri3i[data-tp="${k}"]`), was = cur && !cur.hidden;
       box.querySelectorAll('.bz-tri3i').forEach(x => x.hidden = true); box.querySelectorAll('.tpn').forEach(x => x.classList.remove('on'));
       if (cur && !was) { cur.hidden = false; box.querySelector(`.tpn[data-act="tp:${k}"]`).classList.add('on'); cur.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -2871,7 +2916,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const q = e.target.q.value; const r = ZEN_CO.reply(q); if (r) { S.coach = (S.coach || []).concat([r]).slice(-6); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const q = e.target.q.value; const r = ZEN_CO.reply(q, S.coach); if (r) { S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
