@@ -402,6 +402,9 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-dcwrap{display:flex;gap:12px;align-items:flex-start}.bz-dcg{flex:0 0 138px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.bz-dcg>div{aspect-ratio:1;border-radius:8px;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:.45}.bz-dcg>div.on{opacity:1;border-style:solid;background:rgba(212,175,55,.14)}.bz-dcg b{font-size:18px;font-family:Georgia,serif}.bz-dcg small{font-size:8px;color:var(--gold2);letter-spacing:1px}
 .bz-dcside{flex:1;min-width:0;font-size:13px}.bz-dcside p{margin:0 0 6px}.bz-dcside small{opacity:.75}#bz-dcform input{color-scheme:dark}
 #bz-dcform button{padding:0 14px;border-radius:12px;border:1px solid var(--gold);background:linear-gradient(135deg,#9a1c22,#6e1218);color:#ffe08a;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}#bz-dcform button[type=button]{background:transparent}
+.bz-tri3{display:block;width:100%;max-width:340px;margin:4px auto 0}.bz-tri3 text{text-anchor:middle;dominant-baseline:central;font-family:Georgia,serif;font-weight:700;fill:#fff;font-size:14px}.bz-tri3 text.b{fill:var(--gold2);font-size:15px}.bz-tri3 text.l{font-size:10px;fill:#bbb;font-weight:400;font-family:inherit}
+.bz-tri3 circle{fill:rgba(255,255,255,.06);stroke:var(--line)}.bz-tri3 circle.top{fill:rgba(212,175,55,.3);stroke:var(--gold2);stroke-width:1.5}.bz-tri3 text.top{font-size:18px;fill:#ffe08a}.bz-tri3n{text-align:center;margin:2px 0 6px;font-size:11.5px}
+.bz-dcsm{margin:10px 0 6px;gap:6px}.bz-dcsm input{padding:6px 10px!important;font-size:13px!important;min-height:0!important;height:36px}.bz-dcsm button{height:36px;font-size:13px!important;padding:0 12px!important;border-radius:10px!important}
 </style>
 </head>
 <body>
@@ -2299,13 +2302,21 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     const pos = [[4, 9, 2], [3, 5, 7], [8, 1, 6]].flat(), G = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const grid = `<div class="bz-dcg">${[3, 6, 9, 2, 5, 8, 1, 4, 7].map(n => `<div class="${r.cnt[n] ? 'on' : ''}"><b>${n}</b><small>${r.cnt[n] ? '●'.repeat(Math.min(r.cnt[n], 4)) : '空'}</small></div>`).join('')}</div>`;
     const who = own ? `${ownerName() || '你的'}生命数字密码` : `${y}年${m}月${d}日 的生命数字密码`;
-    return card('n-code', '生命数字密码', `<form id="bz-dcform" class="bz-numform"><input type="date" name="dc" value="${own ? '' : S.dcDate}" aria-label="查看其他人的出生日期"><button type="submit">看别人</button>${own ? '' : '<button type="button" data-act="dcme">看自己</button>'}</form>
-      <p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>
+    const R = n => { while (n > 9) n = String(n).split('').reduce((a, c) => a + +c, 0); return n; }, dd = String(d).padStart(2, '0'), mm = String(m).padStart(2, '0'), yy = String(y);
+    const tA = R(+dd[0] + +dd[1]), tB = R(+mm[0] + +mm[1]), tC = R(+yy[0] + +yy[1]), tD = R(+yy[2] + +yy[3]), tE = R(tA + tB), tF = R(tC + tD), tG = R(tE + tF);
+    const nd = (x, yv, v, cls) => `<circle cx="${x}" cy="${yv}" r="${cls === 'top' ? 15 : 11}" class="${cls || ''}"/><text x="${x}" y="${yv}" class="${cls || ''}">${v}</text>`;
+    const tri = `<svg class="bz-tri3" viewBox="0 0 300 190" role="img" aria-label="生命数字三角形，主命数 ${tG}"><path d="M8 12 H292 L150 186 Z" fill="rgba(212,175,55,.05)" stroke="rgba(212,175,55,.18)"/>
+      ${[[30, dd[0]], [62, dd[1]], [98, mm[0]], [130, mm[1]], [170, yy[0]], [202, yy[1]], [238, yy[2]], [270, yy[3]]].map(([x, v]) => `<text x="${x}" y="24" class="b">${v}</text>`).join('')}
+      <text x="46" y="8" class="l">日</text><text x="114" y="8" class="l">月</text><text x="220" y="8" class="l">年</text>
+      ${[[46, tA], [114, tB], [186, tC], [254, tD]].map(([x, v]) => nd(x, 64, v)).join('')}${nd(80, 108, tE)}${nd(220, 108, tF)}${nd(150, 152, tG, 'top')}
+      <path d="M30 33 L42 54 M62 33 L50 54 M98 33 L110 54 M130 33 L118 54 M170 33 L182 54 M202 33 L190 54 M238 33 L250 54 M270 33 L258 54 M46 75 L80 97 M114 75 L80 97 M186 75 L220 97 M254 75 L220 97 M80 119 L150 137 M220 119 L150 137" stroke="rgba(212,175,55,.45)" fill="none"/></svg>`;
+    return card('n-code', '生命数字密码', `<p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>${tri}<p class="bz-muted bz-tri3n">▽ 生日、月、年两两相加，一层层往下合成，最下面就是主命数 ${tG}。</p>
       <div class="bz-dcmain"><div><small>主命数</small><b>${r.life}</b><em>${t[0]}</em></div><div><small>天赋数</small><b>${r.talent}</b><em>${r.talent}/${r.life}</em></div><div><small>生日数</small><b>${r.birth}</b><em>${tb[0]}</em></div><div><small>${ny}流年数</small><b>${r.py}</b><em>${D.PY[r.py].split('：')[0]}</em></div></div>
       <div class="bz-3"><div class="bz-3i"><i>🌟</i><div><b>天赋</b><span>${t[1]}</span></div></div><div class="bz-3i"><i>⚠️</i><div><b>功课</b><span>${t[2]}</span></div></div><div class="bz-3i"><i>🔑</i><div><b>开运钥匙</b><span>${t[3]}</span></div></div></div>
       <h3 class="bz-h3">九宫格 · 数字分布</h3><div class="bz-dcwrap">${grid}<div class="bz-dcside">${r.lines.length ? `<p><b>✅ 连线：</b>${r.lines.map(([k, [n, v]]) => `<span class="bz-chip">${k.split('').join('-')} ${n}</span><br><small>${v}</small>`).join('<br>')}</p>` : '<p class="bz-small">没有完整连线：能力分散在各方面，适合多元发展，但要刻意培养专长。</p>'}
         ${r.miss.length ? `<p><b>⭕ 空缺数：</b>${r.miss.join('、')}</p><p class="bz-small">需要多练习：${r.miss.map(n => D.MISS[n]).join('、')}。</p>` : ''}</div></div>
       <p class="bz-tip">📅 ${ny}年流年数 ${r.py}：${D.PY[r.py]}。本月流月数 ${r.pm}：${D.PY[r.pm].split('：')[1]}。</p>
+      <form id="bz-dcform" class="bz-numform bz-dcsm"><input type="date" name="dc" value="${own ? '' : S.dcDate}" aria-label="查看其他人的出生日期"><button type="submit">看别人</button>${own ? '' : '<button type="button" data-act="dcme">看自己</button>'}</form>
       <details class="bz-more"><summary>📖 数字密码怎么算</summary><p class="bz-small">把出生日期的每个数字相加得“天赋数”（${r.digits.split('').join('+')}=${r.talent}），再加到个位得“主命数”${r.life}（11、22、33 为大师数，保留不加）。生日数取出生的日。流年数＝出生月日的数字＋当年年份的数字，加到个位。九宫格把出生日期、天赋数和主命数里的 1–9 填进格子，横、竖、斜连成一线代表某种能力特别突出，空格代表需要学习的课题。</p><p class="bz-small">数字密码源自西方毕达哥拉斯数字学，解读文字为本站原创，可与八字互相参照，仅供自我认识参考。</p></details>`);
   }
   function vNumber() {
