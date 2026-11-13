@@ -1901,7 +1901,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
 
 </script>
 <script>
-// ===== 大师教练：规则式转念与修行引导（离线）。每类多种回答，按五把钥匙对应 =====
 const ZEN_CO = (function () {
   // [id, 关键词, 主题, [ [同理, 旧念头, 新念头, 钥匙, 今天就做], ... ] ]
   const TH = [
@@ -2115,6 +2114,7 @@ const ZEN_CO = (function () {
   }
   return { reply };
 })();
+if (typeof module !== 'undefined') module.exports = ZEN_CO;
 if (typeof module !== 'undefined') module.exports = ZEN_CO;
 
 </script>
@@ -2593,10 +2593,10 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
       <p><b>🫂 ${r.soft ? '我在这里' : (r.open || '我听见了')}：</b>${r.empathy.startsWith(r.theme) ? '' : r.theme + (r.also ? `，也牵涉到${r.also}` : '') + '。'}${r.empathy}</p>
       ${r.wan ? `<div class="bz-wan"><span>${r.wan[0]}</span><div><b>万物之道 · ${r.wan[1]}</b><p>${r.wan[2]}</p></div></div>` : ''}
       <div class="bz-ladder">
-        <div class="bz-ld"><i>1</i><div><h6>看见 · 分开事实与故事</h6><p><span class="bz-tagf">事实</span>${esc(r.ev || r.quote)}</p><p><span class="bz-tags">念头</span><s>${esc(r.before)}</s></p><small>事实是发生的事；故事是你给它加上的意义。痛苦多半来自故事。</small></div></div>
-        <div class="bz-ld"><i>2</i><div><h6>找根 · 背后的信念</h6><p class="bz-belief">「${r.bel}」</p><small>问自己：这条规则是谁定的？它一直都是真的吗？</small></div></div>
+        <div class="bz-ld"><i>1</i><div><h6>看见 · 你遇到的事 vs 你心里的念头</h6><p><span class="bz-tagf">你遇到的事</span>${esc(r.ev || r.quote)}</p><p><span class="bz-tags">你心里的念头</span><s>${esc(r.before)}</s></p><small>让你难受的，不是「${esc(r.ev || r.quote)}」本身，而是「${esc(r.before.replace(/[。！？]$/, ""))}」这个念头。要转的，是念头。</small></div></div>
+        <div class="bz-ld"><i>2</i><div><h6>找根 · 这个念头背后的规则</h6><p class="bz-belief">「${r.bel}」</p><small>你会觉得「${esc(r.before.replace(/[。！？]$/, ""))}」，是因为心里默认了这条规则。问自己：它一直都是真的吗？</small></div></div>
         <div class="bz-arr"></div>
-        <div class="bz-ld ok"><i>3</i><div><h6>转念 · 换一个更真实的看法</h6><p class="bz-neu">${esc(r.after)}</p><small>深层信念也跟着转：${r.belNew}</small></div></div>
+        <div class="bz-ld ok"><i>3</i><div><h6>转念 · 对「${esc(r.ev || r.quote)}」换一个看法</h6><p class="bz-neu">${esc(r.after)}</p><small>深层信念也跟着转：${r.belNew}</small></div></div>
         <div class="bz-ld"><i>4</i><div><h6>找证据 · 让新念头站稳</h6><small>${r.mine ? `回想三次“${esc(r.th ? r.th.replace(/[。！？]$/, '') : '这件事')}”并不成立的时刻——例如别人肯定你、你做到了、事情比想象好。写下来，新念头就有了根。` : '写下三个“新念头”在你生活里已经成立的例子，哪怕很小。新念头要有证据，才不会只是口号。'}</small></div></div>
       </div>
       <details class="bz-four"><summary>💭 问问自己 · ${r.key}四问</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
