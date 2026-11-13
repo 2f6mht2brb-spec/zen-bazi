@@ -458,6 +458,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-wan>span{font-size:30px;line-height:1}.bz-wan b{display:block;color:#7fe0aa;font-size:var(--t4)!important;letter-spacing:1px}.bz-wan p{margin:4px 0 0!important;font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:var(--t2)!important;line-height:1.7}
 #bz-view .bz-coQ{font-size:20px!important;font-weight:700;line-height:1.5;color:#ffe08a;padding:10px 14px!important;margin:-2px 0 10px;border-left:4px solid var(--gold)!important;border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(212,175,55,.18),rgba(212,175,55,.02))}
 #bz-view .bz-coQ::before{content:'你说';display:block;font-size:11px;font-weight:400;letter-spacing:2px;color:var(--gold2);opacity:.75;margin-bottom:2px;font-family:inherit}
+.bz-crisis{border-color:#ff8a73!important;background:rgba(255,138,115,.08)!important}
 </style>
 </head>
 <body>
@@ -1891,6 +1892,14 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
 const ZEN_CO = (function () {
   // [id, 关键词, 主题, [ [同理, 旧念头, 新念头, 钥匙, 今天就做], ... ] ]
   const TH = [
+    ['grief', /去世|过世|死去|死了|离世|走了|往生|丧|失去了?|离开了|怀念|想念|节哀|grief|passed away|died|death|lost (my|a)|funeral/, '失去重要的人', [
+      ['失去重要的人，心里会空一块。这份痛，是因为你们之间的情分是真的。', '我不应该还这么难过，应该早点走出来。', '难过没有期限；我想念他，是因为爱还在。', '臣服', '今天给自己一段安静的时间，写下一件你和他之间最想记住的事。', null],
+      ['有时候我们会一直想“如果当时我…”，那是心在找一个可以抓住的地方。', '如果当时我多做一点，事情就不会这样。', '我当时已经用当下所知尽了力；现在我可以用怀念代替自责。', '臣服', '对他说一句当时来不及说的话，可以写下来，也可以在心里说。', null],
+      ['思念不需要被处理掉，它可以慢慢变成你带着走的力量。', '他不在了，这段关系就结束了。', '他留给我的东西，会在我做的事情里继续活着。', '意向', '想一个他身上你欣赏的特质，今天用一个小行动把它活出来。', null],
+      ['悲伤的时候，不必一个人扛。和也认识他的人一起想念，会轻一点。', '我要一个人撑过去，不想麻烦别人。', '和信任的人一起分担，是对彼此的照顾。', '拜师', '联系一位也认识他的朋友或家人，聊聊你们共同的回忆。', null]]],
+    ['general', /$^/, '想说的心事', [
+      ['谢谢你写下来。我可能还没完全听懂你的处境，但我在这里听。', '这件事说了也没用，没人懂。', '说出来，就已经开始在整理它了。', '意向', '把这件事再多写三句：发生了什么、你现在的感受、你最希望它变成怎样。然后再请教练一次。', null],
+      ['有些心事，一时说不清楚也没关系。先让它在纸上待一会儿。', '我应该马上想明白。', '我可以慢慢来，一边感受，一边看清楚。', '臣服', '用一个词形容你此刻的感受（例如难过、生气、害怕、疲累），写下来再请教练。', null]]],
     ['pressure', /被逼|被迫|逼我|逼着|身不由己|没得选|没有选择|不得不|硬要我|强迫|压力山大|压力大|压力好大|很有压力|压得|duress|pressure|pressured|forced|coerced|stress|stressed/, '感到被逼迫、承受压力', [
       ['被人或环境逼着走的时候，最难受的不是事情本身，而是那种“没得选”的无力感。', '我被逼着做，我一点选择都没有。', '外面的事我未必能选，但我怎么回应，永远由我选。', '意向', '写下这件事里“我能决定的三件事”，哪怕很小，例如先做哪一步、用什么态度、何时休息。', /被逼|被迫|逼|身不由己|没得选|没有选择|不得不|硬要|强迫|duress|forced|coerced/],
       ['压力像压在弹簧上的手，压得越重，弹簧里蓄的力越多；关键是别让它压断。', '这股压力会把我压垮。', '压力也是一股力量，我可以把它变成专注，而不是恐慌。', '边缘', '把让你有压力的事，拆成今天能完成的一小块；做完它，感受一下“我还撑得住”。', /压力|压得|stress|pressure|duress|撑/],
@@ -2003,6 +2012,12 @@ const ZEN_CO = (function () {
   };
   // 每一个回答专属的万物之喻（与该回答的念头、钥匙对应）
   const MET = {
+    grief:    [['🕯️', '烛光', '蜡烛熄了，屋里的温度还会留一阵子。爱也是这样，人走了，温暖还在。'],
+               ['🍂', '落叶归根', '叶子落下，回到树根，化成养分。离开的人，也以另一种方式滋养着我们。'],
+               ['🌠', '星光', '我们看到的星光，有些来自很久以前；人虽远去，他的光仍照到今天。'],
+               ['🌉', '同行', '过河时，几个人牵着手走，水流再急也站得稳。悲伤也可以一起走过。']],
+    general:  [['🌫️', '晨雾', '雾里看不清路时，先站定，等雾慢慢散开，路就会显出来。'],
+               ['🌊', '静水', '水静下来，才映得出天空。心静一点，答案会自己浮上来。']],
     pressure: [['⛵', '帆船', '风往哪里吹，水手决定不了；但帆怎么调，永远在他手上。逆风也能借力前行。'],
                ['💎', '钻石', '碳在地底承受巨大的压力，不是被压碎，而是被压成了钻石。'],
                ['🌉', '桥梁', '再坚固的桥，也会标明最大载重。知道自己能承受多少，不是软弱，是安全。'],
@@ -2052,18 +2067,19 @@ const ZEN_CO = (function () {
                ['🏺', '金缮', '日本的金缮把破碗的裂缝用金填补，碗反而更美。不完美也可以是你的光。']]
   };
   const OPEN = ['我听见了', '谢谢你愿意说出来', '先深呼吸一下', '这很不容易', '我明白这种感觉'];
-  const W = { work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
+  const W = { grief: 3, work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
   let turn = 0;
   function reply(text, prev) {
     const t = (text || '').trim(); if (!t) return null;
+    if (/想死|自杀|不想活|活不下去|结束生命|伤害自己|割腕|kill myself|suicide|end my life|self.?harm/i.test(t)) return { crisis: true, quote: t.length > 30 ? t.slice(0, 30) + '…' : t };
     const sc = TH.map(x => { const m = t.match(new RegExp(x[1].source, 'gi')); return [x, m ? m.length * (W[x[0]] || 1) : 0]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
-    const hits = sc.length ? sc.map(x => x[0]) : [TH.find(x => x[0] === 'self')], h = hits[0], also = hits[1];
+    const hits = sc.length ? sc.map(x => x[0]) : [TH.find(x => x[0] === 'general')], h = hits[0], also = hits[1];
     const used = (prev || []).filter(r => r.id === h[0]).map(r => r.vi), V = h[3];
     const ok = [...Array(V.length).keys()].filter(i => !V[i][5] || V[i][5].test(t)), pool = ok.length ? ok : [...Array(V.length).keys()];
     let vi = pool.find(i => !used.includes(i)); if (vi == null) vi = pool[(used.length + turn++) % pool.length];
     const [e, old, neu, key, act] = V[vi];
     const n = (prev || []).length, wan = (MET[h[0]] && MET[h[0]][vi]) || WAN[key][(vi * 2 + n) % WAN[key].length], open = OPEN[(n + vi) % OPEN.length];
-    return { id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: KEYS[key], act, also: also ? also[2] : null,
+    return { soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
       four: (() => { const qs = Q[key][(vi + (prev || []).length) % Q[key].length]; return [`“${old}”——${qs[0]}`, ...qs.slice(1)]; })() };
   }
   return { reply };
@@ -2537,14 +2553,19 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
   const mlSave = v => { try { localStorage.setItem(MSK, JSON.stringify(v)); } catch (e) { } };
   function coachCard() {
     const L = S.coach || [], last = L[L.length - 1], d = S.B.day(TODAY), hrs = { 木: '3–7 点', 火: '9–13 点', 土: '7–9、13–15 点', 金: '15–19 点', 水: '21–1 点' };
-    const ans = r => `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
-      <p><b>🫂 ${r.open || '我听见了'}：</b>${r.theme}${r.also ? `，也牵涉到${r.also}` : ''}。${r.empathy}</p>
+    const ans = r => r.crisis ? `<div class="bz-coA bz-crisis"><div class="bz-coQ">“${esc(r.quote)}”</div>
+      <p><b>谢谢你愿意说出来。</b>你现在承受的东西很重，你值得马上得到真人的陪伴和帮助，这不是这个小工具能做到的。</p>
+      <p>请现在就联系你信任的人，或者打给专业热线：</p>
+      <ul class="bz-tcml"><li>📞 <b>Befrienders KL</b>（24 小时）：03-7627 2929</li><li>📞 <b>Talian HEAL</b>（卫生部心理支援）：15555</li><li>🚨 有立即危险请打 <b>999</b></li></ul>
+      <p class="bz-small">不在马来西亚的话，请联系当地的紧急电话或危机热线。你不需要一个人撑着。</p></div>`
+      : `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
+      <p><b>🫂 ${r.soft ? '我在这里' : (r.open || '我听见了')}：</b>${r.empathy.startsWith(r.theme) ? '' : r.theme + (r.also ? `，也牵涉到${r.also}` : '') + '。'}${r.empathy}</p>
       ${r.wan ? `<div class="bz-wan"><span>${r.wan[0]}</span><div><b>万物之道 · ${r.wan[1]}</b><p>${r.wan[2]}</p></div></div>` : ''}
       <div class="bz-shift"><div class="nk"><b>旧念头</b><span>${r.old}</span></div><div class="bz-arr">⇣ 转念 ⇣</div><div class="ok"><b>新念头</b><span>${r.neu}</span></div></div>
       <details class="bz-four"><summary>💭 问问自己 · ${r.key}四问</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
-      <p><b>🗝️ 大师功课 · ${r.key}：</b>${r.keyT}</p>
+      <p><b>🗝️ ${r.soft ? '心的功课' : '大师功课'} · ${r.key}：</b>${r.keyT}</p>
       <div class="bz-do">👉 今天就做：${r.act}</div>
-      <p class="bz-small">⏰ 安排在你用神「${S.ch.yong}」当旺的 ${hrs[S.ch.yong]} 去做，事半功倍。</p></div>`;
+      ${r.soft ? '' : `<p class="bz-small">⏰ 安排在你用神「${S.ch.yong}」当旺的 ${hrs[S.ch.yong]} 去做，事半功倍。</p>`}</div>`;
     return card('l-coach', '大师教练 · 说说你的心事', `<p class="bz-small">把困扰写下来，例如“我练摄影很久都没进步”“和上司吵架很生气”。教练会陪你转念，给你一个今天能做的小行动。</p>
       <form id="bz-coform" class="bz-coform"><textarea name="q" rows="3" maxlength="300" placeholder="此刻，你心里最放不下的是什么？"></textarea><button type="submit">请教练</button></form>
       <div class="bz-cochips">${['练习很久没进步', '想放弃', '工作压力大', '和别人比较', '感情吵架', '钱不够用'].map(t => `<button type="button" data-act="coq:${t}">${t}</button>`).join('')}</div>
