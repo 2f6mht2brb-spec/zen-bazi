@@ -464,7 +464,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 #bz-view .bz-ld.ok>i{background:#4cd38a;color:#10251a}#bz-view .bz-ld>div{flex:1;min-width:0}#bz-view .bz-ld h6{margin:0 0 4px!important;color:var(--gold2)}#bz-view .bz-ld p{margin:3px 0!important}#bz-view .bz-ld small{display:block;opacity:.7;margin-top:3px}
 #bz-view .bz-ld s{opacity:.8;text-decoration-color:rgba(255,120,110,.75);text-decoration-thickness:1.5px}
 .bz-tagf,.bz-tags{display:inline-block;font-size:11px;padding:0 7px;border-radius:999px;margin-right:6px;vertical-align:1px}.bz-tagf{background:rgba(127,168,255,.2);color:#a9c3ff}.bz-tags{background:rgba(255,138,115,.2);color:#ffab9a}
-#bz-view .bz-trap{margin:6px 0 2px}#bz-view .bz-trap b{display:inline-block;background:rgba(255,120,110,.18);color:#ff9d92;border:1px solid rgba(255,120,110,.45);border-radius:6px;padding:1px 8px;margin-right:6px;font-size:var(--t4)}#bz-view .bz-ask{margin:4px 0 0;padding-left:20px}#bz-view .bz-ask li{margin:5px 0;font-size:var(--t3);line-height:1.55}#bz-view .bz-turn{margin:7px 0;font-size:var(--t3);line-height:1.55}#bz-view .bz-turn span{display:inline-block;background:rgba(120,200,255,.15);color:#9fd6ff;border:1px solid rgba(120,200,255,.4);border-radius:6px;padding:1px 8px;margin-right:6px;font-size:var(--t4)}#bz-view .bz-belief{font-family:"Songti SC","STSong",serif;color:#ffcf9a;font-size:var(--t2)!important}#bz-view .bz-neu{font-size:16px!important;font-weight:700;color:#fff;line-height:1.6}
+.bz-tagl{display:inline-block;font-size:11px;padding:0 7px;border-radius:999px;margin-right:6px;vertical-align:1px;background:rgba(190,150,255,.2);color:#d4b8ff}#bz-view .bz-trap{margin:6px 0 2px}#bz-view .bz-trap b{display:inline-block;background:rgba(255,120,110,.18);color:#ff9d92;border:1px solid rgba(255,120,110,.45);border-radius:6px;padding:1px 8px;margin-right:6px;font-size:var(--t4)}#bz-view .bz-ask{margin:4px 0 0;padding-left:20px}#bz-view .bz-ask li{margin:5px 0;font-size:var(--t3);line-height:1.55}#bz-view .bz-turn{margin:7px 0;font-size:var(--t3);line-height:1.55}#bz-view .bz-turn span{display:inline-block;background:rgba(120,200,255,.15);color:#9fd6ff;border:1px solid rgba(120,200,255,.4);border-radius:6px;padding:1px 8px;margin-right:6px;font-size:var(--t4)}#bz-view .bz-belief{font-family:"Songti SC","STSong",serif;color:#ffcf9a;font-size:var(--t2)!important}#bz-view .bz-neu{font-size:16px!important;font-weight:700;color:#fff;line-height:1.6}
 #bz-view .bz-ld.ok{background:rgba(76,211,138,.1);border-radius:10px}
 #bz-view .bz-ladder>.bz-arr{position:relative;display:flex;justify-content:center;align-items:center;margin:6px 0;height:30px}
 #bz-view .bz-ladder>.bz-arr::before{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:1px dashed rgba(212,175,55,.5)}
@@ -1954,7 +1954,7 @@ const ZEN_CO = (function () {
       ['关系也是一门要练的功夫，没有人一开始就会爱得刚刚好。', '他应该懂我，不然就是不在乎我。', '我可以把需要说清楚，不用让对方猜。', '意向', '今天对伴侣说一句具体的感谢，再说一个你真正的需要。'],
       ['吵架时双方都想被理解，所以谁也听不进去。先听，就是先赢。', '一定要争出谁对谁错。', '我们是一起的，要解决的是问题，不是对方。', '臣服', '下次讨论时，先复述对方的意思，确认没听错，再说自己的看法。'],
       ['好的关系需要每天一点点经营，就像练功一样。', '感情好的人不需要努力。', '用心经营关系，是一种值得练的能力。', '练习', '这周每天花 10 分钟，放下手机专心和对方聊天。']]],
-    ['money', /钱|财|收入|负债|欠|投资|亏|存款|穷|花费|不够用|money|debt|broke|finance|salary/, '金钱压力', [
+    ['money', /债|贷款|供车|供屋|卡数|分期|还不完|钱|财|收入|负债|欠|投资|亏|存款|穷|花费|不够用|money|debt|broke|finance|salary/, '金钱压力', [
       ['钱的焦虑很真实。先把注意力从“不够”拉回到“我现在能管理什么”。', '钱不够，我很失败。', '钱是可以学习管理的技能；我正在练。', '练习', '把这个月的支出列出来，找一项可以先停掉的。'],
       ['理财和任何技能一样，跟着懂的人学，会少走很多弯路。', '我天生不会理财。', '理财是可以学会的，我只是还没学。', '拜师', '找一本理财入门书或请教一位会存钱的朋友，学一个方法来试一个月。'],
       ['与其想着一下子赚很多，不如先看清楚你真正想要的生活需要多少钱。', '我要赶快赚很多钱。', '我先看清目标，再一步一步走。', '意向', '写下一个三个月内的具体存钱目标，以及每周要存多少。']]],
@@ -1970,7 +1970,7 @@ const ZEN_CO = (function () {
       ['工作是最好的修行场：每一个难题，都是在练你的专业和心性。', '工作的事我无能为力，只能忍。', '我掌握得了的是自己的专业、态度和下一步。', '拜师', '找一位你欣赏的前辈，问他一个关于你目前难题的具体问题。'],
       ['与其被工作推着走，不如先想清楚这份工作能让你练成什么。', '这份工作只是为了赚钱。', '每份工作都能让我练一项未来用得上的能力。', '意向', '写下你想在这份工作里练成的一项能力，以及这周能为它做的一件事。'],
       ['职场里最有价值的人，是愿意多学一点、多走一步的人。', '做好分内事就够了。', '稍微超出要求，是我成长最快的地方。', '边缘', '这周主动承担一个比平时稍有挑战的小任务。']]],
-    ['self', /我是谁|没价值|自卑|没信心|讨厌自己|不够好|迷茫|方向|意义|confidence|lost|worthless|purpose|meaning/, '对自己没信心或感到迷茫', [
+    ['self', /太笨|很笨|我笨|太蠢|我是谁|没价值|自卑|没信心|讨厌自己|不够好|迷茫|方向|意义|confidence|lost|worthless|purpose|meaning/, '对自己没信心或感到迷茫', [
       ['迷茫说明你在寻找，不是停下。你不需要先变好，才配得上去做。', '我不够好。', '我已经在路上了；每天一点点，就是在成为更好的自己。', '意向', '写下一个你想成为的样子，以及今天能为它做的一件小事。'],
       ['自信不是想出来的，是一次次做到小事累积出来的。', '等我有信心了才开始。', '我先开始，信心会跟着来。', '练习', '每天完成一件说好要做的小事，睡前记下来。'],
       ['接受现在的自己，并不代表停止成长，而是成长的起点。', '我要先变完美才值得被喜欢。', '我可以带着不完美，继续往前走。', '臣服', '对自己说一句你会对好朋友说的鼓励话，并写下来。']]]
@@ -2096,11 +2096,11 @@ const ZEN_CO = (function () {
     ['贴标签', /不是这块料|不是那块料|(我|自己)(就是|是个|是一个|真是|真的|很|太)?(失败|废物|废|没用|笨|蠢|差劲|不够好|不行|不配|一无是处)/, '把一次结果，变成了对整个人的判决。事情做得不好，不等于你这个人不好。'],
     ['绝对化', /永远|总是|从来|每次|一直|根本|完全|一点都|所有人|没人|谁都|全部/, '用「永远、总是、根本」，把一段时间说成了一辈子。'],
     ['读心术', /(他|她|他们|别人|大家|老板|上司|伴侣|老公|老婆|同事|朋友)(根本|一定|肯定|就是|都)?(不在乎|看不起|讨厌|针对|嫌弃|觉得我|认为我|不爱|不重视|不理|笑我)/, '把别人心里的想法，当成了你已经知道的事实。'],
-    ['灾难化', /完了|毁了|死定|再也|一辈子|没救|来不及|没希望|全完/, '把眼前的一道坎，放大成了终点。'],
+    ['灾难化', /出事|完了|毁了|死定|再也|一辈子|没救|来不及|没希望|全完/, '把眼前的一道坎，放大成了终点。'],
     ['应该化', /应该|必须|不得不|被逼|一定要|只能/, '用「必须、被逼」，把自己的选择说成了枷锁。'],
     ['比较', /别人都|人家|同届|同龄|比我|落后|不如/, '拿别人的台前高光，比自己的幕后过程。'],
     ['无力感', /没办法|没选择|没有选择|做不到|改变不了|无能为力|算了/, '把「还没找到方法」说成了「没有方法」。']];
-  const RW = [[/一点选择都没有|没有任何选择/g, '也可以重新选'], [/被逼着?(.)/g, '目前选择了$1'], [/永远(.)不到/g, '目前还没$1到'], [/不是(这|那)块料/g, '还在练成这块料的路上'], [/(我|自己)(就是|是个|是一个|真是|真的)?(很)?失败/g, '$1这次没达到自己的期望'], [/(一无是处|没用)/g, '还没找到用对力气的地方'], [/不够好/g, '还在变好的路上'], [/不配/g, '也值得'], [/(废物|废|笨|蠢|差劲)/g, '还在学'],
+  const RW = [[/永远还不完/g, '还在一步步还'], [/还不完/g, '还在还'], [/管不好/g, '还在学着管'], [/不值得/g, '也值得'], [/学不会/g, '还在学'], [/(应付|撑|做)不了/g, '还没找到$1的方法'], [/一定会出事/g, '不一定会出事，就算有事我也能面对'], [/永远好不起来/g, '正在慢慢好起来'], [/必须做到完美/g, '可以先做到够好'], [/必须全部做完(才能休息)?/g, '可以先做最重要的，也可以休息'], [/必须满足所有人/g, '可以先照顾好自己'], [/(一停下来)?就会出事/g, '$1也不会天塌下来'], [/坚持不了/g, '还在找能坚持的方法'], [/(就是)?没有毅力/g, '毅力还在练'], [/(太|很)?(笨|蠢)了?/g, '还在学'], [/一点选择都没有|没有任何选择/g, '也可以重新选'], [/被逼着?(.)/g, '目前选择了$1'], [/永远(.)不到/g, '目前还没$1到'], [/不是(这|那)块料/g, '还在练成这块料的路上'], [/(我|自己)(就是|是个|是一个|真是|真的)?(很)?失败/g, '$1这次没达到自己的期望'], [/(一无是处|没用)/g, '还没找到用对力气的地方'], [/不够好/g, '还在变好的路上'], [/不配/g, '也值得'], [/(废物|废|笨|蠢|差劲)/g, '还在学'],
     [/永远/g, '目前'], [/总是/g, '有时'], [/从来/g, '以前'], [/每次/g, '有几次'], [/一直/g, '最近'], [/根本/g, '也许'], [/完全/g, '有部分'], [/一点都/g, '还不太'], [/所有人|谁都/g, '有些人'], [/没人/g, '还没遇到对的人'],
     [/完了|全完|毁了|死定了?|没救了?/g, '很难受，但还没结束'], [/再也/g, '暂时'], [/一辈子/g, '这阵子'], [/来不及/g, '还有时间调整'], [/没希望/g, '还有路可走'],
     [/被逼着?/g, '选择了'], [/不得不|必须|应该|一定要/g, '选择'], [/只能/g, '可以先'],
@@ -2112,7 +2112,7 @@ const ZEN_CO = (function () {
     let r = s; RW.forEach(([a, b]) => { r = r.replace(a, b); });
     return r !== s ? r + '。' : `我有「${s}」的感觉，但感觉不等于事实。`;
   }
-  const OPP = [[/一点选择都没有|没有?选择/g, '我其实有选择'], [/根本不/g, '其实'], [/不是/g, '是'], [/不在乎/g, '在乎'], [/看不起/g, '看得起'], [/不重视/g, '重视'], [/不爱/g, '爱'], [/讨厌/g, '欣赏'], [/(很)?失败/g, '也有做成的地方'], [/没用/g, '有用'], [/不够好/g, '已经够好'], [/落后了?/g, '也在前进'], [/被逼着?/g, '自己选择'], [/永远(.)不到/g, '会$1到'], [/做不到/g, '做得到'], [/没希望/g, '有希望'], [/完了/g, '还没完'], [/不配/g, '配得上']];
+  const OPP = [[/永远还不完/g, '还得完'], [/学不会/g, '学得会'], [/应付不了/g, '应付得了'], [/永远好不起来/g, '会好起来'], [/不值得/g, '值得'], [/一定会出事/g, '不一定会出事'], [/一点选择都没有|没有?选择/g, '我其实有选择'], [/根本不/g, '其实'], [/不是/g, '是'], [/不在乎/g, '在乎'], [/看不起/g, '看得起'], [/不重视/g, '重视'], [/不爱/g, '爱'], [/讨厌/g, '欣赏'], [/(很)?失败/g, '也有做成的地方'], [/没用/g, '有用'], [/不够好/g, '已经够好'], [/落后了?/g, '也在前进'], [/被逼着?/g, '自己选择'], [/永远(.)不到/g, '会$1到'], [/做不到/g, '做得到'], [/没希望/g, '有希望'], [/完了/g, '还没完'], [/不配/g, '配得上']];
   function opposite(s) { let r = s.replace(/^我(觉得|感觉|认为)(我)?/, '我'); const o = r; OPP.forEach(([a, b]) => { r = r.replace(a, b); }); return r !== o ? r : ''; }
   function analyse(mine, ev, want, soft, th) {
     if (!mine || soft) return null;
@@ -2131,7 +2131,7 @@ const ZEN_CO = (function () {
   }
   function reply(input, prev) {
     const o = typeof input === 'string' ? { ev: input, th: '', want: '' } : input;
-    const ev = (o.ev || '').trim(), th = (o.th || '').trim(), want = (o.want || '').trim(), text = [ev, th, want].join(' ').trim();
+    const feel = (o.feel || '').trim(), ev = (o.ev || '').trim(), th = (o.th || '').trim(), want = (o.want || '').trim(), text = [ev, feel, th, want].join(' ').trim();
     const t = text; if (!t) return null;
     if (/想死|自杀|不想活|活不下去|结束生命|伤害自己|割腕|kill myself|suicide|end my life|self.?harm/i.test(t)) return { crisis: true, quote: t.length > 30 ? t.slice(0, 30) + '…' : t };
     const sc = TH.map(x => { const m = t.match(new RegExp(x[1].source, 'gi')); return [x, m ? m.length * (W[x[0]] || 1) : 0]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
@@ -2141,22 +2141,26 @@ const ZEN_CO = (function () {
     let vi = pool.find(i => !used.includes(i)); if (vi == null) vi = pool[(used.length + turn++) % pool.length];
     const [e, old, neu, key, act] = V[vi];
     const n = (prev || []).length, wan = (MET[h[0]] && MET[h[0]][vi]) || WAN[key][(vi * 2 + n) % WAN[key].length], open = OPEN[(n + vi) % OPEN.length];
-    const mine = th || (ev.length >= 6 ? ev : '');
-    const vague = !th && ev.length < 6 && !/死|走了|去世|过世|想死|不想活/.test(ev);
+    const mine = th || ev;
+    const vague = !th && (ev + feel).length < 5 && !/死|走了|去世|过世|想死|不想活/.test(ev);
     const before = mine ? mine.replace(/[。！!？?]*$/, '。') : old;
     const soft = mine ? soften(mine) : '';
     const after = mine ? `“${soft}”——这是我此刻的感受，不是全部的事实。${neu}${want ? `我真正想要的是「${want.replace(/[。]$/, '')}」，今天先朝它走一小步。` : ''}` : neu;
-    const ax = analyse(mine, ev, want, ['grief'].includes(h[0]), th);
-    return { ax, vague, ev, th, want, before, after, mine: !!mine, bel: BEL[h[0]], belNew: BELNEW[h[0]], soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
+    const ax = analyse(mine, ev, want, ['grief'].includes(h[0]), th); if (ax && ax.noth) ax.cand = CAND[h[0]] || CAND.general;
+    return { ax, feel, vague, ev, th, want, before, after, mine: !!mine, bel: BEL[h[0]], belNew: BELNEW[h[0]], soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
       four: (() => { const qs = Q[key][(vi + (prev || []).length) % Q[key].length]; return [`“${old}”——${qs[0]}`, ...qs.slice(1)]; })() };
   }
+  const CAND = { money: ['我永远还不完', '我很失败，管不好钱', '我没有办法翻身'], pressure: ['我一点选择都没有', '我必须满足所有人'], overload: ['我必须全部做完才能休息', '我一停下来就会出事'], plateau: ['我不是这块料', '我永远不会进步'], quit: ['我就是没有毅力', '我做什么都坚持不了'], fail: ['我很失败', '别人一定看不起我'], compare: ['我落后了', '我不如别人'], anxiety: ['一定会出事', '我应付不了'], anger: ['他根本不尊重我', '这太不公平了，我没办法'], family: ['家人根本不理解我', '我永远做不到让他们满意'], love: ['他根本不在乎我的感受', '我不值得被爱'], health: ['我的身体完了', '我永远好不起来'], learn: ['我学不会', '我太笨了'], work: ['我永远不会被重视', '我必须做到完美'], self: ['我不够好', '我没有价值'], general: ['我不够好', '我没办法', '一切都完了'] };
+  const FEEL = /(很|好|非常|太|超|真的|有点)?(难受|痛苦|焦虑|心烦|好烦|很烦|累|害怕|生气|伤心|崩溃|无助|心累|压力大|不开心|难过|郁闷|委屈|绝望|无奈|慌)了?$/;
   function split(s) {
     const cl = (s || '').trim().split(/[，,。！!？?；;\n]+/).map(x => x.trim()).filter(Boolean);
     const isW = x => /^(我)?(想要|希望|渴望|盼望|只想)|我想要|我希望/.test(x), isT = x => /觉得|感觉|认为|怕|担心|我(不|没|永远|一定|应该|总是|就是|是|很|太|只是)|他(根本|从来|一定|总是)|她(根本|从来|一定|总是)|没人|谁都|不配|失败|没用|落后|被逼|没(有)?选择|选择都没有|完了|没希望|不在乎|看不起|做不到|改变不了/.test(x);
     const want = cl.filter(isW).map(x => x.replace(/^(我)?(想要|希望|渴望|盼望|只想)/, '')).join('，');
     const rest = cl.filter(x => !isW(x)), th = rest.filter(isT), ev = rest.filter(x => !isT(x));
     if (!ev.length && th.length > 1) ev.push(th.shift());
-    return { ev: ev.join('，'), th: th.join('，'), want };
+    let feel = '';
+    for (let i = 0; i < ev.length; i++) { const m = ev[i].match(FEEL); if (m) { feel = m[0]; ev[i] = ev[i].slice(0, m.index); } }
+    return { ev: ev.filter(Boolean).join('，'), th: th.join('，'), want, feel };
   }
   return { reply, split };
 })();
@@ -2639,9 +2643,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
       <p><b>🫂 ${r.soft ? '我在这里' : (r.open || '我听见了')}：</b>${r.empathy.startsWith(r.theme) ? '' : r.theme + (r.also ? `，也牵涉到${r.also}` : '') + '。'}${r.empathy}</p>
       ${r.wan ? `<div class="bz-wan"><span>${r.wan[0]}</span><div><b>万物之道 · ${r.wan[1]}</b><p>${r.wan[2]}</p></div></div>` : ''}
       ${r.ax ? `<div class="bz-ladder">
-        ${r.ev && r.th ? `<div class="bz-ld"><i>1</i><div><h6>看见 · 事实 vs 念头</h6><p><span class="bz-tagf">事实</span>${esc(r.ev)}</p><p><span class="bz-tags">念头</span><s>${esc(r.before)}</s></p><small>事实无法改，念头可以转。让你痛的是后者。</small></div></div>` : ''}
-        <div class="bz-ld"><i>${r.ev && r.th ? 2 : 1}</i><div><h6>${r.ax.noth ? '找念头 · 痛的不是事' : '拆穿 · 这个念头在哪里骗你'}</h6>${r.ax.traps.map(t => `<p class="bz-trap"><b>${t[0]}</b>${t[1] ? `「${esc(t[1])}」` : ''}</p><small>${t[2]}</small>`).join('')}${r.ax.noth ? '' : `<p class="bz-belief">背后的规则：「${r.bel}」</p>`}</div></div>
-        <div class="bz-ld"><i>${r.ev && r.th ? 3 : 2}</i><div><h6>验真 · 静下来问三句</h6><ol class="bz-ask">${r.ax.ask.map(q => `<li>${esc(q)}</li>`).join('')}</ol></div></div>
+        ${r.ev && (r.th || r.feel) ? `<div class="bz-ld"><i>1</i><div><h6>看见 · ${r.th ? '事实 vs 念头' : '事实 vs 感受'}</h6><p><span class="bz-tagf">事实</span>${esc(r.ev)}</p>${r.feel ? `<p><span class="bz-tagl">感受</span>${esc(r.feel)}</p>` : ''}${r.th ? `<p><span class="bz-tags">念头</span><s>${esc(r.before)}</s></p><small>事实无法改，${r.feel ? '感受是真的、不用赶走，' : ''}念头可以转。让你痛的是念头。</small>` : '<small>事实是事实，感受是真的，都不用否认。真正让感受越滚越大的，是藏在中间的那一句话。</small>'}</div></div>` : ''}
+        <div class="bz-ld"><i>${r.ev && (r.th || r.feel) ? 2 : 1}</i><div><h6>${r.ax.noth ? '找念头 · 痛的不是事' : '拆穿 · 这个念头在哪里骗你'}</h6>${(r.ax.noth && r.ev && r.feel ? [] : r.ax.traps).map(t => `<p class="bz-trap"><b>${t[0]}</b>${t[1] ? `「${esc(t[1])}」` : ''}</p><small>${t[2]}</small>`).join('')}${r.ax.noth ? `<p class="bz-small" style="margin-top:8px">${r.feel ? `觉得「${esc(r.feel)}」的时候，` : ''}你心里是不是在说下面其中一句？点一下，教练直接帮你转：</p><div class="bz-cochips">${(r.ax.cand || []).map(t => `<button type="button" data-coth="${esc((r.ev ? r.ev + '，' : '') + (r.feel ? r.feel + '，' : '') + t)}">「${esc(t)}」</button>`).join('')}</div><small>都不是？把你心里那句原话补在上面的框里。</small>` : `<p class="bz-belief">背后的规则：「${r.bel}」</p>`}</div></div>
+        <div class="bz-ld"><i>${r.ev && (r.th || r.feel) ? 3 : 2}</i><div><h6>验真 · 静下来问三句</h6><ol class="bz-ask">${r.ax.ask.map(q => `<li>${esc(q)}</li>`).join('')}</ol></div></div>
         <div class="bz-arr"></div>
         <div class="bz-ld ok"><i>✦</i><div><h6>转念 · 新的念头</h6><p class="bz-neu">${esc(r.ax.neo || r.neu)}${r.want ? `<br>我真正想要的是「${esc(r.want.replace(/[。]$/, ''))}」，今天先朝它走一小步。` : ''}</p><small>深层规则也换掉：${r.belNew}</small></div></div>
         <div class="bz-ld"><i>↻</i><div><h6>换角度 · 让新念头站稳</h6>${r.ax.turn.map(t => `<p class="bz-turn"><span>${t[0]}</span>${esc(t[1])}</p>`).join('')}<small>每一句都找一个你生活里的真实例子。有证据，新念头才有根。</small></div></div>
@@ -3132,6 +3136,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
+    app.addEventListener('click', e => { const b = e.target.closest('[data-coth]'); if (!b) return; const f = document.getElementById('bz-coform'); if (!f) return; f.q.value = b.dataset.coth; f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })); });
     app.addEventListener('click', e => { const b = e.target.closest('[data-coex]'); if (!b) return; const f = document.getElementById('bz-coform'); if (!f) return; f.q.value = b.dataset.coex; f.q.focus(); });
     app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const f = e.target; const r = ZEN_CO.reply(ZEN_CO.split(f.q.value), S.coach); if (r) { S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
