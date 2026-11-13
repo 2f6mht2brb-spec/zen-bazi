@@ -409,6 +409,10 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tri3k{flex:0 0 28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:800;font-size:16px;color:#ffe08a;border:1px solid var(--gold);background:rgba(212,175,55,.12)}
 .bz-tri3i b{display:block;font-size:13px;color:var(--gold2)}.bz-tri3i small{display:block;font-size:10.5px;opacity:.6;line-height:1.35}.bz-tri3i p{margin:4px 0 0;font-size:12px;line-height:1.5}
 @media (max-width:370px){.bz-trip{grid-template-columns:1fr}}
+.bz-trip{grid-template-columns:1fr!important}.tpn{cursor:pointer;outline:none}.tpn circle{transition:all .2s}.tpn:hover circle,.tpn:focus circle{stroke:var(--gold2);stroke-width:2}.tpn.on circle{fill:rgba(212,175,55,.45);stroke:#ffe08a;stroke-width:2.5}
+.tpn circle:not(.top){animation:tpglow 2.4s ease-in-out infinite}@keyframes tpglow{50%{stroke:rgba(255,224,138,.9)}}@media (prefers-reduced-motion:reduce){.tpn circle{animation:none}}
+.bz-tphint{color:var(--gold2);font-size:12.5px!important;opacity:.95}.bz-tri3i:not([hidden]){animation:tkopen .35s ease-out}
+.bz-tri3i[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -2308,13 +2312,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     const who = own ? `${ownerName() || '你的'}生命数字密码` : `${y}年${m}月${d}日 的生命数字密码`;
     const R = n => { while (n > 9) n = String(n).split('').reduce((a, c) => a + +c, 0); return n; }, dd = String(d).padStart(2, '0'), mm = String(m).padStart(2, '0'), yy = String(y);
     const tA = R(+dd[0] + +dd[1]), tB = R(+mm[0] + +mm[1]), tC = R(+yy[0] + +yy[1]), tD = R(+yy[2] + +yy[3]), tE = R(tA + tB), tF = R(tC + tD), tG = R(tE + tF);
-    const nd = (x, yv, v, cls) => `<circle cx="${x}" cy="${yv}" r="${cls === 'top' ? 15 : 11}" class="${cls || ''}"/><text x="${x}" y="${yv}" class="${cls || ''}">${v}</text>`;
+    let ni = 0; const nd = (x, yv, v, cls) => { const k = ni++; return `<g class="tpn" data-act="tp:${k}" role="button" tabindex="0" aria-label="看数字 ${v} 的解读"><circle cx="${x}" cy="${yv}" r="${cls === 'top' ? 17 : 13}" class="${cls || ''}"/><text x="${x}" y="${yv}" class="${cls || ''}">${v}</text></g>`; };
     const tri = `<svg class="bz-tri3" viewBox="0 -14 300 204" role="img" aria-label="生命数字三角形，主命数 ${tG}"><path d="M8 4 H292 L150 186 Z" fill="rgba(212,175,55,.05)" stroke="rgba(212,175,55,.18)"/>
       ${[[30, dd[0]], [62, dd[1]], [98, mm[0]], [130, mm[1]], [170, yy[0]], [202, yy[1]], [238, yy[2]], [270, yy[3]]].map(([x, v]) => `<text x="${x}" y="20" class="b">${v}</text>`).join('')}
       <text x="46" y="-5" class="l">日</text><text x="114" y="-5" class="l">月</text><text x="220" y="-5" class="l">年</text>
       ${[[46, tA], [114, tB], [186, tC], [254, tD]].map(([x, v]) => nd(x, 64, v)).join('')}${nd(80, 108, tE)}${nd(220, 108, tF)}${nd(150, 152, tG, 'top')}
       <path d="M30 36 L42 54 M62 36 L50 54 M98 36 L110 54 M130 36 L118 54 M170 36 L182 54 M202 36 L190 54 M238 36 L250 54 M270 36 L258 54 M46 75 L80 97 M114 75 L80 97 M186 75 L220 97 M254 75 L220 97 M80 119 L150 137 M220 119 L150 137" stroke="rgba(212,175,55,.45)" fill="none"/></svg>`;
-    return card('n-code', '生命数字密码', `<p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>${tri}<p class="bz-muted bz-tri3n">▽ 生日、月、年两两相加，一层层往下合成，最下面就是主命数 ${tG}。</p>${(() => { const T = Object.assign({ 0: ['空白潜能', '可塑性大、不受定型限制', '方向不明时容易迷惘', '主动为这一面设定目标，它会照你选的方向长'] }, ZEN_DC.T), K = n => T[n][0], P = [
+    return card('n-code', '生命数字密码', `<p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>${tri}<p class="bz-tri3n bz-tphint">👆 点三角形里的任何一个数字，看它代表什么</p>${(() => { const T = Object.assign({ 0: ['空白潜能', '可塑性大、不受定型限制', '方向不明时容易迷惘', '主动为这一面设定目标，它会照你选的方向长'] }, ZEN_DC.T), K = n => T[n][0], P = [
         ['日', tA, '本性底色', '你天生的个性、直觉反应', n => `遇事第一反应偏「${K(n)}」：${T[n][1]}。`],
         ['月', tB, '情感与人际', '你对家人、朋友、伴侣的相处方式', n => `在关系里像「${K(n)}」，${['相处模式随对象而变，弹性很大', '喜欢主导、给方向', '重视陪伴与默契', '用幽默和表达拉近距离', '用行动和可靠证明在乎', '需要空间与新鲜感', '会照顾、付出很多', '需要独处，慢热但深交', '务实，用实际支持表达关心', '包容、大方，愿意成全别人'][n]}。`],
         ['年前', tC, '家族与根基', '祖辈、成长环境带给你的底子', n => `家庭给你的底子是「${K(n)}」的特质，这是你可以随时取用的资源。`],
@@ -2324,7 +2328,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
       const all = [tA, tB, tC, tD, tE, tF, tG], rep = [...new Set(all)].filter(n => n > 0).map(n => [n, all.filter(x => x === n).length]).filter(x => x[1] >= 2).sort((a, b) => b[1] - a[1]);
       const io = tE === tF ? `内外都是 ${tE}：私下和在外表现一致，真诚、容易让人信任；但也少了切换，累的时候要留给自己独处的空间。`
         : `内在 ${tE}（${K(tE)}）、外在 ${tF}（${K(tF)}）：私下与在外是两种模式。好处是能适应不同场合，提醒是别让外在的「${K(tF)}」压过内心真正需要的「${K(tE)}」。`;
-      return `<div class="bz-trip">${P.map(([w, n, t, d, f]) => `<div class="bz-tri3i"><span class="bz-tri3k">${n}</span><div><b>${t}</b><small>${d}</small><p>${f(n)}</p></div></div>`).join('')}</div>
+      P.push(['主', tG, `主命数 · ${K(tG)}`, '以上各面汇合成的核心生命课题', n => `${T[n][1]}。功课：${T[n][2]}。开运钥匙：${T[n][3]}。`]);
+      return `<div class="bz-trip">${P.map(([w, n, t, d, f], i) => `<div class="bz-tri3i" data-tp="${i}" hidden><span class="bz-tri3k">${n}</span><div><b>${t}</b><small>${d}</small><p>${f(n)}</p></div></div>`).join('')}</div>
         <div class="bz-3"><div class="bz-3i"><i>⚖️</i><div><b>内外对照</b><span>${io}</span></div></div>
         ${rep.length ? `<div class="bz-3i"><i>🔁</i><div><b>重复数字</b><span>${rep.map(([n, c]) => `${n} 出现 ${c} 次`).join('、')}：这些特质在你身上被放大，${rep.map(([n]) => `${n} 的「${T[n][1].split('、')[0]}」是你最大的本钱，也要留意「${T[n][2].split('，')[0]}」`).join('；')}。</span></div></div>` : ''}
         <div class="bz-3i"><i>🎯</i><div><b>整合到主命数 ${tG}</b><span>以上各面最后都汇成「${K(tG)}」。专业提示：${T[tG][3]}；当内在 ${tE} 与外在 ${tF} 都被照顾到，${K(tG)}的力量才会完全发挥。</span></div></div></div>`; })()}
@@ -2634,6 +2639,10 @@ if (typeof module !== 'undefined') module.exports = ZEN_DC;
     S.date = n; render();
   }
   function act(a) {
+    if (a.startsWith('tp:')) { const k = a.slice(3), box = document.querySelector('#n-code'); if (!box) return; const cur = box.querySelector(`.bz-tri3i[data-tp="${k}"]`), was = cur && !cur.hidden;
+      box.querySelectorAll('.bz-tri3i').forEach(x => x.hidden = true); box.querySelectorAll('.tpn').forEach(x => x.classList.remove('on'));
+      if (cur && !was) { cur.hidden = false; box.querySelector(`.tpn[data-act="tp:${k}"]`).classList.add('on'); cur.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+      const h = box.querySelector('.bz-tphint'); if (h) h.style.display = cur && !was ? 'none' : ''; return; }
     if (a.startsWith('info:')) { openSheet(a.slice(5)); return; }
     if (a === 'close') { closeSheet(); return; }
     if (a.startsWith('mq:')) { const [, i, k] = a.split(':'); S.mbti.ans[+i] = k; mSave(S.mbti); render(); return; }
