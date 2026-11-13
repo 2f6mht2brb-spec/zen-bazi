@@ -398,6 +398,10 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 @media (max-width:360px){.bz-tab{font-size:14.5px!important;letter-spacing:0}}
 .bz-tab i{height:22px;display:flex;align-items:center;justify-content:center}.bz-tab i svg{display:block}
 .bz-evd{margin-top:8px;padding:7px 10px;border-radius:10px;background:rgba(0,0,0,.2);border:1px solid var(--line)}.bz-evd summary{cursor:pointer;font-size:12.5px;color:var(--gold2);list-style:none}.bz-evd summary::after{content:' ▾';opacity:.6}.bz-evd h6{margin:10px 0 3px;font-size:12px;color:var(--acc,#e9c46a);letter-spacing:1px}.bz-evd .bz-v{margin-right:4px}
+.bz-dcmain{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.bz-dcmain>div{text-align:center;padding:8px 2px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line)}.bz-dcmain small{display:block;font-size:10.5px;opacity:.7}.bz-dcmain b{display:block;font-size:26px;font-family:Georgia,serif;color:var(--gold2);line-height:1.2}.bz-dcmain em{font-style:normal;font-size:11px;opacity:.85}
+.bz-dcwrap{display:flex;gap:12px;align-items:flex-start}.bz-dcg{flex:0 0 138px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.bz-dcg>div{aspect-ratio:1;border-radius:8px;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:.45}.bz-dcg>div.on{opacity:1;border-style:solid;background:rgba(212,175,55,.14)}.bz-dcg b{font-size:18px;font-family:Georgia,serif}.bz-dcg small{font-size:8px;color:var(--gold2);letter-spacing:1px}
+.bz-dcside{flex:1;min-width:0;font-size:13px}.bz-dcside p{margin:0 0 6px}.bz-dcside small{opacity:.75}#bz-dcform input{color-scheme:dark}
+#bz-dcform button{padding:0 14px;border-radius:12px;border:1px solid var(--gold);background:linear-gradient(135deg,#9a1c22,#6e1218);color:#ffe08a;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}#bz-dcform button[type=button]{background:transparent}
 </style>
 </head>
 <body>
@@ -1747,6 +1751,43 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
 
 </script>
 <script>
+// ===== 生命数字密码（毕达哥拉斯数字学 + 九宫格）原创解读 =====
+const ZEN_DC = (function () {
+  const T = {
+    1: ['开创者', '独立、果断、有主见，喜欢带头做第一个', '太急于证明自己，容易固执、听不进意见', '学会合作与倾听，领导力会更有温度'],
+    2: ['协调者', '细腻、体贴、擅长配合与沟通', '容易犹豫、太在意别人眼光', '先照顾好自己的感受，再去照顾别人'],
+    3: ['表达者', '有创意、乐观、口才好，人缘佳', '三分钟热度，容易分心', '把才华专注在一两件事上，坚持到底'],
+    4: ['建造者', '踏实、守规矩、可靠，做事有系统', '保守、怕改变，容易压力大', '在稳定中留一点弹性，允许自己犯错'],
+    5: ['探索者', '爱自由、反应快、适应力强，喜欢新体验', '定性不足，容易冲动', '为自由找一个长期方向，变化才有意义'],
+    6: ['守护者', '有责任感、重家庭、乐于付出', '容易操心太多、想控制', '照顾别人之前，先照顾好自己'],
+    7: ['思考者', '理性、爱研究、有洞察力', '想太多、不易信任人、偏孤独', '把想法分享出去，让知识帮到别人'],
+    8: ['实践者', '有企图心、重结果、善于管理资源与金钱', '太看重成败与物质，压力大', '把成就用在帮助更多人上，财富会更长久'],
+    9: ['理想者', '有大爱、包容、看得远', '容易理想化、为别人牺牲太多', '在付出与自我之间取得平衡'],
+    11: ['启发者（大师数）', '直觉强、有感召力，能启发别人', '敏感、紧张、对自己要求过高', '相信直觉，同时脚踏实地'],
+    22: ['大建筑师（大师数）', '能把远大理想落实成具体成果', '压力大、容易给自己太多负担', '一步一步来，大事是一块块砖堆起来的'],
+    33: ['大爱导师（大师数）', '慈悲、愿意奉献，能疗愈别人', '容易过度付出而耗尽', '先爱自己，爱才能流动出去']
+  };
+  const LINES = { '123': ['艺术线', '想法多、有创意与表达力'], '456': ['组织线', '执行力强、做事有条理'], '789': ['权力线', '目标感强、有领导与掌控欲'], '147': ['物质线', '务实、重视安全感与实际回报'], '258': ['感情线', '情感丰富、重视人际与关系'], '369': ['智慧线', '思考力强、学习能力佳'], '159': ['事业线', '有毅力、做事坚持到底'], '357': ['人缘线', '亲和力强、贵人与人缘好'] };
+  const MISS = { 1: '自信与主动', 2: '耐心与合作', 3: '表达与创意', 4: '纪律与踏实', 5: '弹性与行动', 6: '责任与关爱', 7: '独处与思考', 8: '理财与执行', 9: '包容与远见' };
+  const sum = s => String(s).split('').reduce((a, c) => a + (+c || 0), 0);
+  const red = (n, keep = true) => { while (n > 9 && !(keep && [11, 22, 33].includes(n))) n = sum(n); return n; };
+  function analyse(y, m, d, now) {
+    const digits = `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+    const talent = sum(digits), life = red(talent), birth = red(d), py = red(sum(now.y) + sum(m) + sum(d), false), pm = red(py + now.m, false);
+    const cnt = {}; for (let i = 1; i <= 9; i++) cnt[i] = 0; digits.split('').forEach(c => { if (+c) cnt[+c]++; });
+    // 主命数、天赋数也计入九宫（常见做法）
+    const extra = [...String(talent).split('').map(Number), life > 9 ? red(life, false) : life].filter(Boolean); extra.forEach(n => cnt[n]++);
+    const lines = Object.entries(LINES).filter(([k]) => k.split('').every(c => cnt[+c] > 0));
+    const miss = Object.keys(cnt).filter(k => !cnt[k]).map(Number);
+    return { digits, talent, life, birth, py, pm, cnt, lines, miss };
+  }
+  const PY = { 1: '新开始：适合立志、开创新计划', 2: '合作年：重关系、慢慢酝酿', 3: '表达年：社交、创作、被看见', 4: '打基础：踏实做事、整理财务健康', 5: '变动年：转换、出行、尝新', 6: '责任年：家庭、感情、承担', 7: '沉淀年：学习、反思、充电', 8: '收获年：事业与财务的成果期', 9: '结束年：放下旧事、为新循环做准备' };
+  return { T, LINES, MISS, PY, analyse, red };
+})();
+if (typeof module !== 'undefined') module.exports = ZEN_DC;
+
+</script>
+<script>
 (function () {
   const E = window.ZEN_E, GUA = window.ZEN_GUA, A = ZEN_A(E, GUA);
   const { G, Z, ELS, AN, HID, elOf, tenGod, GRP, changsheng, CATS } = E;
@@ -1810,7 +1851,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
-    'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
+    'n-code': '数字密码', 'n-kua': '八宅命卦', 'n-chain': '磁场因果', 'n-mix': '八星磁场', 'n-wx': '数理五行', 'n-birth': '先天数', 'n-fix': '化解',
     'l-mastery': '修行卷', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
@@ -2252,9 +2293,24 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
 
 
   // ---------- 数字能量 ----------
+  function codeCard() {
+    const D = ZEN_DC, own = !S.dcDate, [y, m, d] = own ? [S.ch.inp.y, S.ch.inp.m, S.ch.inp.d] : S.dcDate.split('-').map(Number);
+    const [ny, nm] = TODAY.split('-').map(Number), r = D.analyse(y, m, d, { y: ny, m: nm }), t = D.T[r.life], tb = D.T[r.birth];
+    const pos = [[4, 9, 2], [3, 5, 7], [8, 1, 6]].flat(), G = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const grid = `<div class="bz-dcg">${[3, 6, 9, 2, 5, 8, 1, 4, 7].map(n => `<div class="${r.cnt[n] ? 'on' : ''}"><b>${n}</b><small>${r.cnt[n] ? '●'.repeat(Math.min(r.cnt[n], 4)) : '空'}</small></div>`).join('')}</div>`;
+    const who = own ? `${ownerName() || '你的'}生命数字密码` : `${y}年${m}月${d}日 的生命数字密码`;
+    return card('n-code', '生命数字密码', `<form id="bz-dcform" class="bz-numform"><input type="date" name="dc" value="${own ? '' : S.dcDate}" aria-label="查看其他人的出生日期"><button type="submit">看别人</button>${own ? '' : '<button type="button" data-act="dcme">看自己</button>'}</form>
+      <p class="bz-small">${who.replace('的的', '的')}（出生日期 ${r.digits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')}）</p>
+      <div class="bz-dcmain"><div><small>主命数</small><b>${r.life}</b><em>${t[0]}</em></div><div><small>天赋数</small><b>${r.talent}</b><em>${r.talent}/${r.life}</em></div><div><small>生日数</small><b>${r.birth}</b><em>${tb[0]}</em></div><div><small>${ny}流年数</small><b>${r.py}</b><em>${D.PY[r.py].split('：')[0]}</em></div></div>
+      <div class="bz-3"><div class="bz-3i"><i>🌟</i><div><b>天赋</b><span>${t[1]}</span></div></div><div class="bz-3i"><i>⚠️</i><div><b>功课</b><span>${t[2]}</span></div></div><div class="bz-3i"><i>🔑</i><div><b>开运钥匙</b><span>${t[3]}</span></div></div></div>
+      <h3 class="bz-h3">九宫格 · 数字分布</h3><div class="bz-dcwrap">${grid}<div class="bz-dcside">${r.lines.length ? `<p><b>✅ 连线：</b>${r.lines.map(([k, [n, v]]) => `<span class="bz-chip">${k.split('').join('-')} ${n}</span><br><small>${v}</small>`).join('<br>')}</p>` : '<p class="bz-small">没有完整连线：能力分散在各方面，适合多元发展，但要刻意培养专长。</p>'}
+        ${r.miss.length ? `<p><b>⭕ 空缺数：</b>${r.miss.join('、')}</p><p class="bz-small">需要多练习：${r.miss.map(n => D.MISS[n]).join('、')}。</p>` : ''}</div></div>
+      <p class="bz-tip">📅 ${ny}年流年数 ${r.py}：${D.PY[r.py]}。本月流月数 ${r.pm}：${D.PY[r.pm].split('：')[1]}。</p>
+      <details class="bz-more"><summary>📖 数字密码怎么算</summary><p class="bz-small">把出生日期的每个数字相加得“天赋数”（${r.digits.split('').join('+')}=${r.talent}），再加到个位得“主命数”${r.life}（11、22、33 为大师数，保留不加）。生日数取出生的日。流年数＝出生月日的数字＋当年年份的数字，加到个位。九宫格把出生日期、天赋数和主命数里的 1–9 填进格子，横、竖、斜连成一线代表某种能力特别突出，空格代表需要学习的课题。</p><p class="bz-small">数字密码源自西方毕达哥拉斯数字学，解读文字为本站原创，可与八字互相参照，仅供自我认识参考。</p></details>`);
+  }
   function vNumber() {
     const N = ZEN_N; const v = S.num || '';
-    let out = card('n-input', '求一组好数字', `<form id="bz-numform" class="bz-numform"><input name="num" value="${esc(v)}" maxlength="40" placeholder="手机号、车牌、门牌或英文字母" aria-label="输入号码或英文字母" autocomplete="off"><button type="submit" class="bz-go">求问</button></form><p class="bz-muted">按八星磁场逐组解读：相邻两个数字为一组。0 让磁场变“隐”（减弱），5 让磁场变“显”（加强）；英文字母按 A=1、B=2……I=9、J=1 换成数字。</p>`);
+    let out = codeCard() + card('n-input', '求一组好数字', `<form id="bz-numform" class="bz-numform"><input name="num" value="${esc(v)}" maxlength="40" placeholder="手机号、车牌、门牌或英文字母" aria-label="输入号码或英文字母" autocomplete="off"><button type="submit" class="bz-go">求问</button></form><p class="bz-muted">按八星磁场逐组解读：相邻两个数字为一组。0 让磁场变“隐”（减弱），5 让磁场变“显”（加强）；英文字母按 A=1、B=2……I=9、J=1 换成数字。</p>`);
     const r = v ? N.analyse(v) : null;
     if (v && !r) out += card('n-err', '', '<p>至少需要两个 1–9 的数字才能看出能量。</p>');
     if (r) {
@@ -2555,6 +2611,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
     if (a.startsWith('mq:')) { const [, i, k] = a.split(':'); S.mbti.ans[+i] = k; mSave(S.mbti); render(); return; }
     if (a === 'mdone') { S.mbti.done = true; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
     if (a === 'mreset') { S.mbti = { ans: [], done: false }; mSave(S.mbti); render(); $('#bz-view').scrollIntoView({ block: 'start' }); return; }
+    if (a === 'dcme') { S.dcDate = null; render(); return; }
     if (a === 'mlog') { const L = S.mlog || (S.mlog = mlLoad()); const i = L.days.indexOf(TODAY); if (i >= 0) L.days.splice(i, 1); else L.days.push(TODAY); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     const [k, v] = a.split(':');
     if (k === 'zm') { S.zmode = v; render(); return; }
@@ -2573,7 +2630,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_T2;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
