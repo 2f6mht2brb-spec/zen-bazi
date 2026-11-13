@@ -414,6 +414,16 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tphint{color:var(--gold2);font-size:12.5px!important;opacity:.95}.bz-tri3i:not([hidden]){animation:tkopen .35s ease-out}
 .bz-tri3i[hidden]{display:none!important}
 .bz-astw{display:block;width:100%;max-width:280px;margin:0 auto 8px}.bz-astw text{text-anchor:middle;dominant-baseline:central;fill:var(--gold2);font-size:14px;font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}.bz-astw text.on{fill:#fff;font-size:17px}.bz-astw text.lb{font-size:8px;fill:#ddd;font-family:inherit}.bz-astw text.c{font-size:15px;fill:#fff;font-weight:700;font-family:"Songti SC",serif}.bz-astw text.c2{font-size:9px;fill:#bbb;font-family:inherit}
+.bz-banner{padding:16px 16px 14px!important}.bz-title{font-size:20px!important;margin:6px 0 4px!important;letter-spacing:2px}.bz-sub{font-size:12.5px!important;line-height:1.6;opacity:.85;margin:0!important}.bz-taiji{width:110px!important;height:110px!important;opacity:.35}
+.bz-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding:0;margin-bottom:10px}
+@media (min-width:560px){.bz-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+.bz-gtab{display:flex!important;flex-direction:column;align-items:center;gap:2px!important;padding:10px 2px 8px!important;font-size:17px!important}.bz-gtab i{font-size:22px!important;height:24px}.bz-gtab span{font-weight:800;letter-spacing:2px}.bz-gtab small{font-size:9.5px;opacity:.6;font-weight:400;letter-spacing:0;white-space:nowrap}.bz-gtab.bz-on small{opacity:.8}
+.bz-fseg button{font-size:14px!important;padding:9px 2px!important}.bz-fseg button i{font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}
+.bz-nav{display:grid!important;grid-template-columns:44px 1fr 44px auto;gap:6px!important;align-items:stretch}.bz-nav .bz-today{grid-column:auto!important;width:auto!important;padding:0 12px!important;font-size:13px!important;letter-spacing:1px;min-height:0!important;margin:0!important}
+#bz-view>.bz-card{margin-bottom:12px}.bz-fh{cursor:pointer;user-select:none}.bz-chev{order:99;margin-left:8px;flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold2);border:1px solid var(--line);transition:transform .2s}.bz-fold .bz-chev{transform:rotate(-90deg)}
+.bz-fold>*:not(h2){display:none!important}.bz-fold{padding-bottom:14px!important}.bz-fold>h2{margin-bottom:0!important}
+#bz-sub .bz-fseg{margin:0 0 10px}
+.bz-grid>.bz-fold{align-self:start}
 </style>
 </head>
 <body>
@@ -1856,7 +1866,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
   const SHI = [['早子时 0:00–0:59', 0.5], ['丑时 1:00–2:59', 2], ['寅时 3:00–4:59', 4], ['卯时 5:00–6:59', 6], ['辰时 7:00–8:59', 8], ['巳时 9:00–10:59', 10], ['午时 11:00–12:59', 12], ['未时 13:00–14:59', 14], ['申时 15:00–16:59', 16], ['酉时 17:00–18:59', 18], ['戌时 19:00–20:59', 20], ['亥时 21:00–22:59', 22], ['夜子时 23:00–23:59', 23.5]];
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
-  const TABS = [['chart', '❖', '观命盘'], ['fort', '☯\uFE0E', '问运程'], ['liunian', '☰', '问流年'], ['dayun', '☵', '问大运'], ['zodiac', '◎', '问生肖'], ['work', '⚒\uFE0E', '求事业'], ['team', '⚇', '求人和'], ['love', '♡', '求姻缘'], ['number', '#', '求好数'], ['mbti', '<svg viewBox="0 0 20 20" width="1em" height="1em" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5a8.5 8.5 0 0 0 0 17z" fill="currentColor"/></svg>', '识本心'], ['life', '❀', '求开运'], ['nine', '☲', '问九运'], ['astro', '✶', '观星象']];
+  const GROUPS = [
+    ['fort', '☯\uFE0E', '运程', '今日·周·月·年', [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']]],
+    ['ming', '❖', '命盘', '本命·流年·大运', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲']]],
+    ['qiu', '✧', '求事', '事业·人和·姻缘', [['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['love', '姻缘', '♡'], ['number', '好数', '#']]],
+    ['tan', '✶', '探索', '生肖·星象·本心', [['zodiac', '生肖', '◎'], ['astro', '星象', '✶'], ['mbti', '本心', '◑'], ['life', '开运', '❀']]]];
+  const GOF = k => (GROUPS.find(g => g[4].some(s => s[0] === k)) || GROUPS[0]);
+  const TABS = GROUPS.flatMap(g => g[4].map(s => [s[0], s[2], s[1]]));
   const S = { zmode: '年', tab: 'day', date: null, lnYear: null, dy: null, ch: null, B: null, inp: null };
   const now = new Date(); const TODAY = A.iso(now.getFullYear(), now.getMonth() + 1, now.getDate());
   const ymdCN = s => { const [y, m, d] = A.parse(s); return `${y}年${m}月${d}日`; };
@@ -2187,16 +2203,16 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
     return hero('当日整体', d.s[0], d.lv[0], `<h2>阳历 ${ymdCN(d.date)} 周${d.wd}</h2>`, [`<p class="bz-muted">流年 ${gzc(d.p.y)} · 流月 ${gzc(d.p.m)} · 流日 ${gzc(d.p.d)}${d.dy ? ' · 大运 ' + gzc(d.dy.gz) : ''}</p>`, `<p>${summary(d.p.d, d.s)}</p>`, `<p class="bz-muted">神煞提示：${d.notes.length ? d.notes.join('、') : '无'}</p>`])
+      + catsGrid(d.p.d, d.s)
       + eventsCard(A.events(ch, d.date, d.p.d, d.notes), d.p.d)
+      + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`)
       + sceneCard('d-scene', '人间百态 · 今日喜怒哀乐', d.p.d, d.s, d.notes)
       + luckyCard4D(ch, d)
-      + catsGrid(d.p.d, d.s)
       + `<div class="bz-grid bz-grid2">${wxCard('d-wx', '五行能量', A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]))}${ssCard('d-ss', '十神', d.p.d)}${zodiacCard('d-sx', '今日生肖', d.p.d[1], false, '今日 · 日支生肖')}</div>`
       + jqCard(d.date)
       + tcmDayCard(d)
       + guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。', G.indexOf(d.p.d[0]) + Z.indexOf(d.p.d[1]) + 2 + +d.date.slice(8))
-      + compassCard(d.p.d)
-      + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`);
+      + compassCard(d.p.d);
   }
   function vWeek() {
     const mon = A.monday(S.date), days = Array.from({ length: 7 }, (_, i) => S.B.day(A.addDays(mon, i)));
@@ -2467,11 +2483,10 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     const ch = S.ch, i = S.inp; const d = S.B.day(TODAY);
     const P = ch.P; const hourTxt = i.time ? i.time : (i.shichen != null ? SHI[i.shichen][0].split(' ')[0] : '时辰不详');
     return `<svg class="bz-taiji" viewBox="-52 -52 104 104" aria-hidden="true"><circle r="50" fill="none" stroke="#f5d77a" stroke-width="1.5"/><path d="M0,-50 A50,50 0 0,1 0,50 A25,25 0 0,1 0,0 A25,25 0 0,0 0,-50Z" fill="#f5d77a"/><circle cy="-25" r="7" fill="#f5d77a"/><circle cy="25" r="7" fill="#2a1846"/></svg>
-      <div class="bz-eyebrow">☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷</div>
       <div class="bz-who"><span class="bz-cname">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button></div>
       <div class="bz-birth"><span><b>阳历</b>${i.y}年${i.m}月${i.d}日 · ${esc(hourTxt)}</span></div>
       <h1 class="bz-title">${esc(siteTitle())}</h1>
-      <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}<span class="bz-bgnote">· 背景取用神${YBG[ch.yong][0]}</span></p>`;
+      <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}</p>`;
   }
 
   // ---------- form ----------
@@ -2682,16 +2697,24 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     }
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
-    app.querySelector('#bz-tabs').innerHTML = TABS.map(([k, ic, t]) => { const on = S.tab === k || (k === 'fort' && FORTK.includes(S.tab)); return `<button class="bz-tab ${on ? 'bz-on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${on}"><i>${ic}</i>${t}</button>`; }).join('');
+    const curG = GOF(S.tab)[0];
+    app.querySelector('#bz-tabs').innerHTML = GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${n}</span><small>${cap}</small></button>`).join('');
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
-    let vh = (FORTK.includes(S.tab) ? `<div class="bz-fseg" role="tablist" aria-label="选择运程">${FORT.map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>` : '') + html + scrollHead(S.tab);
+    const G = GOF(S.tab);
+    let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
+    sub.innerHTML = `<div class="bz-fseg" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>`;
+    let vh = html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
     if (S.tab === 'month' && S.B.monthOf(S.date).start !== S.B.monthOf(TODAY).start) vh = vh.replace(/本月/g, '当月').replace(/这个月/g, '那个月');
     if (S.tab === 'year' && S.B.syOf(S.date) !== S.B.syOf(TODAY)) vh = vh.replace(/今年/g, `${S.B.syOf(S.date)}年`);
     app.querySelector('#bz-view').innerHTML = vh;
+    { let open = 0; app.querySelectorAll('#bz-view > .bz-card, #bz-view > .bz-grid > .bz-card').forEach(c => { const h = c.querySelector(':scope > h2'); if (!h || c.classList.contains('bz-hero')) return;
+        h.setAttribute('role', 'button'); h.tabIndex = 0; h.classList.add('bz-fh'); if (!h.querySelector('.bz-chev')) h.insertAdjacentHTML('beforeend', '<span class="bz-chev" aria-hidden="true">▾</span>');
+        if (open++ >= 3 && !c.querySelector('form')) c.classList.add('bz-fold');
+        const tg = () => c.classList.toggle('bz-fold'); h.addEventListener('click', tg); h.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tg(); } }); }); }
     app.querySelectorAll('#bz-view .bz-chips').forEach(c => { const on = c.querySelector('.bz-on'); if (on) c.scrollLeft = on.offsetLeft - c.clientWidth / 2 + on.clientWidth / 2; });
     app.querySelectorAll('#bz-view .bz-hero').forEach(h => { if (!h.querySelector('.za-wm')) h.insertAdjacentHTML('beforeend', ZEN_ART.svg(S.tab, 'za-wm')); });
     track();
@@ -2720,7 +2743,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_AS;
     if (k === 'zd') { S.date = v; render(); return; }
     if (k === 'wm') { S.wmode = v; render(); return; }
     if (k === 'tdel') { S.team.splice(+v, 1); tSave(S.team); S.tOpen = false; render(); return; }
-    if (k === 'tab') { const tv = v === 'fort' ? (S.lastFort || 'day') : v; if (FORTK.includes(tv)) S.lastFort = tv; S.tab = tv; try { history.replaceState(null, '', '#' + tv); } catch (e) { location.hash = tv; } }
+    if (k === 'grp' || (k === 'tab' && GROUPS.some(g => g[0] === v))) { S.lastSub = S.lastSub || {}; const g = GROUPS.find(x => x[0] === v); S.tab = S.lastSub[v] || g[4][0][0]; render(); $('#bz-tabs').scrollIntoView({ block: 'nearest' }); return; }
+    if (k === 'tab') { const tv = v; S.lastSub = S.lastSub || {}; S.lastSub[GOF(tv)[0]] = tv; S.tab = tv; try { history.replaceState(null, '', '#' + tv); } catch (e) { location.hash = tv; } }
     else if (k === 'day') { S.date = v; S.tab = 'day'; }
     else if (k === 'month') { S.date = v; S.tab = 'month'; }
     else if (k === 'ln') { S.lnYear = +v; S.tab = 'liunian'; }
