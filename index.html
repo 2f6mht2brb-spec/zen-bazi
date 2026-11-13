@@ -469,6 +469,9 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 #bz-view .bz-ladder>.bz-arr{position:relative;display:flex;justify-content:center;align-items:center;margin:6px 0;height:30px}
 #bz-view .bz-ladder>.bz-arr::before{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:1px dashed rgba(212,175,55,.5)}
 #bz-view .bz-ladder>.bz-arr::after{content:'⇣ 转念 ⇣';position:relative;padding:4px 16px;border-radius:999px;background:linear-gradient(135deg,#f5d77a,#c9a227);color:#1a1030;font-size:15px;font-weight:800;letter-spacing:3px;box-shadow:0 0 12px rgba(245,215,122,.45)}
+#bz-view .bz-coform label{display:block}#bz-view .bz-coform label>span{display:block;font-size:var(--t4)!important;color:var(--gold2);margin:2px 0 4px;font-weight:600}#bz-view .bz-coform label small{opacity:.6;font-weight:400}
+#bz-view .bz-coform input[name=want]{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:inherit;font:inherit}
+#bz-view .bz-coform textarea{min-height:0}
 </style>
 </head>
 <body>
@@ -1928,11 +1931,11 @@ const ZEN_CO = (function () {
       ['没动力是正常的，热情本来就会起落。重要的不是心情，而是有没有回到路上。', '我没动力，所以做不到。', '动力是行动之后才来的，先做五分钟就好。', '练习', '设一个 5 分钟的计时器，只做第一步，做完就算赢。'],
       ['想放弃的时候，常常是因为一开始期待太快看到结果。', '这么慢，还不如别做。', '慢慢来没有关系，愿意继续，就已经在成为高手。', '臣服', '把目标缩小到“今天只做一点点”，并原谅自己昨天没做。'],
       ['拖延通常不是懒，而是这件事太大、太模糊，让人不知道从哪里开始。', '等我准备好了再开始。', '先开始，准备会在路上完成。', '意向', '把这件事拆成三个小步骤，写下来，今天只完成第一步。']]],
-    ['fail', /失败|搞砸|做错|出错|犯错|丢脸|被骂|骂我|批评我|被批评|没做好|fail|mistake|screw|blamed|scold/, '刚经历失败或挫折', [
+    ['fail', /失败|搞砸|做错|出错|犯错|丢脸|被骂|骂我|批评我|被批评|没做好|否定|不被重视|没人重视|不被认可|没人认可|看不起|瞧不起|fail|mistake|screw|blamed|scold/, '刚经历失败或挫折', [
       ['跌倒很痛，但它也证明你真的在做事。每一位高手都比新手失败过更多次。', '我搞砸了，我不行。', '这次的结果不等于我这个人；它是一份免费的回馈。', '臣服', '写下这次学到的一件事，原谅自己，然后把注意力放回下一步。'],
       ['被批评会刺痛，可是批评里往往藏着别人看得到、你还没看到的盲点。', '他们就是看我不顺眼。', '我可以把情绪和内容分开，只取对我有用的部分。', '拜师', '把对方的批评改写成一句具体的建议，找一个信任的人确认是否合理。'],
       ['真正的高手不是不失败，而是失败后能很快回到练习。', '再试一次也只会再失败。', '每一次重来，我都比上次多懂一点。', '练习', '今天找一个小机会，把同一件事再做一次，只改一个地方。']]],
-    ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给|compare|jealous|envy|behind/, '和别人比较而感到失落', [
+    ['compare', /比较|不如别人|别人比我|嫉妒|羡慕|落后|输给|升职了|比我好|都比我|compare|jealous|envy|behind/, '和别人比较而感到失落', [
       ['比较会偷走你的快乐。别人展示的是终点，你看到的却是自己的过程。', '别人比我好，我落后了。', '我只跟昨天的自己比；别人的好提醒我想成为什么样的人。', '意向', '列出你这个月比上个月多会的三件小事。'],
       ['羡慕其实是一个信号：它告诉你，你心里真正想要什么。', '我永远赶不上他。', '他走过的路，我也可以一步步学。', '拜师', '去了解你羡慕的那个人是怎么练成的，找出一个可以学的习惯。'],
       ['每个人的路程和起点都不同，用别人的时间表来衡量自己，只会让人心急。', '我应该早就做到了。', '我在自己的节奏上前进，这样就够了。', '臣服', '今天少看社交媒体 30 分钟，把时间用在自己的练习上。']]],
@@ -2086,10 +2089,14 @@ const ZEN_CO = (function () {
                ['🏺', '金缮', '日本的金缮把破碗的裂缝用金填补，碗反而更美。不完美也可以是你的光。']]
   };
   const OPEN = ['我听见了', '谢谢你愿意说出来', '先深呼吸一下', '这很不容易', '我明白这种感觉'];
-  const W = { grief: 3, work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
+  const W = { grief: 3, fail: 1.5, compare: 1.6, work: .4, love: .5, money: .6, family: .7, learn: .6, self: .3 };
   let turn = 0;
-  function reply(text, prev) {
-    const t = (text || '').trim(); if (!t) return null;
+  // 把用户的念头化成“转念后”：保留他的原话，再接上方向
+  function soften(th) { return th.replace(/[。！!？?]+$/, '').replace(/^我(就是|是个|是一个)/, '我有时觉得自己').replace(/永远|一定|总是|从来|根本|完全|一点都/g, m => ({ 永远: '暂时', 一定: '未必', 总是: '有时', 从来: '还没', 根本: '暂时', 完全: '有些', 一点都: '还' }[m])); }
+  function reply(input, prev) {
+    const o = typeof input === 'string' ? { ev: input, th: '', want: '' } : input;
+    const ev = (o.ev || '').trim(), th = (o.th || '').trim(), want = (o.want || '').trim(), text = [ev, th, want].join(' ').trim();
+    const t = text; if (!t) return null;
     if (/想死|自杀|不想活|活不下去|结束生命|伤害自己|割腕|kill myself|suicide|end my life|self.?harm/i.test(t)) return { crisis: true, quote: t.length > 30 ? t.slice(0, 30) + '…' : t };
     const sc = TH.map(x => { const m = t.match(new RegExp(x[1].source, 'gi')); return [x, m ? m.length * (W[x[0]] || 1) : 0]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
     const hits = sc.length ? sc.map(x => x[0]) : [TH.find(x => x[0] === 'general')], h = hits[0], also = hits[1];
@@ -2098,7 +2105,12 @@ const ZEN_CO = (function () {
     let vi = pool.find(i => !used.includes(i)); if (vi == null) vi = pool[(used.length + turn++) % pool.length];
     const [e, old, neu, key, act] = V[vi];
     const n = (prev || []).length, wan = (MET[h[0]] && MET[h[0]][vi]) || WAN[key][(vi * 2 + n) % WAN[key].length], open = OPEN[(n + vi) % OPEN.length];
-    return { bel: BEL[h[0]], belNew: BELNEW[h[0]], soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
+    const mine = th || (ev.length >= 6 ? ev : '');
+    const vague = !th && ev.length < 6 && !/死|走了|去世|过世|想死|不想活/.test(ev);
+    const before = mine ? mine.replace(/[。！!？?]*$/, '。') : old;
+    const soft = mine ? soften(mine) : '';
+    const after = mine ? `“${soft}”——这是我此刻的感受，不是全部的事实。${neu}${want ? `我真正想要的是「${want.replace(/[。]$/, '')}」，今天先朝它走一小步。` : ''}` : neu;
+    return { vague, ev, th, want, before, after, mine: !!mine, bel: BEL[h[0]], belNew: BELNEW[h[0]], soft: ['grief', 'general'].includes(h[0]), id: h[0], vi, wan, open, quote: t.length > 30 ? t.slice(0, 30) + '…' : t, theme: h[2], empathy: e, old, neu, key, keyT: h[0] === 'grief' ? { 臣服: '允许自己难过，不催促自己走出来；悲伤也是爱的一部分。', 意向: '把思念化成一个你想延续的样子，让他的好继续活在你的行动里。', 拜师: '向也曾经历失去的人取暖，他们走过的路能给你力量。' }[key] : KEYS[key], act, also: also ? also[2] : null,
       four: (() => { const qs = Q[key][(vi + (prev || []).length) % Q[key].length]; return [`“${old}”——${qs[0]}`, ...qs.slice(1)]; })() };
   }
   return { reply };
@@ -2572,28 +2584,32 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
   const mlSave = v => { try { localStorage.setItem(MSK, JSON.stringify(v)); } catch (e) { } };
   function coachCard() {
     const L = S.coach || [], last = L[L.length - 1], d = S.B.day(TODAY), hrs = { 木: '3–7 点', 火: '9–13 点', 土: '7–9、13–15 点', 金: '15–19 点', 水: '21–1 点' };
-    const ans = r => r.crisis ? `<div class="bz-coA bz-crisis"><div class="bz-coQ">“${esc(r.quote)}”</div>
+    const ans = r => r.vague ? `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div><p><b>🫂 我在这里：</b>你写的内容有点短，我还看不清你的处境。要帮你真正转念，需要知道两件事：</p><ul class="bz-tcml"><li>① 具体发生了什么事？</li><li>② 那一刻你心里冒出的念头是什么？（原话最好）</li></ul><p class="bz-small">在上面三个框里补充，再按一次「请教练帮我转念」。也可以点下面的例子看看怎么写。</p></div>` : r.crisis ? `<div class="bz-coA bz-crisis"><div class="bz-coQ">“${esc(r.quote)}”</div>
       <p><b>谢谢你愿意说出来。</b>你现在承受的东西很重，你值得马上得到真人的陪伴和帮助，这不是这个小工具能做到的。</p>
       <p>请现在就联系你信任的人，或者打给专业热线：</p>
       <ul class="bz-tcml"><li>📞 <b>Befrienders KL</b>（24 小时）：03-7627 2929</li><li>📞 <b>Talian HEAL</b>（卫生部心理支援）：15555</li><li>🚨 有立即危险请打 <b>999</b></li></ul>
       <p class="bz-small">不在马来西亚的话，请联系当地的紧急电话或危机热线。你不需要一个人撑着。</p></div>`
-      : `<div class="bz-coA"><div class="bz-coQ">“${esc(r.quote)}”</div>
+      : `<div class="bz-coA">${r.vague ? '' : ''}<div class="bz-coQ">“${esc(r.th || r.quote)}”</div>
       <p><b>🫂 ${r.soft ? '我在这里' : (r.open || '我听见了')}：</b>${r.empathy.startsWith(r.theme) ? '' : r.theme + (r.also ? `，也牵涉到${r.also}` : '') + '。'}${r.empathy}</p>
       ${r.wan ? `<div class="bz-wan"><span>${r.wan[0]}</span><div><b>万物之道 · ${r.wan[1]}</b><p>${r.wan[2]}</p></div></div>` : ''}
       <div class="bz-ladder">
-        <div class="bz-ld"><i>1</i><div><h6>看见 · 分开事实与故事</h6><p><span class="bz-tagf">事实</span>${esc(r.quote)}</p><p><span class="bz-tags">故事</span><s>${r.old}</s></p><small>事实是发生的事；故事是你给它加上的意义。痛苦多半来自故事。</small></div></div>
+        <div class="bz-ld"><i>1</i><div><h6>看见 · 分开事实与故事</h6><p><span class="bz-tagf">事实</span>${esc(r.ev || r.quote)}</p><p><span class="bz-tags">念头</span><s>${esc(r.before)}</s></p><small>事实是发生的事；故事是你给它加上的意义。痛苦多半来自故事。</small></div></div>
         <div class="bz-ld"><i>2</i><div><h6>找根 · 背后的信念</h6><p class="bz-belief">「${r.bel}」</p><small>问自己：这条规则是谁定的？它一直都是真的吗？</small></div></div>
         <div class="bz-arr"></div>
-        <div class="bz-ld ok"><i>3</i><div><h6>转念 · 换一个更真实的看法</h6><p class="bz-neu">${r.neu}</p><small>深层信念也跟着转：${r.belNew}</small></div></div>
-        <div class="bz-ld"><i>4</i><div><h6>找证据 · 让新念头站稳</h6><small>写下三个“新念头”在你生活里已经成立的例子，哪怕很小。新念头要有证据，才不会只是口号。</small></div></div>
+        <div class="bz-ld ok"><i>3</i><div><h6>转念 · 换一个更真实的看法</h6><p class="bz-neu">${esc(r.after)}</p><small>深层信念也跟着转：${r.belNew}</small></div></div>
+        <div class="bz-ld"><i>4</i><div><h6>找证据 · 让新念头站稳</h6><small>${r.mine ? `回想三次“${esc(r.th ? r.th.replace(/[。！？]$/, '') : '这件事')}”并不成立的时刻——例如别人肯定你、你做到了、事情比想象好。写下来，新念头就有了根。` : '写下三个“新念头”在你生活里已经成立的例子，哪怕很小。新念头要有证据，才不会只是口号。'}</small></div></div>
       </div>
       <details class="bz-four"><summary>💭 问问自己 · ${r.key}四问</summary><ol>${r.four.map(q => `<li>${q}</li>`).join('')}</ol></details>
       <p><b>🗝️ ${r.soft ? '心的功课' : '大师功课'} · ${r.key}：</b>${r.keyT}</p>
       <div class="bz-do">👉 今天就做：${r.act}</div>
       ${r.soft ? '' : `<p class="bz-small">⏰ 安排在你用神「${S.ch.yong}」当旺的 ${hrs[S.ch.yong]} 去做，事半功倍。</p>`}</div>`;
     return card('l-coach', '大师教练 · 说说你的心事', `<p class="bz-small">把困扰写下来，例如“我练摄影很久都没进步”“和上司吵架很生气”。教练会陪你转念，给你一个今天能做的小行动。</p>
-      <form id="bz-coform" class="bz-coform"><textarea name="q" rows="3" maxlength="300" placeholder="此刻，你心里最放不下的是什么？"></textarea><button type="submit">请教练</button></form>
-      <div class="bz-cochips">${['练习很久没进步', '想放弃', '工作压力大', '和别人比较', '感情吵架', '钱不够用'].map(t => `<button type="button" data-act="coq:${t}">${t}</button>`).join('')}</div>
+      <form id="bz-coform" class="bz-coform">
+        <label><span>① 发生了什么事？</span><textarea name="q" rows="2" maxlength="200" placeholder="例如：上司在会议上当众否定我的方案"></textarea></label>
+        <label><span>② 你心里冒出的念头是？</span><textarea name="th" rows="2" maxlength="150" placeholder="例如：我永远不会被重视"></textarea></label>
+        <label><span>③ 你真正想要的是？<small>（可不填）</small></span><input name="want" maxlength="80" placeholder="例如：被认可、把方案做好"></label>
+        <button type="submit">请教练帮我转念</button></form>
+      <div class="bz-cochips">${[['练习很久没进步', '摄影练了半年，作品还是很普通', '我不是这块料', '拍出自己满意的作品'], ['工作压力大', '老板一直加任务，周末也要回讯息', '我被逼着做，一点选择都没有', '有自己的时间'], ['和别人比较', '同届的朋友都升职了', '我落后了，我很失败', '对自己的进度安心'], ['感情吵架', '和伴侣为小事吵了一整晚', '他根本不在乎我的感受', '被理解']].map(([n, a, b, c]) => `<button type="button" data-coex="${a}|${b}|${c}">${n}</button>`).join('')}</div>
       ${last ? ans(last) : ''}${L.length > 1 ? `<details class="bz-more"><summary>🕘 之前的对话（${L.length - 1}）</summary>${L.slice(0, -1).reverse().map(ans).join('')}</details>` : ''}
       <p class="bz-muted">这是网站内建的自助引导，按关键词给出转念方法，不是真人教练，也不能代替心理或医疗专业协助。如果你感到撑不住，请找信任的人或专业人士聊聊。</p>`);
   }
@@ -3072,7 +3088,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_CO;
   function init() {
     const app = $('#zen');
     app.addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t && t.dataset.act) { e.preventDefault(); act(t.dataset.act); } });
-    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const q = e.target.q.value; const r = ZEN_CO.reply(q, S.coach); if (r) { S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
+    app.addEventListener('click', e => { const b = e.target.closest('[data-coex]'); if (!b) return; const [a, t, w] = b.dataset.coex.split('|'), f = document.getElementById('bz-coform'); if (!f) return; f.q.value = a; f.th.value = t; f.want.value = w; f.th.focus(); });
+    app.addEventListener('submit', e => { e.preventDefault(); if (e.target.id === 'bz-pform') { const f = e.target; S.partner = { date: f.pdate.value, sh: f.psh.value, gender: (f.querySelector('input[name=pg]:checked') || {}).value || '女' }; render(); const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-tform') { const f = e.target; if (!S.team) S.team = tLoad(); S.team.push({ name: f.tname.value.trim() || '同事', rel: f.trel.value, date: f.tdate.value, sh: f.tsh.value, gender: (f.querySelector('input[name=tg]:checked') || {}).value || '男' }); tSave(S.team); S.tOpen = true; render(); const h = document.querySelectorAll('.bz-tm'); if (h.length) h[h.length - 1].scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-coform') { const f = e.target; const r = ZEN_CO.reply({ ev: f.q.value, th: f.th.value, want: f.want.value }, S.coach); if (r) { S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); } return; } if (e.target.id === 'bz-dcform') { const v = e.target.dc.value; S.dcDate = v || null; render(); const h = document.getElementById('n-code'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-mform') { const L = S.mlog || (S.mlog = mlLoad()); L.skill = e.target.skill.value.trim(); mlSave(L); render(); const h = document.getElementById('l-mastery'); if (h) h.scrollIntoView({ block: 'start' }); return; } if (e.target.id === 'bz-numform') { S.num = e.target.num.value.trim(); render(); const h = document.getElementById('n-input'); if (h) h.scrollIntoView({ block: 'start' }); return; } const r = readForm(e.target); if (!r) return; S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp); render(); window.scrollTo(0, 0); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       const k = e.key.toLowerCase(); if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); } });
