@@ -1,0 +1,17 @@
+{
+  "name": "八字秘笈",
+  "short_name": "八字秘笈",
+  "description": "输入出生资料，自动排八字、推算每日运势、大运流年、易经卦象与数字能量。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c0719",
+  "theme_color": "#140c2a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
