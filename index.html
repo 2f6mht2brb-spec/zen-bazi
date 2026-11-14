@@ -2859,7 +2859,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const it = A.inter(S.ch, x.gz, x.dy); const yj = A.yiji(x.gz, S.ch); const z = A.zodiacRel(S.ch, x.gz[1], true);
     const over = `${y}年${gzc(x.gz)}，天干${x.gz[0]}为${tenGod(S.ch.dm, x.gz[0])}（${S.ch.label(elOf(x.gz[0]))}），地支${x.gz[1]}本气为${tenGod(S.ch.dm, HID[x.gz[1]][0])}（${S.ch.label(elOf(x.gz[1]))}）${x.dy ? '，行' + gzc(x.dy.gz) + '大运' : ''}。${it.length ? it.join('；') + '。' : ''}整体${A.level(x.s[0])}（${x.s[0]}分）。`;
     return card('ln-pick', '选择流年', chips(list.map(z => ({ top: z.y, gz: z.gz, lv: A.level(z.s[0]), on: z.y === y, act: 'ln:' + z.y }))))
-      + keyYearsCard('ln-key', '人生重要年份 · 大事提醒', ty - 3, ty + 20, true)
       + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>${y}年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${b2[0].gz}月最旺，${w2[0].gz}月宜低调。</p>`])
       + catsGrid(x.gz, x.s, (k, s) => A.reasonFor(S.ch, k, x.gz) + '。' + A.LV[k][A.band(s)])
       + sceneCard('ln-scene', `人间百态 · ${y}年悲欢离合`, x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
