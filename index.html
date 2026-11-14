@@ -3007,7 +3007,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const over = `${gzc(d.gz)}大运：天干${d.gz[0]}为${tenGod(ch.dm, d.gz[0])}（${ch.label(elOf(d.gz[0]))}），地支${d.gz[1]}本气为${tenGod(ch.dm, HID[d.gz[1]][0])}（${ch.label(elOf(d.gz[1]))}）。${it.length ? it.join('；') + '。' : ''}这十年整体${A.level(d.s[0])}。`;
     const ADV = ['以守为主，少做大决定，练好内功。', '宜守不宜攻，挑流年好的年份做关键动作。', '平稳过渡，稳中求进。', '顺势而为，可以积极开拓。', '人生高峰期之一，大胆把握机会。'];
     return card('dy-pick', '选择大运', chips(ch.dayun.map(x => ({ top: `${x.ageFrom}–${x.ageTo}岁`, gz: x.gz, lv: A.level(x.s[0]) + (x === cur ? ' · 当前' : ''), on: x === d, act: 'dy:' + x.gz }))))
-      + `<div class="bz-card bz-hero"><div><div class="bz-namebig">${gzc(d.gz)}</div><div class="bz-muted">${d.ageFrom}–${d.ageTo}岁 · ${d.yearFrom}–${d.yearTo}</div></div><div><h2>大运总评 <span class="${lvc(A.level(d.s[0]))}">${d.s[0]}分 · ${A.level(d.s[0])}</span></h2><p>${over}</p></div></div>`
+      + hero('大运整体', d.s[0], A.level(d.s[0]), `<h2>${gzc(d.gz)}大运 · ${d.ageFrom}–${d.ageTo}岁</h2>`, [`<p><b>${d.yearFrom}–${d.yearTo}${d === cur ? ' · 当前大运' : ''}</b><br>${over}</p>`])
       + catsGrid(d.gz, d.s, (k, s) => A.reasonFor(ch, k, d.gz) + '。' + A.LV[k][A.band(s)])
       + card('dy-years', '这十年的流年走势', bars(yrs.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '大运十年走势' })
         + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`)
@@ -3161,7 +3161,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   }
   function vNine() {
     const l = S.ch.label('火');
-    return `<div class="bz-card bz-hero"><div><div class="bz-namebig">九紫离火运</div><div class="bz-muted">2024 – 2043 · 下元九运</div></div><div><h2>九运对你</h2><p>三元九运把 180 年分成九个 20 年。2024 年起进入九运，由九紫星当令，对应离卦，五行属火，方位正南。火在你的八字里是<b class="${l === '忌' ? 'bz-bad' : 'bz-good'}">${{ 用: '用神', 喜: '喜神', 平: '平', 忌: '忌神' }[l]}</b>，${l === '用' || l === '喜' ? '世界大势正合你的需要，等于顺风而行。' : l === '忌' ? '大势与你的喜忌相反，宜顺势借力、守住本业，避开过热的投机。' : '大势对你中性，按自己的节奏发展即可。'}</p></div></div>`
+    const ys = []; for (let y = 2024; y <= 2043; y++) { const x = S.B.yearOf(y); if (x) ys.push(x); }
+    const avg = ys.length ? ys.reduce((a, x) => a + x.s[0], 0) / ys.length : 60, base = { 用: 80, 喜: 70, 平: 58, 忌: 40 }[l] || 58;
+    const sc = Math.round(avg * 0.5 + base * 0.5);
+    const best = ys.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 3), worst = ys.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 2);
+    return hero('九运整体', sc, A.level(sc), '<h2>九紫离火运 · 2024–2043</h2>', [`<p>三元九运把 180 年分成九个 20 年。2024 年起进入九运，由九紫星当令，对应离卦，五行属火，方位正南。火在你的八字里是<b class="${l === '忌' ? 'bz-bad' : 'bz-good'}">${{ 用: '用神', 喜: '喜神', 平: '平', 忌: '忌神' }[l]}</b>，${l === '用' || l === '喜' ? '世界大势正合你的需要，等于顺风而行。' : l === '忌' ? '大势与你的喜忌相反，宜顺势借力、守住本业，避开过热的投机。' : '大势对你中性，按自己的节奏发展即可。'}</p>`])
+      + (ys.length ? card('n-years', '九运二十年走势', bars(ys.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '九运二十年走势' })
+        + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`) : '')
       + `<div class="bz-grid bz-grid2">${card('n-basic', '九运基本资料', '<dl class="bz-kv"><dt>当令星</dt><dd>九紫右弼星</dd><dt>卦</dt><dd>离 ☲：火、光明、文明、心与眼</dd><dt>旺方</dt><dd>正南</dd><dt>旺色</dt><dd>红、紫</dd><dt>交运</dt><dd>2044 年交接一运（一白水运）</dd></dl>')}
       ${card('n-ind', '九运旺的行业', '<ul class="bz-list2"><li>AI 与芯片、电子与通讯、新能源</li><li>互联网、短视频、传媒娱乐、摄影影像</li><li>美容医美、心理与身心灵、玄学文化</li><li>眼科、心血管医疗，教育培训</li></ul>')}
       ${card('n-home', '九运居家布局', '<ul class="bz-list2"><li><b>正南：</b>九运旺方，保持明亮，可放红紫色物品或常亮的灯。</li><li><b>正北：</b>零神方，宜见水；鱼缸、水景只放这里。</li><li><b>东北：</b>八白退气，不宜堆杂物。</li><li>每年五黄、二黑的位置请看“今年”的九宫飞星。</li></ul>')}
