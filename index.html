@@ -2603,7 +2603,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       else if (HAI6[b] === nb) rels.push([2, k, nb, '害', '防误会']);
       else if (LH6[b] === nb) rels.push([1, k, nb, '合', '有好消息']); });
     rels.sort((x, y) => y[0] - x[0]);
-    const r = rels[0], T = EV1[g], tone = r ? r[0] === 1 : good, ev = r ? PALEV[r[1]][tone ? 1 : 0][h % 3] : T[tone ? 0 : 1][h % 3], fix = T[tone ? 2 : 3][(h >> 3) % 2];
+    const r = rels[0], T = EV1[g], tone = r ? r[0] === 1 : good, ev = r ? PALEV[r[1]][tone ? 1 : 0][h % 3] : T[tone ? 0 : 1][h % 3], fix = T[tone ? 2 : 3][(h >>> 3) % 2];
     const where = r ? `应在${PAL1[r[1]][0]}柱（${PAL1[r[1]][1]}）` : `应在「${tg}」之事`;
     const why = `今日 ${gzc(gz)}：天干 ${gzc(gz[0])} 是你的「${tg}」（${lb === '平' ? '中性' : lb + '神'}）${r ? `；日支 ${gzc(b)} 与你${PAL1[r[1]][0]}柱 ${gzc(r[2])} ${r[3] === '自刑' ? '自刑' : '相' + r[3]}` : ''}。`;
     return card('d-events', '今日事件预示', `<div class="bz-ev bz-ev-main ${tone ? 'bz-ev-good' : ''}"><span class="bz-ev-tag">${tone ? '今日好事' : '重点留意'}</span><div class="bz-ev-title">${where ? `<small class="bz-ev-where">${where}</small>` : ''}${ev}</div><div class="bz-ev-tip">${fix}开运用${A.COLOR[ch.yong].split('、')[0]}色、往${A.DIR[ch.yong]}方。</div><p class="bz-ev-why">${why}</p></div><p class="bz-muted">按当日干支与你命局的十神、冲合刑害推演，属趣味参考。</p>`, 'bz-event');
