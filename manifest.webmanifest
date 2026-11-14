@@ -1,6 +1,6 @@
 {
-  "name": "八字秘笈",
-  "short_name": "八字秘笈",
+  "name": "玄镜 · 先照见自己",
+  "short_name": "玄镜",
   "description": "输入出生资料，自动排八字、推算每日运势、大运流年、易经卦象与数字能量。",
   "lang": "zh-CN",
   "start_url": "./",
