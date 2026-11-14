@@ -508,7 +508,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tr #bz-view h2,.bz-tr .bz-card h2{font-size:clamp(17px,5vw,22px)!important;line-height:1.25!important}.bz-tr .bz-card h3{line-height:1.3!important}
 .bz-tr .bz-who{flex-wrap:wrap;row-gap:6px}.bz-tr .bz-edit,.bz-tr .bz-lang{white-space:nowrap}
 .bz-tr .bz-cati small{font-size:10px!important;line-height:1.1;text-align:center}.bz-tr .bz-catrow{gap:4px}
-</style>
+.bz-tr .bz-cati small,.bz-tr .bz-gtab span,.bz-tr #bz-sub button,.bz-tr .bz-today,.bz-tr .bz-edit,.bz-tr #zen h1,.bz-tr #zen h2,.bz-tr #zen h3,.bz-tr #zen h4,.bz-tr #zen h5,.bz-tr #zen h6,.bz-tr #zen dt,.bz-tr #zen summary,.bz-tr #zen button,.bz-tr #zen .bz-ev-tag,.bz-tr #zen .bz-catd b,.bz-tr #zen .bz-gjgrid small,.bz-tr #zen .bz-gjyj small,.bz-tr #zen .bz-hs,.bz-tr #zen .bz-lvtag,.bz-tr #zen label{text-transform:capitalize}.bz-tr .bz-gtab small::first-letter,.bz-tr #zen p::first-letter,.bz-tr #zen li::first-letter,.bz-tr #zen dd::first-letter,.bz-tr #zen .bz-ev-title::first-letter,.bz-tr #zen .bz-ev-tip::first-letter{text-transform:uppercase}</style>
 </head>
 <body>
 <div class="bz" id="zen">
@@ -2421,11 +2421,16 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const sc = document.createElement('script'); sc.src = 'https://translate.google.com/translate_a/element.js?cb=zenGT'; sc.async = true; document.head.appendChild(sc);
     document.documentElement.classList.add('bz-tr');
   }
+  const EN = { 运程: 'Fortune', '今日·周·月·年': 'Day to Year', 命盘: 'Destiny', '本命·流年·大运': 'Chart & Luck', 求事: 'Pursuits', '财运·事业·姻缘': 'Money & Love', 探索: 'Explore', '生肖·星象·本心': 'Stars & Self',
+    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
+    人缘: 'People', 财富: 'Wealth', 健康: 'Health', 感情: 'Love', 感情家庭: 'Love & Family', '☼ 活在当下': '☼ Now' };
+  const isEN = () => curLang() === 'en';
+  const TX = s => isEN() && EN[s] ? `<span class="notranslate" translate="no">${EN[s]}</span>` : s;
   const CATI = ['💼', '🤝', '💰', '🩺', '❤️'], CATS2 = ['事业', '人缘', '财富', '健康', '感情'];
   let catSeq = 0;
   const catsGrid = (gz, s, longFn) => { const id = 'ct' + (catSeq++), tips = CATS.map((k, i) => longFn ? longFn(k, s[i + 1]) : A.reasonFor(S.ch, k, gz));
-    return `<div class="bz-card bz-cats" id="${id}"><div class="bz-catrow">${CATS.map((k, i) => { const v = s[i + 1], lv = A.level(v); return `<button type="button" class="bz-cati" data-act="cat:${id}:${i}" aria-label="${CATN[i]} ${v}% ${lv}"><i>${CATI[i]}</i><b class="${lvc(lv)}">${v}<small class="bz-pct">%</small></b><small>${CATS2[i]}</small><span class="bz-catbar"><span style="width:${v}%;background:${col(v)}"></span></span></button>`; }).join('')}</div>
-      ${tips.map((t, i) => `<p class="bz-catd" data-ci="${i}" hidden><b>${CATI[i]} ${CATN[i]} · ${s[i + 1]}% ${A.level(s[i + 1])}</b>${t}</p>`).join('')}<p class="bz-cathint">👆 点图标看说明</p></div>`; };
+    return `<div class="bz-card bz-cats" id="${id}"><div class="bz-catrow">${CATS.map((k, i) => { const v = s[i + 1], lv = A.level(v); return `<button type="button" class="bz-cati" data-act="cat:${id}:${i}" aria-label="${CATN[i]} ${v}% ${lv}"><i>${CATI[i]}</i><b class="${lvc(lv)}">${v}<small class="bz-pct">%</small></b><small>${TX(CATS2[i])}</small><span class="bz-catbar"><span style="width:${v}%;background:${col(v)}"></span></span></button>`; }).join('')}</div>
+      ${tips.map((t, i) => `<p class="bz-catd" data-ci="${i}" hidden><b>${CATI[i]} ${TX(CATN[i])} · ${s[i + 1]}% ${A.level(s[i + 1])}</b>${t}</p>`).join('')}<p class="bz-cathint">👆 点图标看说明</p></div>`; };
   const P5 = s => CATS.map((k, i) => [CATN[i], s[i + 1]]).sort((a, b) => b[1] - a[1]);
   function summary(gz, s) { const pairs = CATS.map((k, i) => [CATN[i], s[i + 1]]); const b = pairs.slice().sort((a, c) => c[1] - a[1])[0][0], w = pairs.slice().sort((a, c) => a[1] - c[1])[0][0];
     return `${gzc(gz)}（${tenGod(S.ch.dm, gz[0])}·${tenGod(S.ch.dm, HID[gz[1]][0])}），${A.level(s[0])}。${b}最顺，${w}要留意。`; }
@@ -3477,14 +3482,14 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
     app.querySelector('#bz-banner').innerHTML = banner();
     const curG = GOF(S.tab)[0];
-    app.querySelector('#bz-tabs').innerHTML = GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${n}</span><small>${cap}</small></button>`).join('');
+    app.querySelector('#bz-tabs').innerHTML = GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${TX(n)}</span><small>${TX(cap)}</small></button>`).join('');
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
-    sub.innerHTML = `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${n}</button>`).join('')}</div>`;
+    sub.innerHTML = `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`;
     let vh = html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
     if (S.tab === 'month' && S.B.monthOf(S.date).start !== S.B.monthOf(TODAY).start) vh = vh.replace(/本月/g, '当月').replace(/这个月/g, '那个月');
@@ -3565,6 +3570,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     $('#bz-sheet').addEventListener('click', e => { const t = e.target.closest('[data-act]'); if (t) { e.preventDefault(); act(t.dataset.act); } });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
     $('.bz-prev').addEventListener('click', () => step(-1)); $('.bz-next').addEventListener('click', () => step(1));
+    if (isEN()) { const t = $('.bz-today'); t.textContent = EN['☼ 活在当下']; t.classList.add('notranslate'); t.setAttribute('translate', 'no'); }
     $('.bz-today').addEventListener('click', () => { S.date = TODAY; render(); });
     app.addEventListener('change', e => { if (e.target.id === 'bz-lang') setLang(e.target.value); });
     app.addEventListener('change', e => { if (e.target.id !== 'bz-city') return; const o = e.target.selectedOptions[0], t = e.target.form && e.target.form.tz; if (o && o.dataset.tz != null && t) t.value = o.dataset.tz; });
