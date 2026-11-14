@@ -2579,7 +2579,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     return `<details class="bz-evd"><summary>🔍 点开看命盘对应与化解</summary><h6>命盘对应</h6><ul class="bz-tcml">${why.map(w => `<li>${w}</li>`).join('')}</ul><h6>可能的结果</h6><p class="bz-small"><i class="bz-v ${tone}">${tl}</i> ${out.join('')}</p><h6>化解方法</h6><ul class="bz-tcml">${fix.join('')}</ul></details>`;
   }
   function eventsCard(ev, gz) { const tag = ['重点留意', '可能遇到', '身体与天气'];
-    return card('d-events', '今日事件预示', ev.map((e, i) => `<div class="bz-ev ${i === 0 ? 'bz-ev-main' : ''}"><span class="bz-ev-tag">${tag[i]}</span><div class="bz-ev-title">${e[0]}</div><div class="bz-ev-tip">${e[1]}</div>${evDetail(e, gz, i)}</div>`).join('') + '<p class="bz-muted">按当日干支与命局的冲合刑害、十神象意推演的生活提示，属趣味参考，不代表一定会发生。</p>', 'bz-event'); }
+    return card('d-events', '今日事件预示', ev.map((e, i) => `<div class="bz-ev ${i === 0 ? 'bz-ev-main' : ''}"><span class="bz-ev-tag">${tag[i]}</span><div class="bz-ev-title">${e[0]}</div><div class="bz-ev-tip">${e[1]}</div></div>`).join('') + '<p class="bz-muted">按当日干支与命局的冲合刑害、十神象意推演的生活提示，属趣味参考，不代表一定会发生。</p>', 'bz-event'); }
   function nine(items, cls) { return `<div class="bz-fly">${items.map(([d, a, b, c, k]) => `<div class="bz-flycell ${cls(k)}"><div class="bz-flydir">${d}</div><div class="bz-flystar">${a}</div><div class="bz-flymean">${b}${c ? ' · ' + c : ''}</div></div>`).join('')}</div>`; }
   const FC = { 大吉: 'bz-fly-g2', 吉: 'bz-fly-g1', 小吉: 'bz-fly-g1', 凶: 'bz-fly-b2', 大凶: 'bz-fly-b2', 小凶: 'bz-fly-b1' };
   function compassCard(gz) { const c = A.compass(S.ch, gz); const o = ['东南', '南', '西南', '东', '中', '西', '东北', '北', '西北'];
