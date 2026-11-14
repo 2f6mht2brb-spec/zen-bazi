@@ -2412,6 +2412,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       ${CATS.map((_, k) => { const [x, y] = P(k, R + 26), v = s[k + 1]; return `<g class="bz-rdl" data-act="cat:${id}:${k}" role="button" tabindex="0" aria-label="${CATN[k]} ${v} 分"><rect x="${(x - 30).toFixed(1)}" y="${(y - 17).toFixed(1)}" width="60" height="34" rx="9"/><text x="${x.toFixed(1)}" y="${(y - 2).toFixed(1)}" text-anchor="middle" class="n">${CATI[k]} ${CATS2[k]}</text><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="v" fill="${col(v)}">${v} ${A.level(v)}</text></g>`; }).join('')}</svg>`;
     return `<div class="bz-card bz-cats" id="${id}">${svg}
       ${tips.map((t, i) => `<p class="bz-catd" data-ci="${i}" hidden><b>${CATI[i]} ${CATN[i]} · ${s[i + 1]} ${A.level(s[i + 1])}</b>${t}</p>`).join('')}<p class="bz-cathint">👆 点任一项看说明 · 虚线是 50 分</p></div>`; };
+  const P5 = s => CATS.map((k, i) => [CATN[i], s[i + 1]]).sort((a, b) => b[1] - a[1]);
   function summary(gz, s) { const pairs = CATS.map((k, i) => [CATN[i], s[i + 1]]); const b = pairs.slice().sort((a, c) => c[1] - a[1])[0][0], w = pairs.slice().sort((a, c) => a[1] - c[1])[0][0];
     return `${gzc(gz)}（${tenGod(S.ch.dm, gz[0])}·${tenGod(S.ch.dm, HID[gz[1]][0])}），${A.level(s[0])}。${b}最顺，${w}要留意。`; }
   function pan(cols) {
@@ -2747,7 +2748,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const d = S.B.day(S.date), m = S.B.monthOf(S.date), ch = S.ch;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
-    return hero('当日整体', d.s[0], d.lv[0], `<h2>阳历 ${ymdCN(d.date)} 周${d.wd}</h2>`, [`<p class="bz-muted">流年 ${gzc(d.p.y)} · 流月 ${gzc(d.p.m)} · 流日 ${gzc(d.p.d)}${d.dy ? ' · 大运 ' + gzc(d.dy.gz) : ''}</p>`, `<p>${summary(d.p.d, d.s)}</p>`, `<p class="bz-muted">神煞提示：${d.notes.length ? d.notes.join('、') : '无'}</p>`])
+    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。</p>`])
       + catsGrid(d.p.d, d.s)
       + oneEvent(ch, d)
       + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`)
@@ -2777,7 +2778,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const off = (A.parse(m.start), ['一', '二', '三', '四', '五', '六', '日'].indexOf(days[0].wd));
     const top = days.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 4), low = days.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 4);
     const li = d => `<li data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)} · <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分 · ${d.notes.join('、') || d.lv[0]}</li>`;
-    return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${gzc(m.gz)}月（${A.md(m.start)}–${A.md(m.end)}）</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(m.start)} – ${ymdCN(m.end)}</p>`, `<p class="bz-muted">流年 ${gzc(m.ygz)} · 按节气划分</p>`, `<p>${summary(m.gz, m.s)}</p>`])
+    return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${A.md(m.start)} – ${A.md(m.end)} · ${gzc(m.gz)}月</h2>`, [`<p>本月整体${A.level(m.s[0])}。${P5(m.s)[0][0]}相对最好。${A.md(top[0].date)}（周${top[0].wd}）最适合办要事，${A.md(low[0].date)}（周${low[0].wd}）宜低调。</p>`])
       + catsGrid(m.gz, m.s)
       + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
@@ -2789,7 +2790,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const y = S.B.syOf(S.date), x = S.B.yearOf(y); if (!x) return card('x', '', '<p>超出可推算范围。</p>');
     const ms = S.B.months.filter(m => m.sy === y); const lc = A.parse(ms[0].start);
     const ky = ZEN_M.keyYears(S.ch, S.B, E, y, y)[0];
-    return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} ${gzc(x.gz)}年</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(ms[0].start)} – ${ymdCN(ms[ms.length - 1].end)}（立春起算）</p>`, `<p class="bz-muted">大运 ${x.dy ? gzc(x.dy.gz) : '—'}</p>`, `<p>${summary(x.gz, x.s)}</p>`])
+    return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>今年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${ms.slice().sort((a, b) => b.s[0] - a.s[0])[0].gz}月最旺，${ms.slice().sort((a, b) => a.s[0] - b.s[0])[0].gz}月宜低调。</p>`])
       + catsGrid(x.gz, x.s)
       + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
@@ -2809,7 +2810,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const over = `${y}年${gzc(x.gz)}，天干${x.gz[0]}为${tenGod(S.ch.dm, x.gz[0])}（${S.ch.label(elOf(x.gz[0]))}），地支${x.gz[1]}本气为${tenGod(S.ch.dm, HID[x.gz[1]][0])}（${S.ch.label(elOf(x.gz[1]))}）${x.dy ? '，行' + gzc(x.dy.gz) + '大运' : ''}。${it.length ? it.join('；') + '。' : ''}整体${A.level(x.s[0])}（${x.s[0]}分）。`;
     return card('ln-pick', '选择流年', chips(list.map(z => ({ top: z.y, gz: z.gz, lv: A.level(z.s[0]), on: z.y === y, act: 'ln:' + z.y }))))
       + keyYearsCard('ln-key', '人生重要年份 · 大事提醒', ty - 3, ty + 20, true)
-      + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y}年 ${gzc(x.gz)}</h2>`, [`<p>${over}</p>`, `<p class="bz-muted">太岁：${z.rel}</p>`])
+      + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>${y}年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${b2[0].gz}月最旺，${w2[0].gz}月宜低调。</p>`])
       + catsGrid(x.gz, x.s, (k, s) => A.reasonFor(S.ch, k, x.gz) + '。' + A.LV[k][A.band(s)])
       + sceneCard('ln-scene', `人间百态 · ${y}年悲欢离合`, x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + card('ln-months', '全年十二个月走势', bars(ms.map(m => ({ v: m.s[0], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 整体${m.s[0]}（${A.level(m.s[0])}）：${A.reasonFor(S.ch, 'career', m.gz)}` })), { label: '流年各月走势' })
