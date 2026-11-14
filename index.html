@@ -508,7 +508,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tr #bz-view h2,.bz-tr .bz-card h2{font-size:clamp(17px,5vw,22px)!important;line-height:1.25!important}.bz-tr .bz-card h3{line-height:1.3!important}
 .bz-tr .bz-who{flex-wrap:wrap;row-gap:6px}.bz-tr .bz-edit,.bz-tr .bz-lang{white-space:nowrap}
 .bz-tr .bz-cati small{font-size:10px!important;line-height:1.1;text-align:center}.bz-tr .bz-catrow{gap:4px}
-.bz-tr .bz-cati small,.bz-tr .bz-gtab span,.bz-tr #bz-sub button,.bz-tr .bz-today,.bz-tr .bz-edit,.bz-tr #zen h1,.bz-tr #zen h2,.bz-tr #zen h3,.bz-tr #zen h4,.bz-tr #zen h5,.bz-tr #zen h6,.bz-tr #zen dt,.bz-tr #zen summary,.bz-tr #zen button,.bz-tr #zen .bz-ev-tag,.bz-tr #zen .bz-catd b,.bz-tr #zen .bz-gjgrid small,.bz-tr #zen .bz-gjyj small,.bz-tr #zen .bz-hs,.bz-tr #zen .bz-lvtag,.bz-tr #zen label{text-transform:capitalize}.bz-tr .bz-gtab small::first-letter,.bz-tr #zen p::first-letter,.bz-tr #zen li::first-letter,.bz-tr #zen dd::first-letter,.bz-tr #zen .bz-ev-title::first-letter,.bz-tr #zen .bz-ev-tip::first-letter{text-transform:uppercase}.bz-tr .bz-cname{letter-spacing:.04em!important;font-style:normal}.bz-tr .bz-who{align-items:center}.bz-tr .bz-gtab small{text-transform:none!important}.bz-tr .bz-chips4{flex-wrap:wrap;justify-content:flex-start}.bz-tr .bz-chips4 span{white-space:nowrap}#bz-view .bz-drp .bz-card[hidden]{display:none}.bz-brand{display:flex;align-items:center;gap:16px;margin-bottom:10px}.bz-brand .bz-xj{margin:0;font-size:42px!important;font-family:"Noto Serif SC","Songti SC",serif;font-weight:900;letter-spacing:.12em;color:#f5d77a}.bz-tag{margin:4px 0 0;letter-spacing:.3em;color:#cfc3ad;font-size:14px}.bz-xjb{font-family:"Noto Serif SC","Songti SC",serif;font-weight:900;letter-spacing:.12em;color:#f5d77a}.bz-xjn{display:block;font-size:.5em;letter-spacing:.06em;color:#efe6d2;font-weight:500;margin-top:2px}</style>
+.bz-tr .bz-cati small,.bz-tr .bz-gtab span,.bz-tr #bz-sub button,.bz-tr .bz-today,.bz-tr .bz-edit,.bz-tr #zen h1,.bz-tr #zen h2,.bz-tr #zen h3,.bz-tr #zen h4,.bz-tr #zen h5,.bz-tr #zen h6,.bz-tr #zen dt,.bz-tr #zen summary,.bz-tr #zen button,.bz-tr #zen .bz-ev-tag,.bz-tr #zen .bz-catd b,.bz-tr #zen .bz-gjgrid small,.bz-tr #zen .bz-gjyj small,.bz-tr #zen .bz-hs,.bz-tr #zen .bz-lvtag,.bz-tr #zen label{text-transform:capitalize}.bz-tr .bz-gtab small::first-letter,.bz-tr #zen p::first-letter,.bz-tr #zen li::first-letter,.bz-tr #zen dd::first-letter,.bz-tr #zen .bz-ev-title::first-letter,.bz-tr #zen .bz-ev-tip::first-letter{text-transform:uppercase}.bz-tr .bz-cname{letter-spacing:.04em!important;font-style:normal}.bz-tr .bz-who{align-items:center}.bz-tr .bz-gtab small{text-transform:none!important}.bz-tr .bz-chips4{flex-wrap:wrap;justify-content:flex-start}.bz-tr .bz-chips4 span{white-space:nowrap}#bz-view .bz-drp .bz-card[hidden]{display:none}.bz-brand{display:flex;align-items:center;gap:16px;margin-bottom:10px}.bz-brand .bz-xj{margin:0;font-size:42px!important;font-family:"Noto Serif SC","Songti SC",serif;font-weight:900;letter-spacing:.12em;color:#f5d77a}.bz-tag{margin:4px 0 0;letter-spacing:.3em;color:#cfc3ad;font-size:14px}.bz-xjb{font-family:"Noto Serif SC","Songti SC",serif;font-weight:900;letter-spacing:.12em;color:#f5d77a}.bz-xjn{display:block;font-size:.5em;letter-spacing:.06em;color:#efe6d2;font-weight:500;margin-top:2px}.bz-sharebtn{display:block;width:100%;margin:0 0 10px;padding:10px 14px;border-radius:12px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(255,224,138,.18),rgba(201,162,39,.08));color:var(--gold2);font:inherit;font-weight:700;font-size:15px;text-align:center;text-decoration:none;cursor:pointer;min-height:44px;box-sizing:border-box}</style>
 </head>
 <body>
 <div class="bz" id="zen">
@@ -2672,6 +2672,34 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const g = TGG[E.tenGod(ch.dm, d.p.d[0])], h = [...d.date].reduce((a, c) => a * 31 + c.charCodeAt(0) >>> 0, 3), p = VOC[g][h % 3];
     return card('d-word', '今日品格', `<div class="bz-vrow">${vw(p[0], p[1], 'up')}<i>↔</i>${vw(p[2], p[3], 'dn')}</div><p class="bz-small">今天发挥「${p[1].replace(/的$/, '')}」，别变成「${p[3].replace(/的$/, '')}」。</p><p class="bz-creed">🗡 ${CREED[(h >>> 4) % CREED.length]}</p>`);
   }
+  function wrapCN(ctx, t, maxW) { const out = []; let line = ''; for (const ch of t) { if (ctx.measureText(line + ch).width > maxW) { out.push(line); line = ch; } else line += ch; } if (line) out.push(line); return out; }
+  async function makeShareCard() {
+    const D = S.share; if (!D) return;
+    const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
+    const SERIF = '"Noto Serif SC","Songti SC","STSong",serif', SANS = '"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif', GOLD = '#d4af37', GOLD2 = '#f5d77a', INK = '#efe6d2', MUT = '#b9ad97';
+    const g = x.createLinearGradient(0, 0, W * .4, H); g.addColorStop(0, '#2a1a4a'); g.addColorStop(1, '#100820'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.strokeStyle = 'rgba(212,175,55,.55)'; x.lineWidth = 3; x.strokeRect(36, 36, W - 72, H - 72); x.strokeStyle = 'rgba(212,175,55,.25)'; x.lineWidth = 1.5; x.strokeRect(50, 50, W - 100, H - 100);
+    const svg = XJ_MARK(200).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
+    await new Promise(r => { const im = new Image(); im.onload = () => { x.drawImage(im, 96, 96, 150, 150); r(); }; im.onerror = r; im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+    x.textBaseline = 'alphabetic'; x.fillStyle = GOLD2; x.font = `900 92px ${SERIF}`; x.fillText('玄镜', 276, 182);
+    x.fillStyle = MUT; x.font = `400 30px ${SANS}`; x.fillText('先照见自己，再看懂天地', 280, 230);
+    const [yy, mm, dd] = D.date.split('-'); x.fillStyle = INK; x.font = `700 44px ${SANS}`; x.fillText(`${+mm}月${+dd}日 周${D.wd} · ${D.gz}日`, 96, 330);
+    if (D.name) { x.fillStyle = MUT; x.font = `400 30px ${SANS}`; x.fillText(`${D.name} 的今日运势`, 96, 380); }
+    const cx = 230, cy = 560, R = 128, col2 = D.ov >= 56 ? '#5fd89a' : D.ov >= 45 ? GOLD2 : '#7fb8ff';
+    x.lineCap = 'round'; x.lineWidth = 22; x.strokeStyle = 'rgba(255,255,255,.08)'; x.beginPath(); x.arc(cx, cy, R, Math.PI * .75, Math.PI * 2.25); x.stroke();
+    x.strokeStyle = col2; x.beginPath(); x.arc(cx, cy, R, Math.PI * .75, Math.PI * (.75 + 1.5 * D.ov / 100)); x.stroke();
+    x.textAlign = 'center'; x.fillStyle = col2; x.font = `700 96px Georgia,${SERIF}`; x.fillText(D.ov, cx, cy + 22); x.font = `700 34px ${SANS}`; x.fillText(`「${D.mood}」`, cx, cy + 80); x.textAlign = 'left';
+    x.fillStyle = GOLD2; x.font = `700 32px ${SANS}`; x.fillText(`✦ 今日亮点 · ${D.hiCat}`, 420, 470);
+    x.fillStyle = INK; x.font = `700 44px ${SERIF}`; wrapCN(x, D.hi, 560).slice(0, 3).forEach((l, i) => x.fillText(l, 420, 535 + i * 60));
+    const tiles = [['宜做', D.doIt, '#5fd89a'], [`小提醒 · ${D.loCat}`, D.lo, GOLD2], ['开运', D.lucky, '#f0a97a']];
+    tiles.forEach(([t, v, c], i) => { const ty = 770 + i * 150; x.fillStyle = 'rgba(12,7,25,.55)'; x.strokeStyle = 'rgba(212,175,55,.3)'; x.lineWidth = 2; x.beginPath(); x.roundRect ? x.roundRect(96, ty, W - 192, 128, 22) : x.rect(96, ty, W - 192, 128); x.fill(); x.stroke();
+      x.fillStyle = c; x.font = `700 30px ${SANS}`; x.fillText(t, 130, ty + 50); x.fillStyle = INK; x.font = `500 34px ${SANS}`; wrapCN(x, v, W - 300).slice(0, 2).forEach((l, k) => x.fillText(l, 130, ty + 96 + k * 40)); });
+    x.fillStyle = '#7fe0ad'; x.font = `500 32px ${SANS}`; x.fillText(`🕐 吉时 ${D.hours}`, 96, 1250);
+    x.fillStyle = 'rgba(239,230,210,.55)'; x.font = `400 24px ${SANS}`; x.textAlign = 'right'; x.fillText('玄镜 · 传承易经八字文化 · 仅供参考', W - 96, 1300); x.textAlign = 'left';
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png')), file = new File([blob], `玄镜-${D.date}.png`, { type: 'image/png' });
+    try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: '玄镜 · 今日运势', text: `我的今日运势：${D.ov} 分「${D.mood}」` }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    const url = URL.createObjectURL(blob), s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = `<h3>你的运势卡</h3><img src="${url}" alt="今日运势卡" style="width:100%;border-radius:14px;display:block"><p class="bz-small">长按图片保存，或点下面下载后分享。</p><a class="bz-sharebtn" href="${url}" download="${file.name}">⬇ 下载图片</a>`; s.hidden = false;
+  }
   function oneEvent(ch, d) {
     const gz = d.p.d, b = gz[1], Z = E.Z, h = [...d.date].reduce((a, c) => a * 31 + c.charCodeAt(0) >>> 0, 7);
     const tg = E.tenGod(ch.dm, gz[0]), g = TGG[tg], lb = ch.label(E.elOf(gz[0])), good = lb === '用' || lb === '喜' ? true : lb === '忌' ? false : d.s[0] >= 50;
@@ -2697,7 +2725,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const ov = d.s[0], mood = ov >= 56 ? ['顺日', 'good', '✨'] : ov >= 45 ? ['平日', 'mid', '🌤'] : ['稳日', 'calm', '🍃'];
     const hx = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0, doIt = T[2][hx % 2], hiTxt = HI[hiC[0]][(hx >>> 3) % 3], loTxt = LO[loC[0]][(hx >>> 6) % 2];
     const pal = r ? (r[0] === 1 ? `${PAL1[r[1]][1]}有好消息` : `${PAL1[r[1]][1]}多留心`) : '';
-    return card('d-events', '今日事件预示', `<div class="bz-ev2 ${mood[1]}">
+    const lc = A.COLOR[fe].split('、')[(hm >>> 8) % A.COLOR[fe].split('、').length], ldir = A.DIR[fe] === '中' ? '中央' : A.DIR[fe] + '方';
+    S.share = { date: d.date, wd: d.wd, gz, ov, lv: A.level(ov), mood: mood[0], hi: `${hiTxt}`, hiCat: CN5[hiC[0]], doIt, lo: loTxt, loCat: CN5[loC[0]], lucky: `${lc}色 · ${ldir} · ${num}`, hours: best.map(x => `${x.t} ${x.z}时`).join('、'), name: ((S.inp && S.inp.name) || '').trim(), scores: [1, 2, 3, 4, 5].map(k => d.s[k]) };
+    return card('d-events', '今日事件预示', `<button type="button" class="bz-sharebtn" data-act="sharecard">📤 生成我的运势卡，分享给朋友</button><div class="bz-ev2 ${mood[1]}">
         <div class="bz-ev2h"><span class="bz-ev2i">${mood[2]}</span><div><small>今天是你的「${mood[0]}」 · ${ov} 分${pal ? ' · ' + pal : ''}</small><b>${CI[hiC[0]]} ${hiTxt}</b></div></div>
         <div class="bz-ev2g"><div><i>✅</i><small>宜做</small><span>${doIt}</span></div><div><i>💡</i><small>小提醒 · ${CN5[loC[0]]}</small><span>${loTxt}</span></div><div><i>🍀</i><small>开运</small><span>${A.COLOR[fe].split('、')[(hm >>> 8) % A.COLOR[fe].split('、').length]}色 · ${A.DIR[fe] === '中' ? '中央' : A.DIR[fe] + '方'} · ${num}</span></div></div>
         <div class="bz-ev2t"><span class="ok">🕐 吉时 ${best.map(x => `<b>${x.t}</b> ${gzc(x.z)}时`).join('、')}</span><span class="ng">⏳ 宜放慢 <b>${worst.t}</b> ${gzc(worst.z)}时</span></div>
@@ -3601,6 +3631,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   }
   function act(a) {
     if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4), S.coach); S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
+    if (a === 'sharecard') { makeShareCard(); return; }
     if (a === 'guideok') { try { localStorage.setItem('zen-guide-v1', '1'); } catch (e) { } const g = document.querySelector('.bz-guide'); if (g) g.remove(); return; }
     if (a.startsWith('wi:')) { const n = a.slice(3); S.wi = S.wi === n ? null : n; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
     if (a.startsWith('dv:')) { const id = a.slice(3); S.drw = S.drw || {}; S.drw[S.tab] = S.drw[S.tab] === id ? null : id; const dw = document.getElementById('auto-more'); if (!dw) return; const p = dw.querySelector('.bz-drp'); p.innerHTML = ''; dw.querySelectorAll('.bz-drg button').forEach(b => b.classList.toggle('on', b.dataset.act === 'dv:' + S.drw[S.tab])); const c = (dw._cards || []).find(x => x.id === S.drw[S.tab]); if (c) { c.hidden = false; p.appendChild(c); } return; }
