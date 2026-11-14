@@ -19,7 +19,19 @@ const LIST = [
   ['0166', '益纳利', 'Inari', '半导体', '火'], ['0128', '华德科', 'Frontken', '半导体', '火'],
   ['5168', '贺特佳', 'Hartalega', '手套', '木'], ['7113', '顶级手套', 'Top Glove', '手套', '木']
 ];
-const MKT = [['^KLSE', '综合指数 KLCI'], ['MYR=X', '美元兑令吉'], ['^GSPC', '美国标普 500'], ['^HSI', '香港恒生指数']];
+const US = [
+  ['AAPL', '苹果', 'Apple', '科技', '火'], ['MSFT', '微软', 'Microsoft', '科技', '火'], ['NVDA', '英伟达', 'Nvidia', '半导体', '火'], ['AVGO', '博通', 'Broadcom', '半导体', '火'],
+  ['AMD', '超威', 'AMD', '半导体', '火'], ['TSM', '台积电', 'TSMC ADR', '半导体', '火'], ['INTC', '英特尔', 'Intel', '半导体', '火'],
+  ['GOOGL', '谷歌', 'Alphabet', '互联网', '火'], ['META', 'Meta', 'Meta', '互联网', '火'], ['AMZN', '亚马逊', 'Amazon', '电商零售', '土'], ['NFLX', '奈飞', 'Netflix', '媒体娱乐', '火'], ['DIS', '迪士尼', 'Disney', '媒体娱乐', '火'],
+  ['TSLA', '特斯拉', 'Tesla', '汽车', '金'], ['BA', '波音', 'Boeing', '航空制造', '金'],
+  ['BRK-B', '伯克希尔', 'Berkshire Hathaway', '金融', '金'], ['JPM', '摩根大通', 'JPMorgan', '银行', '金'], ['BAC', '美国银行', 'Bank of America', '银行', '金'], ['V', 'Visa', 'Visa', '金融支付', '金'], ['MA', '万事达', 'Mastercard', '金融支付', '金'],
+  ['LLY', '礼来', 'Eli Lilly', '医疗', '木'], ['UNH', '联合健康', 'UnitedHealth', '医疗', '木'], ['JNJ', '强生', 'Johnson & Johnson', '医疗', '木'], ['PFE', '辉瑞', 'Pfizer', '医疗', '木'],
+  ['XOM', '埃克森美孚', 'Exxon Mobil', '油气', '火'], ['CVX', '雪佛龙', 'Chevron', '油气', '火'],
+  ['WMT', '沃尔玛', 'Walmart', '零售', '土'], ['COST', '好市多', 'Costco', '零售', '土'], ['HD', '家得宝', 'Home Depot', '零售', '土'], ['MCD', '麦当劳', "McDonald's", '餐饮', '火'],
+  ['KO', '可口可乐', 'Coca-Cola', '饮料', '水'], ['PEP', '百事', 'PepsiCo', '饮料', '水'], ['PG', '宝洁', 'Procter & Gamble', '日用品', '水'], ['NKE', '耐克', 'Nike', '服饰', '木'],
+  ['SPY', '标普500 ETF', 'SPDR S&P 500', 'ETF', '金'], ['QQQ', '纳指100 ETF', 'Invesco QQQ', 'ETF', '火']
+];
+const MKT = [['^KLSE', '综合指数 KLCI'], ['MYR=X', '美元兑令吉'], ['^GSPC', '美国标普 500'], ['^HSI', '香港恒生指数'], ['^IXIC', '纳斯达克'], ['^DJI', '道琼斯'], ['^VIX', '恐慌指数 VIX'], ['^TNX', '美国 10 年期国债收益率']];
 const UA = { 'User-Agent': 'Mozilla/5.0 (compatible; zen-bazi-data/1.0)' };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const r2 = x => x == null || !isFinite(x) ? null : Math.round(x * 1000) / 1000;
@@ -37,7 +49,8 @@ async function chart(sym) {
   const q = res.indicators.quote[0], t = res.timestamp || [], rows = [];
   for (let i = 0; i < t.length; i++) if (q.close[i] != null) rows.push([new Date(t[i] * 1000).toISOString().slice(0, 10), r2(q.close[i]), q.volume ? q.volume[i] || 0 : 0]);
   const divs = Object.values((res.events && res.events.dividends) || {}).map(d => [new Date(d.date * 1000).toISOString().slice(0, 10), r2(d.amount)]).sort();
-  return { cur: res.meta.currency, d: rows.map(x => x[0]), c: rows.map(x => x[1]), v: rows.map(x => x[2]), div: divs };
+  const R = rows.slice(-470);
+  return { cur: res.meta.currency, d: R.map(x => x[0]), c: R.map(x => x[1]), v: R.map(x => x[2]), div: divs.filter(d => d[0] >= R[0][0]) };
 }
 async function fund(sym) {
   const types = ['trailingPeRatio', 'trailingPbRatio', 'trailingMarketCap', 'annualTotalRevenue', 'annualNetIncome', 'annualDilutedEPS', 'annualTotalDebt', 'annualStockholdersEquity'];
@@ -52,12 +65,18 @@ async function fund(sym) {
   return out;
 }
 
-const out = { updated: new Date().toISOString(), source: 'Yahoo Finance', market: {}, stocks: {} };
+const out = { updated: new Date().toISOString(), source: 'Yahoo Finance', market: {}, stocks: {}, us: {} };
 for (const [sym, name] of MKT) { const c = await chart(sym); if (c) out.market[sym] = { name, ...c }; await sleep(400); }
 for (const [code, zh, en, sector, el] of LIST) {
   const sym = code + '.KL', c = await chart(sym); await sleep(400);
   const f = await fund(sym); await sleep(400);
   if (c && c.c.length > 60) out.stocks[code] = { zh, en, sector, el, ...c, f };
+  console.log(code, en, c ? c.c.length : 'no chart', Object.keys(f).length, 'fund fields');
+}
+for (const [code, zh, en, sector, el] of US) {
+  const c = await chart(code); await sleep(400);
+  const f = sector === 'ETF' ? {} : await fund(code); await sleep(400);
+  if (c && c.c.length > 60) out.us[code] = { zh, en, sector, el, ...c, f };
   console.log(code, en, c ? c.c.length : 'no chart', Object.keys(f).length, 'fund fields');
 }
 mkdirSync('data', { recursive: true });
