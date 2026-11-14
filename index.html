@@ -412,7 +412,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-trip{grid-template-columns:1fr!important}.tpn{cursor:pointer;outline:none}.tpn circle{transition:all .2s}.tpn:hover circle,.tpn:focus circle{stroke:var(--gold2);stroke-width:2}.tpn.on circle{fill:rgba(212,175,55,.45);stroke:#ffe08a;stroke-width:2.5}
 .tpn circle:not(.top){animation:tpglow 2.4s ease-in-out infinite}@keyframes tpglow{50%{stroke:rgba(255,224,138,.9)}}@media (prefers-reduced-motion:reduce){.tpn circle{animation:none}}
 .bz-tphint{color:var(--gold2);font-size:12.5px!important;opacity:.95}.bz-tri3i:not([hidden]){animation:tkopen .35s ease-out}
-.bz-tri3i[hidden]{display:none!important}
+.bz-tri3i[hidden]{display:none!important}.bz-tri3fix{margin:8px 0;border-color:rgba(212,175,55,.55)!important;background:rgba(212,175,55,.07)!important}.bz-tri3fix.flash{animation:tkopen .35s ease-out}
 .bz-astw{display:block;width:100%;max-width:280px;margin:0 auto 8px}.bz-astw text{text-anchor:middle;dominant-baseline:central;fill:var(--gold2);font-size:14px;font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols",serif}.bz-astw text.on{fill:#fff;font-size:17px}.bz-astw text.lb{font-size:8px;fill:#ddd;font-family:inherit}.bz-astw text.c{font-size:15px;fill:#fff;font-weight:700;font-family:"Songti SC",serif}.bz-astw text.c2{font-size:9px;fill:#bbb;font-family:inherit}
 .bz-banner{padding:16px 16px 14px!important}.bz-title{font-size:20px!important;margin:6px 0 4px!important;letter-spacing:2px}.bz-sub{font-size:12.5px!important;line-height:1.6;opacity:.85;margin:0!important}.bz-taiji{width:110px!important;height:110px!important;opacity:.35}
 .bz-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding:0;margin-bottom:10px}
@@ -2942,7 +2942,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       const io = tE === tF ? `内外都是 ${tE}：私下和在外表现一致，真诚、容易让人信任；但也少了切换，累的时候要留给自己独处的空间。`
         : `内在 ${tE}（${K(tE)}）、外在 ${tF}（${K(tF)}）：私下与在外是两种模式。好处是能适应不同场合，提醒是别让外在的「${K(tF)}」压过内心真正需要的「${K(tE)}」。`;
       P.push(['主', tG, `主命数 · ${K(tG)}`, '以上各面汇合成的核心生命课题', n => `${T[n][1]}。功课：${T[n][2]}。开运钥匙：${T[n][3]}。`]);
-      return `<div class="bz-trip">${P.map(([w, n, t, d, f], i) => `<div class="bz-tri3i" data-tp="${i}" hidden><span class="bz-tri3k">${n}</span><div><b>${t}</b><small>${d}</small><p>${f(n)}</p></div></div>`).join('')}</div>
+      const [, mn, mt, md, mf] = P[6];
+      return `<div class="bz-tri3i bz-tri3fix" id="bz-mainnum"><span class="bz-tri3k">${mn}</span><div><b>${mt}</b><small>${md}</small><p>${mf(mn)}</p></div></div><div class="bz-trip">${P.slice(0, 6).map(([w, n, t, d, f], i) => `<div class="bz-tri3i" data-tp="${i}" hidden><span class="bz-tri3k">${n}</span><div><b>${t}</b><small>${d}</small><p>${f(n)}</p></div></div>`).join('')}</div>
         <div class="bz-3"><div class="bz-3i"><i>⚖️</i><div><b>内外对照</b><span>${io}</span></div></div>
         ${rep.length ? `<div class="bz-3i"><i>🔁</i><div><b>重复数字</b><span>${rep.map(([n, c]) => `${n} 出现 ${c} 次`).join('、')}：这些特质在你身上被放大，${rep.map(([n]) => `${n} 的「${T[n][1].split('、')[0]}」是你最大的本钱，也要留意「${T[n][2].split('，')[0]}」`).join('；')}。</span></div></div>` : ''}
         <div class="bz-3i"><i>🎯</i><div><b>整合到主命数 ${tG}</b><span>以上各面最后都汇成「${K(tG)}」。专业提示：${T[tG][3]}；当内在 ${tE} 与外在 ${tF} 都被照顾到，${K(tG)}的力量才会完全发挥。</span></div></div></div>`; })()}
@@ -3437,7 +3438,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   function act(a) {
     if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4), S.coach); S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (a.startsWith('tp:')) { const k = a.slice(3), box = document.querySelector('#n-code'); if (!box) return; const cur = box.querySelector(`.bz-tri3i[data-tp="${k}"]`), was = cur && !cur.hidden;
-      box.querySelectorAll('.bz-tri3i').forEach(x => x.hidden = true); box.querySelectorAll('.tpn').forEach(x => x.classList.remove('on'));
+      box.querySelectorAll('.bz-tri3i[data-tp]').forEach(x => x.hidden = true); box.querySelectorAll('.tpn').forEach(x => x.classList.remove('on'));
+      if (!cur) { const m = document.getElementById('bz-mainnum'); if (m) { m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
       if (cur && !was) { cur.hidden = false; box.querySelector(`.tpn[data-act="tp:${k}"]`).classList.add('on'); cur.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
       const h = box.querySelector('.bz-tphint'); if (h) h.style.display = cur && !was ? 'none' : ''; return; }
     if (a.startsWith('info:')) { openSheet(a.slice(5)); return; }
