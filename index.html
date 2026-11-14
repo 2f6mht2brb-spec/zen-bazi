@@ -2878,7 +2878,6 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       + catsGrid(d.p.d, d.s)
       + oneEvent(ch, d)
       + dayWord(ch, d)
-      + card('d-other', '宜忌与开运', `<dl class="bz-kv"><dt>宜</dt><dd>${yj.yi}</dd><dt>忌</dt><dd>${yj.ji}</dd><dt>幸运色</dt><dd>${A.COLOR[ch.yong]}</dd><dt>吉方位</dt><dd>${A.DIR[ch.yong]}</dd><dt>幸运数字</dt><dd>${A.NUM[ch.yong].join('、')}</dd></dl>`)
       + drawer('d-more', [['🎭', '喜怒哀乐', sceneCard('d-scene', '人间百态 · 今日喜怒哀乐', d.p.d, d.s, d.notes)], ['🔥', '五行', wxCard('d-wx', '五行能量', A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]))], ['☯', '十神', ssCard('d-ss', '十神', d.p.d)], ['🐲', '生肖', zodiacCard('d-sx', '今日生肖', d.p.d[1], false, '今日 · 日支生肖')], ['🌾', '节气', jqCard(d.date)], ['🍵', '养生', tcmDayCard(d)], ['☷', '易经', guaCard('d-gua', '易经 · 值日卦（卦气）', A.qiGua(S.B, d.date), '值日卦按汉代孟喜、京房的“卦气”取：从冬至的中孚卦起，六十卦每卦约值六天，所以连续几天会是同一卦。', G.indexOf(d.p.d[0]) + Z.indexOf(d.p.d[1]) + 2 + +d.date.slice(8))], ['🧭', '方位', compassCard(d.p.d)]]);
   }
   function vWeek() {
@@ -3229,7 +3228,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   function vLove() {
     const ch = S.ch, ty = S.B.syOf(TODAY); const L = ZEN_L.analyse(ch, S.B, E, ty, ty + 15);
     const male = ch.inp.gender === '男';
-    let html = `<div class="bz-card bz-hero"><div><div class="bz-namebig">♡</div><div class="bz-muted">${male ? '男命 · 财为妻星' : '女命 · 官为夫星'}</div></div><div><h2>感情婚姻总览</h2><p>${L[0].items[0].t}夫妻宫（日支）是${gzc(ch.P.d[1])}，${L[1].items[0].t}</p></div></div>`;
+    let html = `<div class="bz-card bz-hero"><div><div class="bz-namebig">♡</div><div class="bz-muted">${male ? '男命 · 财为妻星' : '女命 · 官为夫星'}</div></div><div><h2>感情婚姻总览</h2><p>配偶星、夫妻宫、桃花三方面看你的姻缘，下面逐张说明；想看适合的对象和婚恋时机，点「更多锦囊」。</p></div></div>`;
     L.forEach(sec => {
       if (sec.years) { html += card('lv-time', '婚恋时机（未来 15 年）', `<ul class="bz-kys">${sec.years.map(k => `<li data-act="ln:${k.y}"><div class="bz-kyy"><b>${k.y}</b><small>${gzc(k.gz)}</small></div><div>${k.tg.map(([tn, t]) => `<div class="bz-kyt bz-d-${tn}"><b>${t}</b><span>${{ 红鸾: '传统主婚恋喜事的星，利恋爱、结婚。', 天喜: '主喜庆，利订婚、结婚、添丁。', 妻星透出: '妻星出现在流年天干，利恋爱、结婚。', 夫星透出: '夫星出现在流年天干，利恋爱、结婚。', 合夫妻宫: '流年与夫妻宫相合，感情升温、关系推进。', 桃花年: '异性缘旺，单身者机会多；有伴者守分寸。', 冲夫妻宫: '感情或家庭易起波动，多沟通、多陪伴。' }[t]}</span></div>`).join('')}</div></li>`).join('')}</ul>` + (sec.dys.length ? `<p class="bz-tip">利于感情的大运：${sec.dys.map(gzc).join('、')}。</p>` : '') + '<p class="bz-muted">点年份看那一年的流年运程。</p>', 'bz-kycard'); return; }
       html += card('lv-' + sec.title, sec.title, `<ul class="bz-dlist">${sec.items.map(i => `<li class="bz-d-${i.tone}">${i.h ? `<b>${gzc(i.h)}</b>` : ''}<span>${esc(i.t)}</span></li>`).join('')}</ul>`);
@@ -3425,8 +3424,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const good = srt.filter(x => x.ok).slice(0, 3), bad = srt.filter(x => !x.ok).slice(-3).reverse();
     const seg = `<div class="bz-seg">${['日', '月', '年'].map(k => `<button class="${k === md ? 'bz-on' : ''}" data-act="wm:${k}">按${k}</button>`).join('')}</div>`;
     let html = seg + hero(`${unit}工作运`, s[1], A.level(s[1]), `<h2>${when}</h2>`, [
-      `<p><b class="bz-good">宜：</b>${good.map(x => x.ic + x.n.split(' · ')[0]).join('、') || '—'}</p>`,
-      `<p><b class="bz-bad">慎：</b>${bad.map(x => x.ic + x.n.split(' · ')[0]).join('、') || '无明显凶项'}</p>`]);
+      `<p>${unit}工作运${A.level(s[1])}。下面分「较顺可做」和「宜避」两组，点任何一项看原因和建议。</p>`]);
     const half = Math.ceil(srt.length / 2), GA = srt.slice(0, half), GB = srt.slice(half), wi = S.wi && L.find(x => x.n === S.wi);
     const chip = x => `<button type="button" class="bz-wc ${S.wi === x.n ? 'on' : ''}" data-act="wi:${x.n}"><i>${x.ic}</i><span>${x.n.split(' · ')[0]}</span></button>`;
     html += card('w-items', `${unit}工作事项吉凶`, `<div class="bz-w2">
