@@ -2393,7 +2393,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
   const GROUPS = [
     ['fort', '☯\uFE0E', '运程', '今日·周·月·年', [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']]],
-    ['ming', '❖', '命盘', '本命·运势·亲缘', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲'], ['love', '配偶', '♡'], ['kids', '子女', '☺'], ['parents', '父母', '⌂'], ['other', '其他', '⋯']]],
+    ['ming', '❖', '命盘', '本命·运势·亲缘', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲'], ['love', '配偶', '♡'], ['kids', '子女', '☺'], ['parents', '父母', '⌂'], ['ances', '祖先', '⛩\uFE0E'], ['other', '其他', '⋯']]],
     ['qiu', '✧', '求事', '财运·事业·股票', [['wealth', '财运', '¥'], ['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['stock', '股票', '⇡'], ['lotto', '万字', '萬'], ['number', '好数', '#']]],
     ['tan', '✶', '探索', '生肖·星象·本心', [['zodiac', '生肖', '◎'], ['astro', '星象', '✶'], ['mbti', '本心', '◑'], ['life', '开运', '❀']]]];
   const GOF = k => (GROUPS.find(g => g[4].some(s => s[0] === k)) || GROUPS[0]);
@@ -2442,6 +2442,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     love: ['月老 · 红线卷', '姻缘天定，经营在人', '执子之手，与子偕老。', '《诗经 · 邶风 · 击鼓》'],
     kids: ['子女 · 传家卷', '取意“养不教，父之过”', '教子一艺，胜于千金。', '民间谚语'],
     parents: ['父母 · 孝亲卷', '取意《孝经》', '身体发肤，受之父母。', '《孝经》'],
+    ances: ['祖先 · 慎终卷', '取意《论语》', '慎终追远，民德归厚矣。', '《论语 · 学而》'],
     other: ['命盘 · 补遗卷', '十神 · 五行 · 体质 · 运程表', '观天之道，执天之行。', '《黄帝阴符经》'],
     lotto: ['万字 · 求签卷', '取意民间求字', '心诚则灵，量力而为。', '求字之道'],
     stock: ['股市 · 货殖卷', '取意《史记 · 货殖列传》', '贵出如粪土，贱取如珠玉。', '《史记 · 货殖列传》'],
@@ -2485,7 +2486,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     document.documentElement.classList.add('bz-tr');
   }
   const EN = { 运程: 'Fortune', '今日·周·月·年': 'Day to Year', 命盘: 'Destiny', '本命·运势·亲缘': 'Chart & Family', 求事: 'Pursuits', '财运·事业·股票': 'Money & Work', 探索: 'Explore', '生肖·星象·本心': 'Stars & Self',
-    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 其他: 'More', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 配偶: 'Spouse', 子女: 'Children', 父母: 'Parents', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
+    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 其他: 'More', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 配偶: 'Spouse', 祖先: 'Ancestors', 子女: 'Children', 父母: 'Parents', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
     人缘: 'People', 财富: 'Wealth', 健康: 'Health', 感情: 'Love', 感情家庭: 'Love & Family', '☼ 活在当下': '☼ Now' };
   const isEN = () => curLang() === 'en';
   const TX = s => isEN() && EN[s] ? `<span class="notranslate" translate="no">${EN[s]}</span>` : s;
@@ -3307,6 +3308,27 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     cards += card(K ? 'fk-add' : 'fp-add', K ? '加入孩子 · 看亲子缘' : '加入父母 · 看亲缘', `<form id="bz-famform" data-kind="${kind}" class="bz-famf"><input name="fn" maxlength="16" placeholder="称呼（可不填）"><select name="fr" aria-label="关系">${rel.map(r => `<option>${r}</option>`).join('')}</select><input type="date" name="fd" required min="1900-01-01" max="${TODAY}" aria-label="出生日期"><select name="fs" aria-label="出生时辰"><option value="">时辰不详</option>${SHI.map((s, i) => `<option value="${i}">${s[0]}</option>`).join('')}</select><button type="submit">加入</button></form>${rows || '<p class="bz-muted">还没有加入。资料只保存在这台设备里。</p>'}`);
     return hero(K ? '子女缘' : '父母缘', F.score, A.level(F.score), `<h2>${K ? '子女 · 亲子缘' : '父母 · 孝亲缘'}</h2>`, lines) + cards + '<p class="bz-muted">按八字子女星、父母星与宫位简化推算，仅供参考；亲情最终靠陪伴与沟通。</p>';
   }
+  function vAnces() {
+    const ch = S.ch, ty = S.B.syOf(TODAY), [yg, yz] = ch.P.y, mz = ch.P.m[1], dz = ch.P.d[1];
+    const tg = E.tenGod(ch.dm, yg), hid = [...E.HID[yz]], tz = E.tenGod(ch.dm, hid[0]), lg = ch.label(E.elOf(yg)), lz = ch.label(E.elOf(yz));
+    const good = l => l === '用' || l === '喜', LBV = { 用: 14, 喜: 8, 平: 0, 忌: -10 };
+    let sc = 58 + LBV[lg] + LBV[lz]; if (E.chong(yz, mz)) sc -= 6; if (E.chong(yz, dz)) sc -= 6; if (E.LIUHE[yz] === mz || E.LIUHE[yz] === dz) sc += 5; sc = Math.max(20, Math.min(95, Math.round(sc)));
+    const GM = { 比: '祖上家族人丁兴旺、重情义，亲戚往来多。', 食: '祖上有手艺或才艺，懂得生活，福气厚。', 财: '祖上有家业或田产，善于经营持家。', 官: '祖上有名望、讲规矩，家风正。', 印: '祖上重读书、有学问或信仰，家教好。' };
+    const g1 = E.GRP[tg], g2 = E.GRP[tz];
+    const yin = good(lg) && good(lz) ? '祖荫深厚：年柱天干地支都是你的喜用，祖上的福气能直接帮到你，越亲近家族根源越顺。' : good(lg) || good(lz) ? '祖荫有助：年柱一半是喜用，祖上的福气对你有帮助，适度传承家风会有好处。' : lg === '忌' && lz === '忌' ? '靠自己打拼：年柱是忌神，祖上帮助有限，宜白手起家，你会成为家族中开创的一代。' : '祖荫平平：靠自己的努力为主，饮水思源、尊重家族即可。';
+    const rel = [E.chong(yz, mz) && '年月相冲：早年可能离开家乡或祖居地，与祖籍联系较淡。', E.chong(yz, dz) && '年日相冲：成年后多在外发展，和老家距离较远。', (E.LIUHE[yz] === mz || E.LIUHE[yz] === dz) && '年柱与月/日相合：和家族联系紧密，家族长辈对你照顾。'].filter(Boolean);
+    const j = (l, y, m, d) => E.ymdFromJdn(Math.floor(E.findLon(l, E.jd(y, m, d, 0)) + 0.5 + 8 / 24)).map((v, i) => i ? String(v).padStart(2, '0') : v).join('-');
+    const qm = [ty, ty + 1].map(y => j(15, y, 4, 4)).find(d => d >= TODAY), dzd = [ty, ty + 1].map(y => j(270, y, 12, 21)).find(d => d >= TODAY);
+    const days = [['清明', qm, '扫墓、献花、整理祖坟'], ['冬至', dzd, '家中祭祖、团圆吃饭']].sort((a, b) => a[1] < b[1] ? -1 : 1);
+    const ys = []; for (let y = ty; y <= ty + 12; y++) { const x = S.B.yearOf(y); if (!x) continue; const t = []; if (E.chong(x.gz[1], yz)) t.push(['冲年柱 · 宜回乡祭祖、关心族中长辈', 'bad']); if (E.LIUHE[x.gz[1]] === yz) t.push(['合年柱 · 家族团聚、续族谱的好年', 'good']); if (x.gz[1] === yz) t.push(['值年柱 · 宜修缮祖居或祖坟', 'good']); if (t.length) ys.push({ y, gz: x.gz, t }); }
+    const dir = A.DIR[E.elOf(yz)];
+    return hero('祖荫', sc, A.level(sc), '<h2>祖先 · 根源与传承</h2>', [`<p>${yin}</p>`])
+      + card('an-pil', '祖上宫 · 年柱', `<dl class="bz-kv"><dt>年柱</dt><dd>${gzc(ch.P.y)}（天干${tg}，地支本气${tz}）</dd><dt>祖上特点</dt><dd>${GM[g1]}${g2 !== g1 ? GM[g2] : ''}</dd>${rel.length ? `<dt>与家族</dt><dd>${rel.join('<br>')}</dd>` : ''}</dl>`)
+      + card('an-days', '慎终追远 · 祭祖时节', `<div class="bz-fyrs">${days.map(([n, d, t]) => `<button type="button" data-act="day:${d}"><b>${n}</b><small>${A.md(d)} 周${S.B.day(d).wd}</small><i>${t}</i></button>`).join('')}</div><p class="bz-small">年柱地支属${gzc(E.elOf(yz))}，祭祖或安放祖先牌位宜朝${dir}方。中元节（农历七月十五）也可追思。</p>`)
+      + (ys.length ? card('an-years', '与祖先相关的年份', `<div class="bz-fyrs">${ys.map(x => `<button type="button" data-act="ln:${x.y}"><b>${x.y}</b><small>${gzc(x.gz)}</small>${x.t.map(([t, c]) => `<i class="${c === 'good' ? 'bz-good' : 'bz-bad'}">${t}</i>`).join('')}</button>`).join('')}</div><p class="bz-small">点年份看那一年的流年运程。</p>`) : '')
+      + card('an-do', '传承家风 · 可以做的事', `<ul class="bz-tcml"><li>📜 问长辈祖籍、家族故事，整理成一份家谱。</li><li>🕯 清明、冬至抽时间祭祖，带孩子一起去。</li><li>🍵 把祖上传下来的一样好习惯，用在自己家里。</li><li>🙏 感恩祖先，也善待在世的长辈。</li></ul>`)
+      + '<p class="bz-muted">按年柱（祖上宫）简化推算，仅供参考。</p>';
+  }
   function vLove() {
     const ch = S.ch, ty = S.B.syOf(TODAY); const L = ZEN_L.analyse(ch, S.B, E, ty, ty + 15);
     const male = ch.inp.gender === '男';
@@ -3696,7 +3718,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     setH(app.querySelector('#bz-tabs'), GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${TX(n)}</span><small>${TX(cap)}</small></button>`).join(''));
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { kids: () => vFam('kids'), parents: () => vFam('parents'), other: vOther, lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { ances: vAnces, kids: () => vFam('kids'), parents: () => vFam('parents'), other: vOther, lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
