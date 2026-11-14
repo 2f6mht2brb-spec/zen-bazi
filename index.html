@@ -504,11 +504,11 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-tr .bz-gtab{padding:8px 4px!important;min-width:0}.bz-tr .bz-gtab span{font-size:14px!important;line-height:1.15!important;white-space:normal!important;display:block;text-align:center}.bz-tr .bz-gtab small{font-size:10px!important;line-height:1.2!important;white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;max-width:100%}
 .bz-tr #bz-sub button{min-width:0;padding-left:4px!important;padding-right:4px!important}.bz-tr #bz-sub button span,.bz-tr #bz-sub button{font-size:13px!important;line-height:1.15!important;white-space:normal!important;text-align:center}
 .bz-tr .bz-today,.bz-tr .bz-nav button{white-space:normal!important;font-size:13px!important;line-height:1.15!important}
-.bz-tr .bz-namebig{font-size:clamp(26px,8vw,40px)!important;line-height:1.15!important}.bz-tr .bz-cname{font-size:clamp(22px,6.5vw,30px)!important}
+.bz-tr .bz-namebig{font-size:clamp(26px,8vw,40px)!important;line-height:1.15!important}.bz-tr .bz-cname{font-size:clamp(22px,6.5vw,30px)!important;padding-left:2px}
 .bz-tr #bz-view h2,.bz-tr .bz-card h2{font-size:clamp(17px,5vw,22px)!important;line-height:1.25!important}.bz-tr .bz-card h3{line-height:1.3!important}
 .bz-tr .bz-who{flex-wrap:wrap;row-gap:6px}.bz-tr .bz-edit,.bz-tr .bz-lang{white-space:nowrap}
 .bz-tr .bz-cati small{font-size:10px!important;line-height:1.1;text-align:center}.bz-tr .bz-catrow{gap:4px}
-.bz-tr .bz-cati small,.bz-tr .bz-gtab span,.bz-tr #bz-sub button,.bz-tr .bz-today,.bz-tr .bz-edit,.bz-tr #zen h1,.bz-tr #zen h2,.bz-tr #zen h3,.bz-tr #zen h4,.bz-tr #zen h5,.bz-tr #zen h6,.bz-tr #zen dt,.bz-tr #zen summary,.bz-tr #zen button,.bz-tr #zen .bz-ev-tag,.bz-tr #zen .bz-catd b,.bz-tr #zen .bz-gjgrid small,.bz-tr #zen .bz-gjyj small,.bz-tr #zen .bz-hs,.bz-tr #zen .bz-lvtag,.bz-tr #zen label{text-transform:capitalize}.bz-tr .bz-gtab small::first-letter,.bz-tr #zen p::first-letter,.bz-tr #zen li::first-letter,.bz-tr #zen dd::first-letter,.bz-tr #zen .bz-ev-title::first-letter,.bz-tr #zen .bz-ev-tip::first-letter{text-transform:uppercase}</style>
+.bz-tr .bz-cati small,.bz-tr .bz-gtab span,.bz-tr #bz-sub button,.bz-tr .bz-today,.bz-tr .bz-edit,.bz-tr #zen h1,.bz-tr #zen h2,.bz-tr #zen h3,.bz-tr #zen h4,.bz-tr #zen h5,.bz-tr #zen h6,.bz-tr #zen dt,.bz-tr #zen summary,.bz-tr #zen button,.bz-tr #zen .bz-ev-tag,.bz-tr #zen .bz-catd b,.bz-tr #zen .bz-gjgrid small,.bz-tr #zen .bz-gjyj small,.bz-tr #zen .bz-hs,.bz-tr #zen .bz-lvtag,.bz-tr #zen label{text-transform:capitalize}.bz-tr .bz-gtab small::first-letter,.bz-tr #zen p::first-letter,.bz-tr #zen li::first-letter,.bz-tr #zen dd::first-letter,.bz-tr #zen .bz-ev-title::first-letter,.bz-tr #zen .bz-ev-tip::first-letter{text-transform:uppercase}.bz-tr .bz-cname{letter-spacing:.04em!important;font-style:normal}.bz-tr .bz-who{align-items:center}.bz-tr .bz-gtab small{text-transform:none!important}</style>
 </head>
 <body>
 <div class="bz" id="zen">
@@ -2326,7 +2326,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const ELC = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
   const isGZ = c => G.includes(c) || Z.includes(c);
-  const gzc = s => [...String(s)].map(c => isGZ(c) ? `<span class="e-${ELC[elOf(c)]}">${c}</span>` : (ELC[c] ? `<span class="e-${ELC[c]}">${c}</span>` : esc(c))).join('');
+  const PY = { 甲: 'Jia', 乙: 'Yi', 丙: 'Bing', 丁: 'Ding', 戊: 'Wu', 己: 'Ji', 庚: 'Geng', 辛: 'Xin', 壬: 'Ren', 癸: 'Gui', 子: 'Zi', 丑: 'Chou', 寅: 'Yin', 卯: 'Mao', 辰: 'Chen', 巳: 'Si', 午: 'Wu', 未: 'Wei', 申: 'Shen', 酉: 'You', 戌: 'Xu', 亥: 'Hai' }, ELN = { 木: 'Wood', 火: 'Fire', 土: 'Earth', 金: 'Metal', 水: 'Water' };
+  const TLG = (document.cookie.match(/googtrans=\/[^/]+\/([^;]+)/) || [])[1] || '', PYM = ['en', 'ms', 'ta'].includes(TLG), NT = TLG ? ' notranslate" translate="no' : '';
+  const gzk = s => [...String(s)].map(c => isGZ(c) ? `<span class="e-${ELC[elOf(c)]}${NT}">${c}</span>` : esc(c)).join('');
+  const gzc = s => { const a = [...String(s)]; return a.map((c, i) => { if (isGZ(c)) return PYM ? `<span class="e-${ELC[elOf(c)]}${NT}">${PY[c]}</span>${isGZ(a[i + 1] || '') ? ' ' : ''}` : `<span class="e-${ELC[elOf(c)]}${NT}">${c}</span>`;
+    if (ELC[c]) return TLG === 'en' ? `<span class="e-${ELC[c]}${NT}">${ELN[c]}</span>` : `<span class="e-${ELC[c]}">${c}</span>`; return esc(c); }).join(''); };
   const lvc = lv => String(lv).includes('凶') ? 'bz-bad' : 'bz-good';
   const col = x => x >= 76 ? '#2fbf71' : x >= 56 ? '#4cd38a' : x >= 51 ? '#8fd9ad' : x >= 21 ? '#ff8a73' : x >= 6 ? '#ff6b6b' : '#d43a3a';
   const CN = A.CN, CATN = ['事业', '人缘', '财富', '健康', '感情家庭'];
@@ -2400,8 +2404,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     'l-mastery': '修行卷', 'l-coach': '教练', 'l-career': '事业', 'l-food': '养生', 'l-home': '居家风水', 'l-travel': '远行', 'l-love': '姻缘', 'mb-bz': '性理'
   };
   const scrollHead = k => { const s = SCROLL[k]; return s ? `<div class="bz-scroll">${ZEN_ART.svg(k, 'za-bg')}${ZEN_ART.corner.replace('za-corner', 'za-corner tl')}${ZEN_ART.corner.replace('za-corner', 'za-corner br')}<div class="bz-scroll-t">${s[0]}</div><div class="bz-scroll-s">${s[1]}</div><div class="bz-scroll-q">「${s[2]}」<span>—— ${s[3]}</span></div></div>` : ''; };
-  const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? (/^[\x00-\x7F]+$/.test(n) ? `${n.toUpperCase()} 的` : `${n}的`) : ''; };
-  const siteTitle = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${/^[\x00-\x7F]+$/.test(n) ? n.toUpperCase() : n} 八字秘笈` : '八字秘笈'; };
+  const ownerName = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? (/^[\x00-\x7F]+$/.test(n) ? `${n} 的` : `${n}的`) : ''; };
+  const siteTitle = () => { const n = ((S.inp && S.inp.name) || '').trim(); return n ? `${n} 八字秘笈` : '八字秘笈'; };
   const card = (id, title, body, cls = '') => `<div class="bz-card ${cls}" id="${id}">${title ? `<h2>${XUAN[id] ? `<span class="bz-xn">${XUAN[id]}</span>` : ''}${title}</h2>` : ''}${body}</div>`;
   const scoreCat = (label, s, lv, tip, long) => `<div class="bz-card bz-cat"><h3><span>${label}</span><span class="bz-num ${lvc(lv)}">${s}<span class="bz-lvtag ${lvc(lv)}">${lv}</span></span></h3><div class="bz-track"><div class="bz-fill" style="width:${s}%;background:${col(s)}"></div></div>${tip ? `<p class="${long ? 'bz-long' : 'bz-tip'}">${tip}</p>` : ''}</div>`;
   const gauge = (s, lv) => { const R = 44, L = Math.PI * 1.5 * R, v = Math.max(0, Math.min(100, s)) / 100 * L, c = col(s);
@@ -2426,6 +2430,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     人缘: 'People', 财富: 'Wealth', 健康: 'Health', 感情: 'Love', 感情家庭: 'Love & Family', '☼ 活在当下': '☼ Now' };
   const isEN = () => curLang() === 'en';
   const TX = s => isEN() && EN[s] ? `<span class="notranslate" translate="no">${EN[s]}</span>` : s;
+  const setH = (el, h) => { if (el && el._h !== h) { el._h = h; el.innerHTML = h; } };
+  let rtT = 0;
+  const reTr = () => { if (!TLG) return; clearTimeout(rtT); rtT = setTimeout(() => { const c = document.querySelector('.goog-te-combo'); if (c) { c.value = TLG; c.dispatchEvent(new Event('change')); } }, 250); };
   const CATI = ['💼', '🤝', '💰', '🩺', '❤️'], CATS2 = ['事业', '人缘', '财富', '健康', '感情'];
   let catSeq = 0;
   const catsGrid = (gz, s, longFn) => { const id = 'ct' + (catSeq++), tips = CATS.map((k, i) => longFn ? longFn(k, s[i + 1]) : A.reasonFor(S.ch, k, gz));
@@ -2440,9 +2447,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const row = (label, f) => `<tr><th>${label}</th>${cols.map(c => `<td class="${c[2] ? 'bz-dyn' : ''}">${c[1] ? f(c) : '—'}</td>`).join('')}</tr>`;
     return `<div class="bz-tablewrap"><table class="bz-pan"><thead><tr><th></th>${head}</tr></thead><tbody>
       ${row('十神', c => c[3] ? B(`dm|${c[0]}|${c[1]}`, '日主') : B(`ss|${c[0]}|${c[1]}`, tenGod(ch.dm, c[1][0])))}
-      ${row('天干', c => B(`stem|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzc(c[1][0])}</div>`))}
-      ${row('地支', c => B(`branch|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzc(c[1][1])}</div>`))}
-      ${row('藏干', c => HID[c[1][1]].split('').map((h, i) => B(`hid|${c[0]}|${c[1]}|${h}|${i}`, `${gzc(h)}<small>${tenGod(ch.dm, h)}</small>`)).join(''))}
+      ${row('天干', c => B(`stem|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzk(c[1][0])}</div>`))}
+      ${row('地支', c => B(`branch|${c[0]}|${c[1]}`, `<div class="bz-gzc">${gzk(c[1][1])}</div>`))}
+      ${row('藏干', c => HID[c[1][1]].split('').map((h, i) => B(`hid|${c[0]}|${c[1]}|${h}|${i}`, `${gzk(h)}<small>${tenGod(ch.dm, h)}</small>`)).join(''))}
       ${row('星运', c => B(`cs|${c[0]}|${c[1]}`, changsheng(ch.dm, c[1][1])))}</tbody></table></div><p class="bz-hint">☝ 点表里任何一格，看详细解读</p>`;
   }
   // ---------- 点格解读 ----------
@@ -3122,7 +3129,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const ch = S.ch, i = S.inp; const d = S.B.day(TODAY);
     const P = ch.P; const hourTxt = i.time ? i.time : (i.shichen != null ? SHI[i.shichen][0].split(' ')[0] : '时辰不详');
     return `<svg class="bz-taiji" viewBox="-52 -52 104 104" aria-hidden="true"><circle r="50" fill="none" stroke="#f5d77a" stroke-width="1.5"/><path d="M0,-50 A50,50 0 0,1 0,50 A25,25 0 0,1 0,0 A25,25 0 0,0 0,-50Z" fill="#f5d77a"/><circle cy="-25" r="7" fill="#f5d77a"/><circle cy="25" r="7" fill="#2a1846"/></svg>
-      <div class="bz-who"><span class="bz-cname">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button>${langSel()}<button class="bz-edit bz-fbtn" data-act="files">📁 档案${S.files && S.files.length > 1 ? ` · ${S.files.length}` : ''}</button></div>
+      <div class="bz-who"><span class="bz-cname notranslate" translate="no">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button>${langSel()}<button class="bz-edit bz-fbtn" data-act="files">📁 档案${S.files && S.files.length > 1 ? ` · ${S.files.length}` : ''}</button></div>
       <div class="bz-birth"><span><b>阳历</b>${i.y}年${i.m}月${i.d}日 · ${esc(hourTxt)}</span></div>
       <h1 class="bz-title">${esc(siteTitle())}</h1>
       <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}</p>`;
@@ -3480,21 +3487,21 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       app.querySelector('#bz-main').hidden = true; updUR(); return;
     }
     app.querySelector('#bz-formwrap').hidden = true; app.querySelector('#bz-main').hidden = false;
-    app.querySelector('#bz-banner').innerHTML = banner();
+    setH(app.querySelector('#bz-banner'), banner());
     const curG = GOF(S.tab)[0];
-    app.querySelector('#bz-tabs').innerHTML = GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${TX(n)}</span><small>${TX(cap)}</small></button>`).join('');
+    setH(app.querySelector('#bz-tabs'), GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${TX(n)}</span><small>${TX(cap)}</small></button>`).join(''));
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
     const V = { lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
-    sub.innerHTML = `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`;
+    setH(sub, `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`);
     let vh = html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
     if (S.tab === 'month' && S.B.monthOf(S.date).start !== S.B.monthOf(TODAY).start) vh = vh.replace(/本月/g, '当月').replace(/这个月/g, '那个月');
     if (S.tab === 'year' && S.B.syOf(S.date) !== S.B.syOf(TODAY)) vh = vh.replace(/今年/g, `${S.B.syOf(S.date)}年`);
-    app.querySelector('#bz-view').innerHTML = vh;
+    app.querySelector('#bz-view').innerHTML = vh; app.querySelector('#bz-view')._h = null; reTr();
     { let open = 0; app.querySelectorAll('#bz-view > .bz-card, #bz-view > .bz-grid > .bz-card').forEach(c => { const h = c.querySelector(':scope > h2'); if (!h || c.classList.contains('bz-hero')) return;
         h.setAttribute('role', 'button'); h.tabIndex = 0; h.classList.add('bz-fh'); if (!h.querySelector('.bz-chev')) h.insertAdjacentHTML('beforeend', '<span class="bz-chev" aria-hidden="true">▾</span>');
         if (open++ >= 3 && !c.querySelector('form')) c.classList.add('bz-fold');
