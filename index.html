@@ -2673,8 +2673,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     return card('d-word', '今日品格', `<div class="bz-vrow">${vw(p[0], p[1], 'up')}<i>↔</i>${vw(p[2], p[3], 'dn')}</div><p class="bz-small">今天发挥「${p[1].replace(/的$/, '')}」，别变成「${p[3].replace(/的$/, '')}」。</p><p class="bz-creed">🗡 ${CREED[(h >>> 4) % CREED.length]}</p>`);
   }
   function wrapCN(ctx, t, maxW) { const out = []; let line = ''; for (const ch of t) { if (ctx.measureText(line + ch).width > maxW) { out.push(line); line = ch; } else line += ch; } if (line) out.push(line); return out; }
-  async function makeShareCard() {
-    const D = S.share; if (!D) return;
+  async function renderCard(D) {
     const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
     const SERIF = '"Noto Serif SC","Songti SC","STSong",serif', SANS = '"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif', GOLD = '#d4af37', GOLD2 = '#f5d77a', INK = '#efe6d2', MUT = '#b9ad97';
     const g = x.createLinearGradient(0, 0, W * .4, H); g.addColorStop(0, '#2a1a4a'); g.addColorStop(1, '#100820'); x.fillStyle = g; x.fillRect(0, 0, W, H);
@@ -2696,9 +2695,20 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       x.fillStyle = c; x.font = `700 30px ${SANS}`; x.fillText(t, 130, ty + 50); x.fillStyle = INK; x.font = `500 34px ${SANS}`; wrapCN(x, v, W - 300).slice(0, 2).forEach((l, k) => x.fillText(l, 130, ty + 96 + k * 40)); });
     x.fillStyle = '#7fe0ad'; x.font = `500 32px ${SANS}`; x.fillText(`🕐 吉时 ${D.hours}`, 96, 1250);
     x.fillStyle = 'rgba(239,230,210,.55)'; x.font = `400 24px ${SANS}`; x.textAlign = 'right'; x.fillText('玄镜 · 传承易经八字文化 · 仅供参考', W - 96, 1300); x.textAlign = 'left';
-    const blob = await new Promise(r => cv.toBlob(r, 'image/png')), file = new File([blob], `玄镜-${D.date}.png`, { type: 'image/png' });
-    try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: '玄镜 · 今日运势', text: `我的今日运势：${D.ov} 分「${D.mood}」` }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
-    const url = URL.createObjectURL(blob), s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = `<h3>你的运势卡</h3><img src="${url}" alt="今日运势卡" style="width:100%;border-radius:14px;display:block"><p class="bz-small">长按图片保存，或点下面下载后分享。</p><a class="bz-sharebtn" href="${url}" download="${file.name}">⬇ 下载图片</a>`; s.hidden = false;
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+    return { key: JSON.stringify(D), blob, file: new File([blob], `玄镜-${D.date}.png`, { type: 'image/png' }), url: URL.createObjectURL(blob) };
+  }
+  let cardCache = null, cardBusy = null;
+  function prepCard() { const D = S.share; if (!D) return null; const k = JSON.stringify(D); if (cardCache && cardCache.key === k) return Promise.resolve(cardCache); if (cardBusy && cardBusy.k === k) return cardBusy.p; const p = renderCard(D).then(c => (cardCache = c)); cardBusy = { k, p }; return p; }
+  function shareFile(c) {
+    const D = S.share || {}; if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [c.file] }))) return navigator.share({ files: [c.file], title: '玄镜 · 今日运势', text: `我的今日运势：${D.ov} 分「${D.mood}」` }).then(() => true, e => e && e.name === 'AbortError');
+    return Promise.resolve(false);
+  }
+  function showCardSheet(c) { const s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = `<h3>你的运势卡</h3><img src="${c.url}" alt="今日运势卡" style="width:100%;border-radius:14px;display:block"><button type="button" class="bz-sharebtn" data-act="sharenow" style="margin-top:10px">📤 分享</button><a class="bz-sharebtn" href="${c.url}" download="${c.file.name}">⬇ 下载图片</a><p class="bz-small">也可以长按图片保存到相册。</p>`; s.hidden = false; }
+  function makeShareCard() {
+    const D = S.share; if (!D) return; const k = JSON.stringify(D);
+    if (cardCache && cardCache.key === k) { shareFile(cardCache).then(ok => { if (!ok) showCardSheet(cardCache); }); return; }
+    prepCard().then(showCardSheet);
   }
   function oneEvent(ch, d) {
     const gz = d.p.d, b = gz[1], Z = E.Z, h = [...d.date].reduce((a, c) => a * 31 + c.charCodeAt(0) >>> 0, 7);
@@ -3618,6 +3628,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     if (S.tab === 'year' && S.B.syOf(S.date) !== S.B.syOf(TODAY)) vh = vh.replace(/今年/g, `${S.B.syOf(S.date)}年`);
     app.querySelector('#bz-view').innerHTML = vh; app.querySelector('#bz-view')._h = null; reTr();
     autoDrawer(app.querySelector('#bz-view'));
+    if (S.tab === 'day' && S.share) setTimeout(() => { try { prepCard(); } catch (e) { } }, 600);
     app.querySelectorAll('#bz-view .bz-chips').forEach(c => { const on = c.querySelector('.bz-on'); if (on) c.scrollLeft = on.offsetLeft - c.clientWidth / 2 + on.clientWidth / 2; });
     app.querySelectorAll('#bz-view .bz-hero').forEach(h => { if (!h.querySelector('.za-wm')) h.insertAdjacentHTML('beforeend', ZEN_ART.svg(S.tab, 'za-wm')); });
     track();
@@ -3632,6 +3643,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   function act(a) {
     if (a.startsWith('coq:')) { const r = ZEN_CO.reply(a.slice(4), S.coach); S.coach = (S.coach || []).concat([r]).slice(-12); render(); const h = document.getElementById('l-coach'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (a === 'sharecard') { makeShareCard(); return; }
+    if (a === 'sharenow') { if (cardCache) shareFile(cardCache).then(ok => { if (!ok) { const t = $('#bz-sheet-body .bz-small'); if (t) t.textContent = '这台手机的浏览器不支持直接分享图片，请长按图片保存，或点下载。'; } }); return; }
     if (a === 'guideok') { try { localStorage.setItem('zen-guide-v1', '1'); } catch (e) { } const g = document.querySelector('.bz-guide'); if (g) g.remove(); return; }
     if (a.startsWith('wi:')) { const n = a.slice(3); S.wi = S.wi === n ? null : n; const y = window.scrollY; render(); window.scrollTo(0, y); return; }
     if (a.startsWith('dv:')) { const id = a.slice(3); S.drw = S.drw || {}; S.drw[S.tab] = S.drw[S.tab] === id ? null : id; const dw = document.getElementById('auto-more'); if (!dw) return; const p = dw.querySelector('.bz-drp'); p.innerHTML = ''; dw.querySelectorAll('.bz-drg button').forEach(b => b.classList.toggle('on', b.dataset.act === 'dv:' + S.drw[S.tab])); const c = (dw._cards || []).find(x => x.id === S.drw[S.tab]); if (c) { c.hidden = false; p.appendChild(c); } return; }
