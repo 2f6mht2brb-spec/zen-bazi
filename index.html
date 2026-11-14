@@ -3751,7 +3751,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
     const curS = G[4].find(s => s[0] === S.tab) || G[4][0];
-    setH(sub, `<label class="bz-subdd"><i aria-hidden="true">${curS[2]}</i><select id="bz-subsel" aria-label="${G[2]} · 选择页面">${G[4].map(([k, n, ic]) => `<option value="${k}" ${S.tab === k ? 'selected' : ''}>${TX(n).replace(/<[^>]+>/g, '')}</option>`).join('')}</select><span class="bz-subcar" aria-hidden="true">▾</span></label>`);
+    if (G[0] !== 'fort') setH(sub, `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length > 5 ? Math.ceil(G[4].length / 2) : G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`);
+    else setH(sub, `<label class="bz-subdd"><i aria-hidden="true">${curS[2]}</i><select id="bz-subsel" aria-label="${G[2]} · 选择页面">${G[4].map(([k, n, ic]) => `<option value="${k}" ${S.tab === k ? 'selected' : ''}>${TX(n).replace(/<[^>]+>/g, '')}</option>`).join('')}</select><span class="bz-subcar" aria-hidden="true">▾</span></label>`);
     let guide = ''; try { if (!localStorage.getItem('zen-guide-v1')) guide = `<div class="bz-guide"><b>怎么看这一页？</b><ol><li>先看最上面的<b>分数</b>：今天/这段时间顺不顺</li><li>再看下面<b>两三张重点卡</b>：要做什么、留意什么</li><li>想深入，点最下面的<b>📜 更多锦囊</b></li></ol><button type="button" data-act="guideok">知道了</button></div>`; } catch (e) { }
     let vh = guide + html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
