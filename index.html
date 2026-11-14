@@ -3053,8 +3053,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const pl = ELS.filter(e => ch.label(e) === '平');
     const gd = gejuCard(ch, true), score = gd ? Math.max(25, Math.min(95, Math.round(52 + gd.sc * 9))) : 60;
     const dl = rows => `<dl class="bz-kv bz-kvs">${rows.map(([t, d, c]) => `<dt class="${c || ''}">${t}</dt><dd>${d}</dd>`).join('')}</dl>`;
-    return (() => { const t = S.B.day(TODAY); return card('c-pan', `${ownerName()}八字仪表`, pan(natalCols().concat([['大运', t.dy && t.dy.gz, true], ['流年', t.p.y, true], ['流月', t.p.m, true], ['流日', t.p.d, true]])) + `<p class="bz-muted">前四柱是原局（本命盘），金底的是今天（${A.md(TODAY)}）所在的大运、流年、流月、流日。</p>`); })()
-      + hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
+    return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
+      + (() => { const t = S.B.day(TODAY); return card('c-pan', `${ownerName()}八字仪表`, pan(natalCols().concat([['大运', t.dy && t.dy.gz, true], ['流年', t.p.y, true], ['流月', t.p.m, true], ['流日', t.p.d, true]])) + `<p class="bz-muted">前四柱是原局（本命盘），金底的是今天（${A.md(TODAY)}）所在的大运、流年、流月、流日。</p>`); })()
       + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(special.length ? [['特殊', special.join('、')]] : [])]))
       + card('c-yj', '喜用神', `<div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div><p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p>`)
       + (gd ? card('c-geju', '格局成败', dl(gd.rows.map(([i, c, k, d]) => [`${i} ${k}`, d, c])), 'bz-keep') : '')
