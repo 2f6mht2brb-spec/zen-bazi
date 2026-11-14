@@ -2809,13 +2809,14 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   }
 
   // ---------- views ----------
-  const DICON = [[/scene/, '🎭'], [/-wx/, '🔥'], [/-ss$/, '☯'], [/-sx$/, '🐲'], [/gua/, '☷'], [/cal/, '📅'], [/best/, '🌟'], [/low/, '🌧'], [/chart|trend/, '📈'], [/months/, '🗓'], [/years/, '📊'], [/adv|fix/, '🧭'], [/key/, '🛣'], [/natal|profile|type/, '🌱'], [/way|move/, '🧭'], [/days/, '📅'], [/act|rule/, '✅'], [/sec/, '🏭'], [/watch/, '🔎'], [/pairs|chain|roles/, '🔗'], [/how|note|basic/, '📖'], [/home/, '🏠'], [/kua|ind/, '🧭'], [/food|tcm/, '🍵'], [/love|lv-/, '❤️'], [/career|w-/, '💼'], [/travel/, '✈️'], [/pet/, '🐾'], [/hobby/, '🎨'], [/deep/, '☯'], [/dy|ln/, '🛤'], [/birth|mix/, '🔢'], [/sum/, '📝'], [/today/, '☀️']];
-  const dLabel = (c) => { const h = c.querySelector(':scope > h2'); if (!h) return '更多'; const t = [...h.childNodes].filter(n => !(n.classList && (n.classList.contains('bz-xn') || n.classList.contains('bz-chev')))).map(n => n.textContent).join('').trim();
+  const DICON = [[/scene/, '🎭'], [/-wx/, '🔥'], [/-ss$/, '☯'], [/-sx$/, '🐲'], [/gua/, '☷'], [/cal/, '📅'], [/best/, '🌟'], [/low/, '🌧'], [/chart|trend/, '📈'], [/months/, '🗓'], [/years/, '📊'], [/adv|fix/, '🧭'], [/key/, '🛣'], [/natal|profile|type/, '🌱'], [/way|move/, '🧭'], [/w-year/, '🗓'], [/days/, '📅'], [/act|rule/, '✅'], [/sec/, '🏭'], [/watch/, '🔎'], [/pairs|chain|roles/, '🔗'], [/how|note|basic/, '📖'], [/home/, '🏠'], [/kua|ind/, '🧭'], [/food|tcm/, '🍵'], [/love|lv-/, '❤️'], [/career|w-/, '💼'], [/travel/, '✈️'], [/pet/, '🐾'], [/hobby/, '🎨'], [/deep/, '☯'], [/dy|ln/, '🛤'], [/birth|mix/, '🔢'], [/sum/, '📝'], [/today/, '☀️']];
+  const DLBL = { 'w-days': '好日子', 'w-year': '十二个月', 'wl-days': '好日子' };
+  const dLabel = (c) => { if (DLBL[c.id]) return DLBL[c.id]; const h = c.querySelector(':scope > h2'); if (!h) return '更多'; const t = [...h.childNodes].filter(n => !(n.classList && (n.classList.contains('bz-xn') || n.classList.contains('bz-chev')))).map(n => n.textContent).join('').trim();
     let s = t.includes('·') ? t.split('·').pop().trim() : t; s = s.replace(/^\d+\s*年/, '').replace(/与.*$/, '').replace(/^(今日|今天|当日|当天|本周|本月|当月|今年|这个月)/, '').replace(/[（(].*$/, '').trim() || t; return s.length > 6 ? s.slice(0, 6) : s; };
   function autoDrawer(view) {
     if (!view || view.querySelector('.bz-drawer')) return;
     const cards = [...view.querySelectorAll(':scope > .bz-card, :scope > .bz-grid > .bz-card')].filter(c => !c.classList.contains('bz-hero') && c.querySelector(':scope > h2') && !c.querySelector('form'));
-    const DEM = /-wx$|-ss$|-sx$|gua/, main = cards.filter(c => !DEM.test(c.id)), keepSet = new Set(main.slice(0, 3)), rest = cards.filter(c => !keepSet.has(c));
+    const DEM = /-wx$|-ss$|-sx$|gua|^w-days$|^w-year$/, main = cards.filter(c => !DEM.test(c.id)), keepSet = new Set(main.slice(0, 3)), rest = cards.filter(c => !keepSet.has(c));
     if (rest.length < 2) return;
     const k = S.drw && S.drw[S.tab], dw = document.createElement('div'); dw.className = 'bz-card bz-drawer'; dw.id = 'auto-more';
     dw.innerHTML = `<h3 class="bz-drh">📜 更多锦囊 <small>点一个看</small></h3><div class="bz-drg">${rest.map(c => `<button type="button" data-act="dv:${c.id}" class="${c.id === k ? 'on' : ''}"><i>${(DICON.find(([r]) => r.test(c.id)) || [0, '✦'])[1]}</i>${dLabel(c)}</button>`).join('')}</div><div class="bz-drp"></div>`;
@@ -3178,11 +3179,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     2: ['人和', 'tm', ['贵人多，适合拜访、合作、社交', '人缘顺，适合沟通协调', '平平，维持现有关系', '易有误会，说话多留余地', '是非多，少参与八卦，低调做事'], '高峰年多结交贵人、拓展人脉；低谷年守住核心关系，少管闲事。'],
     5: ['姻缘', 'lv', ['桃花旺，适合表白、约会、谈婚嫁', '感情顺，适合增进关系', '平稳，多陪伴', '易有口角，多体谅对方', '感情低潮，冷静处理，不做重大决定'], '高峰年适合恋爱、结婚；低谷年多经营现有关系，先照顾好自己。']
   };
-  function trendCards(i) {
+  function trendCards(i, noMonths) {
     const [nm, id, T, yt] = TREND[i], sy = S.B.syOf(TODAY), tip = s => s >= 76 ? T[0] : s >= 56 ? T[1] : s >= 51 ? T[2] : s >= 21 ? T[3] : T[4];
     const ms = S.B.months.filter(m => m.sy === sy), ys = Array.from({ length: 10 }, (_, k) => sy - 1 + k).map(y => ({ y, x: S.B.yearOf(y) }));
-    return card(id + '-months', `${sy}年 · 十二个月${nm}`, bars(ms.map(m => ({ v: m.s[i], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 ${nm} ${m.s[i]}（${A.level(m.s[i])}）：${tip(m.s[i])}` })), { label: '各月' + nm }) + `<p class="bz-small">最旺：${ms.slice().sort((a, b) => b.s[i] - a.s[i]).slice(0, 2).map(m => gzc(m.gz) + '月').join('、')}；最弱：${ms.slice().sort((a, b) => a.s[i] - b.s[i])[0].gz}月。</p>`)
-      + card(id + '-years', `十年${nm}走势`, bars(ys.map(o => ({ v: o.x.s[i], l1: String(o.y), l2: o.x.gz, act: 'ln:' + o.y, tip: `${o.y} ${o.x.gz}年 ${nm} ${o.x.s[i]}：${tip(o.x.s[i])}` })), { label: '十年' + nm }) + `<p class="bz-small">${nm}高峰：${ys.slice().sort((a, b) => b.x.s[i] - a.x.s[i]).slice(0, 3).map(o => o.y + '年').join('、')}。${yt}</p>`);
+    return (noMonths ? '' : card(id + '-months', `${sy}年 · 十二个月${nm}`, bars(ms.map(m => ({ v: m.s[i], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 ${nm} ${m.s[i]}（${A.level(m.s[i])}）：${tip(m.s[i])}` })), { label: '各月' + nm }) + `<p class="bz-small">最旺：${ms.slice().sort((a, b) => b.s[i] - a.s[i]).slice(0, 2).map(m => gzc(m.gz) + '月').join('、')}；最弱：${ms.slice().sort((a, b) => a.s[i] - b.s[i])[0].gz}月。</p>`)
+      ) + card(id + '-years', `十年${nm}走势`, bars(ys.map(o => ({ v: o.x.s[i], l1: String(o.y), l2: o.x.gz, act: 'ln:' + o.y, tip: `${o.y} ${o.x.gz}年 ${nm} ${o.x.s[i]}：${tip(o.x.s[i])}` })), { label: '十年' + nm }) + `<p class="bz-small">${nm}高峰：${ys.slice().sort((a, b) => b.x.s[i] - a.x.s[i]).slice(0, 3).map(o => o.y + '年').join('、')}。${yt}</p>`);
   }
   function vLove() {
     const ch = S.ch, ty = S.B.syOf(TODAY); const L = ZEN_L.analyse(ch, S.B, E, ty, ty + 15);
@@ -3412,7 +3413,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const P = ZEN_W.profile(E, ch);
     html += card('w-profile', '你的事业格局', `<p>主：<b>${P.main[0]}</b>（${P.pct(P.top[0])}%）—— ${P.main[1]}</p><p>次：<b>${P.sub[0]}</b>（${P.pct(P.top[1])}%）—— ${P.sub[1]}</p><p class="bz-muted">${gzc(ch.dm)}${ch.de}日主，${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}。用神所属的行业与方向对你最有利。</p>`);
     html += card('w-fix', '工作化解总纲', `<dl class="bz-kv">${ZEN_W.fix(E, A, ch).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="bz-muted">化解是帮你调整状态和注意力的方法，真正决定结果的，仍是你的准备和行动。</p>`);
-    return html + trendCards(1);
+    return html + trendCards(1, true);
   }
 
   function vAstro() {
