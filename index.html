@@ -2504,6 +2504,22 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   }
   const yname = (k, L) => k === 0 ? '初' + (L[0] ? '九' : '六') : k === 5 ? '上' + (L[5] ? '九' : '六') : (L[k] ? '九' : '六') + YAOP[k];
   const hexDraw = (L, k, cls) => `<div class="bz-hx ${cls || ''}">${L.slice().reverse().map((v, i) => { const idx = 5 - i; return `<i class="${v ? 'y' : 'n'} ${idx === k ? 'mv' : ''}"><b></b>${v ? '' : '<b></b>'}</i>`; }).join('')}</div>`;
+  const GW = {
+    gg: ['顺风顺水，该出手就出手。', '内外都帮你，适合推进重要的事。', '天时人和都在，别犹豫。', '底气和机会都在，放胆去做。'],
+    gb: ['你有实力，但外面有阻力，以守为攻。', '本事够，环境暂时不配合，先蓄力等时机。', '靠自己稳住，别和环境硬碰。', '外面风大，把自己的事做扎实就赢了。'],
+    bg: ['外面有贵人和机会，你要先把心定下来。', '机会在外面，自己先别乱。', '借外力补自己的不足，主动开口求助。', '环境帮你，关键在你肯不肯放下犹豫。'],
+    bb: ['内外都不顺，少动多看。', '压力大，做减法、保存体力。', '这是蓄力期，安静做好基本功。', '先顾好身心，不做重大决定。']
+  };
+  function guaWord(n, y, seed, id) {
+    const T = GUA.tri, h = GUA.hex[n], hb = GUA.hex[y.bian], ch = S.ch, ok = e => ['用', '喜'].includes(ch.label(e)) ? 1 : ch.label(e) === '忌' ? -1 : 0;
+    const li = T[h.l].el, ui = T[h.u].el, a = ok(li), b = ok(ui), nm = e => `${gzc(e)}（${ch.label(e) === '平' ? '中性' : ch.label(e) + '神'}）`;
+    const self = a > 0 ? `你自身底气足，下卦${nm(li)}帮你` : a < 0 ? `你自己容易心急，下卦${nm(li)}耗你` : `你自身状态平稳，下卦${nm(li)}`;
+    const env = b > 0 ? `外在环境也有助力，上卦${nm(ui)}` : b < 0 ? `但外在有压力，上卦${nm(ui)}` : `外在环境中性，上卦${nm(ui)}`;
+    const ga = a >= 0 ? 'g' : 'b', gb = b >= 0 ? 'g' : 'b', bs = ok(T[hb.l].el) + ok(T[hb.u].el);
+    const key = [...(id + n + (S.date || '') + seed)].reduce((x, c) => x * 31 + c.charCodeAt(0) >>> 0, 11), line = GW[ga + gb][key % 4];
+    const from = y.k < 3 ? '变化从你自己开始' : '变化来自外面';
+    return `${self}；${env}。${line}${from}，走向「${y.bian}」${bs > 0 ? '对你更有利' : bs < 0 ? '要多稳住' : '起伏不大'}。`;
+  }
   function guaCard(id, title, n, how, seed = 0) { const g = A.guaInfo(S.ch, n, how), y = yaoInfo(n, seed), bg = A.guaInfo(S.ch, y.bian, ''), hb = GUA.hex[y.bian];
     const cf = ZEN_C.GUA[n] || {}, U = id[0] === 'y' ? '今年' : id[0] === 'm' ? '这个月' : id[0] === 'w' ? '这周' : '今天';
     const verdict = sc => sc >= 2 ? ['吉', 'g'] : sc >= .5 ? ['小吉', 'g'] : sc >= -.5 ? ['平', 'm'] : ['需谨慎', 'b'];
@@ -2513,7 +2529,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
         <div class="bz-garr"><span>${yname(y.k, y.L)}动</span>→</div>
         <div class="bz-gbox">${hexDraw(y.M, y.k, 'to')}<b>${hb.full}</b><small>变卦 · 走向</small></div></div>
       ${(() => { const cfB = ZEN_C.GUA[y.bian] || {}, sh = n2 => n2, act = (y.yang ? (cfB.act || cf.act) : (cf.act || cfB.act) || '').replace(/^今天/, '');
-        return `<div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话 · 从「${n}」到「${y.bian}」</div><p class="bz-cf-t">${cf.comfort || g.mean}</p>
+        return `<div class="bz-comfort"><div class="bz-cf-h">✿ 给你的话 · 从「${n}」到「${y.bian}」</div><p class="bz-cf-t">${guaWord(n, y, seed, id)}</p>
         <ul class="bz-cf-l"><li><b>关键在${yname(y.k, y.L)}：</b>${YAOM[y.k][1]}；而这一爻正在变，${y.yang ? '由刚转柔，宜收一收、放软身段' : '由柔转刚，宜主动一点、拿出决断'}。</li><li><b>往后看：</b>${cfB.comfort || hb.mean}</li></ul>
         <div class="bz-cf-a"><b>${U}可以做的小事：</b>${act}</div></div>`; })()}
       <div class="bz-g3">
