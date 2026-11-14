@@ -3014,6 +3014,17 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
 
 
   // ---------- 感情婚姻 ----------
+  const TREND = {
+    1: ['事业', 'wk', ['事业气旺，适合争取升职、谈大案、开新项目', '推进顺利，按计划执行', '平稳，做好本分', '阻力较多，少冒进、多准备', '守成为上，避免换工、冲撞上司'], '高峰年适合跳槽、升职、创业；低谷年以进修、积累实力为主。'],
+    2: ['人和', 'tm', ['贵人多，适合拜访、合作、社交', '人缘顺，适合沟通协调', '平平，维持现有关系', '易有误会，说话多留余地', '是非多，少参与八卦，低调做事'], '高峰年多结交贵人、拓展人脉；低谷年守住核心关系，少管闲事。'],
+    5: ['姻缘', 'lv', ['桃花旺，适合表白、约会、谈婚嫁', '感情顺，适合增进关系', '平稳，多陪伴', '易有口角，多体谅对方', '感情低潮，冷静处理，不做重大决定'], '高峰年适合恋爱、结婚；低谷年多经营现有关系，先照顾好自己。']
+  };
+  function trendCards(i) {
+    const [nm, id, T, yt] = TREND[i], sy = S.B.syOf(TODAY), tip = s => s >= 76 ? T[0] : s >= 56 ? T[1] : s >= 51 ? T[2] : s >= 21 ? T[3] : T[4];
+    const ms = S.B.months.filter(m => m.sy === sy), ys = Array.from({ length: 10 }, (_, k) => sy - 1 + k).map(y => ({ y, x: S.B.yearOf(y) }));
+    return card(id + '-months', `${sy}年 · 十二个月${nm}`, bars(ms.map(m => ({ v: m.s[i], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 ${nm} ${m.s[i]}（${A.level(m.s[i])}）：${tip(m.s[i])}` })), { label: '各月' + nm }) + `<p class="bz-small">最旺：${ms.slice().sort((a, b) => b.s[i] - a.s[i]).slice(0, 2).map(m => gzc(m.gz) + '月').join('、')}；最弱：${ms.slice().sort((a, b) => a.s[i] - b.s[i])[0].gz}月。</p>`)
+      + card(id + '-years', `十年${nm}走势`, bars(ys.map(o => ({ v: o.x.s[i], l1: String(o.y), l2: o.x.gz, act: 'ln:' + o.y, tip: `${o.y} ${o.x.gz}年 ${nm} ${o.x.s[i]}：${tip(o.x.s[i])}` })), { label: '十年' + nm }) + `<p class="bz-small">${nm}高峰：${ys.slice().sort((a, b) => b.x.s[i] - a.x.s[i]).slice(0, 3).map(o => o.y + '年').join('、')}。${yt}</p>`);
+  }
   function vLove() {
     const ch = S.ch, ty = S.B.syOf(TODAY); const L = ZEN_L.analyse(ch, S.B, E, ty, ty + 15);
     const male = ch.inp.gender === '男';
@@ -3027,7 +3038,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     if (pv.date) { const [y, m, d] = pv.date.split('-').map(Number); const pc = E.makeChart({ gender: pv.gender, y, m, d, hour: pv.sh === '' ? null : SHI[+pv.sh][1], tz: ch.inp.tz });
       const r = ZEN_L.match(ch, pc, E); const lv = A.level(r.score);
       html += `<div class="bz-card bz-hero"><div><div class="bz-muted">合婚分数</div><div class="bz-big ${lvc(lv)}">${r.score}</div><div class="bz-lvbig ${lvc(lv)}">${lv}</div></div><div><h2>对方八字：${gzc(pc.P.y)} ${gzc(pc.P.m)} ${gzc(pc.P.d)} ${pc.P.h ? gzc(pc.P.h) : ''}</h2><p class="bz-muted">对方属${AN[Z.indexOf(pc.P.y[1])]} · 日主${gzc(pc.dm)}${pc.de} · 用神${gzc(pc.yong)}</p><ul class="bz-dlist">${r.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul><p class="bz-tip">${r.score >= 76 ? '天作之合，珍惜彼此。' : r.score >= 56 ? '相当合适，用心经营会很幸福。' : r.score >= 51 ? '可以在一起，差异处多沟通。' : '差异较多，但感情最终靠两个人的用心，八字只是参考。'}</p></div></div>`; }
-    return html;
+    return html + trendCards(5);
   }
 
   // ---------- banner ----------
@@ -3238,7 +3249,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const P = ZEN_W.profile(E, ch);
     html += card('w-profile', '你的事业格局', `<p>主：<b>${P.main[0]}</b>（${P.pct(P.top[0])}%）—— ${P.main[1]}</p><p>次：<b>${P.sub[0]}</b>（${P.pct(P.top[1])}%）—— ${P.sub[1]}</p><p class="bz-muted">${gzc(ch.dm)}${ch.de}日主，${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}。用神所属的行业与方向对你最有利。</p>`);
     html += card('w-fix', '工作化解总纲', `<dl class="bz-kv">${ZEN_W.fix(E, A, ch).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="bz-muted">化解是帮你调整状态和注意力的方法，真正决定结果的，仍是你的准备和行动。</p>`);
-    return html;
+    return html + trendCards(1);
   }
 
   function vAstro() {
@@ -3312,7 +3323,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const T = S.team.map(m => ({ m, pc: tChart(m) }));
     const form = card('t-add', '加入同事 / 伙伴 / 队友', `<form id="bz-tform" class="bz-form"><label>称呼<input name="tname" maxlength="20" required placeholder="例如：阿明、Boss Lee"></label><label>关系<select name="trel">${TREL.map(r => `<option>${r}</option>`).join('')}</select></label><label>出生日期<input type="date" name="tdate" required min="1900-01-01" max="2099-12-31"></label><label>时辰（不知道可不填）<select name="tsh"><option value="">时辰不详</option>${SHI.map((x, i) => `<option value="${i}">${x[0]}</option>`).join('')}</select></label><div class="bz-seg"><span>性别</span>${['男', '女'].map((g, i) => `<label class="bz-segbtn"><input type="radio" name="tg" value="${g}" ${i ? '' : 'checked'}><span>${g}</span></label>`).join('')}</div><div class="bz-formbtns"><button type="submit" class="bz-go">⚇ 加入团队</button></div><p class="bz-muted">资料只存在这台设备的浏览器里。只知道生日也可以，时辰不详时日柱和时柱以外的推算照样准。</p></form>`);
     let html = `<div class="bz-card bz-hero"><div><div class="bz-namebig">⚇</div><div class="bz-muted">${T.length} 位成员</div></div><div><h2>同事 · 伙伴 · 队友关系</h2><p>看每个人在你的八字里扮演什么角色（贵人、上司型、同辈、支持者…），你们合不合拍，什么日子最适合一起谈事；再看整个团队五行够不够平衡、谁和谁最搭。</p><p class="bz-muted">你自己：${gzc(ch.dm)}${ch.de}日主 · 用神${gzc(ch.yong)} · 擅长${ZEN_T.TALENT[Object.entries(ch.byRel).sort((x, y) => y[1] - x[1])[0][0]]}</p></div></div>`;
-    if (!T.length) return html + form + card('t-how', '怎么看', `<ul class="bz-list2"><li><b>角色：</b>按对方日干是你的哪一种十神，判断他对你是贵人、督促者、资源、支持对象还是同辈竞争。</li><li><b>合拍度：</b>看日干五合与生克、生肖（年支）、工作环境（月支）、私下相处（日支）的冲合刑害，以及彼此能否补对方的用神。</li><li><b>团队：</b>加入两人以上，会显示团队五行配置、最佳搭档和需要留意的组合。</li></ul>`);
+    if (!T.length) return html + trendCards(2) + form + card('t-how', '怎么看', `<ul class="bz-list2"><li><b>角色：</b>按对方日干是你的哪一种十神，判断他对你是贵人、督促者、资源、支持对象还是同辈竞争。</li><li><b>合拍度：</b>看日干五合与生克、生肖（年支）、工作环境（月支）、私下相处（日支）的冲合刑害，以及彼此能否补对方的用神。</li><li><b>团队：</b>加入两人以上，会显示团队五行配置、最佳搭档和需要留意的组合。</li></ul>`);
     T.forEach(({ m, pc }, k) => {
       const r = ZEN_T.pair(ch, pc, E), back = ZEN_T.pair(pc, ch, E), sc = Math.round((r.score + back.score) / 2), lv = A.level(sc);
       const gd = goodDays(pc);
@@ -3351,7 +3362,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       html += card('t-roles', '各人擅长与分工建议', `<ul class="bz-list2">${tm.roles.map(r => `<li><b>${esc(r.name)}</b>（${gzc(r.dm)}${r.de}）：擅长${r.tal}；适合负责${r.job}。</li>`).join('')}</ul>`);
       if (list.length >= 3) html += card('t-pairs', '团队两两合拍度', `<ul class="bz-dlist">${tm.pairs.map(p => `<li class="bz-d-${p.score >= 56 ? 'good' : p.score >= 51 ? 'mid' : 'bad'}"><b>${nm(p.i)} × ${nm(p.j)}</b><span>${p.score} 分 · ${A.level(p.score)}</span></li>`).join('')}</ul><p class="bz-tip">最佳搭档：${nm(tm.pairs[0].i)} × ${nm(tm.pairs[0].j)}。${(() => { const w = tm.pairs[tm.pairs.length - 1]; return w.score < 51 ? (w.i === 0 ? `需留意：你和${nm(w.j)}磨合较多，重要事项用文字确认、先讲好分工。` : `需留意：${nm(w.i)} × ${nm(w.j)}，尽量别让两人单独对接重要事。`) : ''; })()}</p>`);
     }
-    return html + form + '<p class="bz-muted">合拍度取双方互看的平均分。八字只是参考，好的团队还是靠沟通、信任和清楚的分工。</p>';
+    return html + trendCards(2) + form + '<p class="bz-muted">合拍度取双方互看的平均分。八字只是参考，好的团队还是靠沟通、信任和清楚的分工。</p>';
   }
   function snapshot() { return JSON.stringify({ tab: S.tab, date: S.date, lnYear: S.lnYear, dy: S.dy, num: S.num || '', raw: S.raw || null, mbti: S.mbti || null, partner: S.partner || null, zmode: S.zmode, team: S.team || null }); }
   function describe(sn) { const o = JSON.parse(sn); return (TABNAME[o.tab] || '') + (['day', 'week', 'month', 'year', 'zodiac', 'work'].includes(o.tab) && o.date ? ' · ' + o.date : o.tab === 'liunian' && o.lnYear ? ' · ' + o.lnYear : o.tab === 'dayun' && o.dy ? ' · ' + o.dy : ''); }
