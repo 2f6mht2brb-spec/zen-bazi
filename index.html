@@ -2393,8 +2393,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
   const GROUPS = [
     ['fort', '☯\uFE0E', '运程', '今日·周·月·年', [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']]],
-    ['ming', '❖', '命盘', '本命·流年·大运', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲'], ['other', '其他', '⋯']]],
-    ['qiu', '✧', '求事', '财运·事业·姻缘', [['wealth', '财运', '¥'], ['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['love', '姻缘', '♡'], ['kids', '子女', '☺'], ['parents', '父母', '⌂'], ['stock', '股票', '⇡'], ['lotto', '万字', '萬'], ['number', '好数', '#']]],
+    ['ming', '❖', '命盘', '本命·运势·亲缘', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲'], ['love', '配偶', '♡'], ['kids', '子女', '☺'], ['parents', '父母', '⌂'], ['other', '其他', '⋯']]],
+    ['qiu', '✧', '求事', '财运·事业·股票', [['wealth', '财运', '¥'], ['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['stock', '股票', '⇡'], ['lotto', '万字', '萬'], ['number', '好数', '#']]],
     ['tan', '✶', '探索', '生肖·星象·本心', [['zodiac', '生肖', '◎'], ['astro', '星象', '✶'], ['mbti', '本心', '◑'], ['life', '开运', '❀']]]];
   const GOF = k => (GROUPS.find(g => g[4].some(s => s[0] === k)) || GROUPS[0]);
   const TABS = GROUPS.flatMap(g => g[4].map(s => [s[0], s[2], s[1]]));
@@ -2484,8 +2484,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const sc = document.createElement('script'); sc.src = 'https://translate.google.com/translate_a/element.js?cb=zenGT'; sc.async = true; document.head.appendChild(sc);
     document.documentElement.classList.add('bz-tr');
   }
-  const EN = { 运程: 'Fortune', '今日·周·月·年': 'Day to Year', 命盘: 'Destiny', '本命·流年·大运': 'Chart & Luck', 求事: 'Pursuits', '财运·事业·姻缘': 'Money & Love', 探索: 'Explore', '生肖·星象·本心': 'Stars & Self',
-    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 其他: 'More', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 子女: 'Children', 父母: 'Parents', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
+  const EN = { 运程: 'Fortune', '今日·周·月·年': 'Day to Year', 命盘: 'Destiny', '本命·运势·亲缘': 'Chart & Family', 求事: 'Pursuits', '财运·事业·股票': 'Money & Work', 探索: 'Explore', '生肖·星象·本心': 'Stars & Self',
+    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 其他: 'More', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 配偶: 'Spouse', 子女: 'Children', 父母: 'Parents', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
     人缘: 'People', 财富: 'Wealth', 健康: 'Health', 感情: 'Love', 感情家庭: 'Love & Family', '☼ 活在当下': '☼ Now' };
   const isEN = () => curLang() === 'en';
   const TX = s => isEN() && EN[s] ? `<span class="notranslate" translate="no">${EN[s]}</span>` : s;
@@ -3700,7 +3700,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
-    setH(sub, `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`);
+    setH(sub, `<div class="bz-fseg" style="grid-template-columns:repeat(${G[4].length > 5 ? Math.ceil(G[4].length / 2) : G[4].length},1fr)" role="tablist" aria-label="${G[2]}">${G[4].map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab:${k}" role="tab" aria-selected="${S.tab === k}"><i>${ic}</i>${TX(n)}</button>`).join('')}</div>`);
     let guide = ''; try { if (!localStorage.getItem('zen-guide-v1')) guide = `<div class="bz-guide"><b>怎么看这一页？</b><ol><li>先看最上面的<b>分数</b>：今天/这段时间顺不顺</li><li>再看下面<b>两三张重点卡</b>：要做什么、留意什么</li><li>想深入，点最下面的<b>📜 更多锦囊</b></li></ol><button type="button" data-act="guideok">知道了</button></div>`; } catch (e) { }
     let vh = guide + html + scrollHead(S.tab);
     if (S.tab === 'day' && S.date !== TODAY) vh = vh.replace(/今日/g, '当日').replace(/今天/g, '当天');
