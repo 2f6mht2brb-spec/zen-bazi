@@ -2897,7 +2897,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     const ch = S.ch, good = ELS.filter(e => ['用', '喜'].includes(ch.label(e))).sort((a, b) => ch.favE[b] - ch.favE[a]), bad = ELS.filter(e => ch.label(e) === '忌');
     const li = (arr, map) => arr.map(e => `<li><b>${gzc(e)}：</b>${map[e]}</li>`).join('');
     const yb = ch.P.y[1]; const z = A.zodiacRel(ch, yb, false);
-    return coachCard() + masteryCard() + `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
+    return masteryCard() + `<div class="bz-card bz-hero"><div><div class="bz-namebig">喜 ${good.map(gzc).join('')}</div><div class="bz-muted">忌 ${bad.map(gzc).join('') || '—'}</div></div><div><h2>生活开运总纲</h2><p>你的用神是${gzc(ch.yong)}，${ch.tiaohou || ch.yongWhy}。生活中多接近${good.map(gzc).join('、')}的事物，少沉在${bad.map(gzc).join('、') || '过旺的五行'}里。下面每一项都按这个原则来选。</p></div></div>
       <div class="bz-grid bz-grid2">${card('l-career', '适合的职业', `<ul class="bz-list2">${li(good, CAREER)}${bad.length ? `<li><b>不太合适：</b>${bad.map(e => CAREER[e]).join('；')}</li>` : ''}</ul>`)}
       ${card('l-hobby', '适合的兴趣', `<ul class="bz-list2">${li(good, HOBBY)}${bad.length ? `<li><b>少做：</b>${bad.map(e => HOBBY[e]).join('、')}</li>` : ''}</ul>`)}
       ${card('l-travel', '适合的旅游国家', `<ul class="bz-list2">${li(good, TRAVEL)}<li><b>最佳出行季节：</b>${SEASON[ch.yong]}</li></ul>`)}
