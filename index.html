@@ -2338,7 +2338,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
   const FORT = [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']], FORTK = FORT.map(f => f[0]);
   const GROUPS = [
     ['fort', '☯\uFE0E', '运程', '今日·周·月·年', [['day', '今日', '☼'], ['week', '本周', '☷'], ['month', '本月', '☾'], ['year', '今年', '✦']]],
-    ['ming', '❖', '命盘', '本命·流年·大运', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲']]],
+    ['ming', '❖', '命盘', '本命·流年·大运', [['chart', '本命', '❖'], ['liunian', '流年', '☰'], ['dayun', '大运', '☵'], ['nine', '九运', '☲'], ['other', '其他', '⋯']]],
     ['qiu', '✧', '求事', '财运·事业·姻缘', [['wealth', '财运', '¥'], ['work', '事业', '⚒\uFE0E'], ['team', '人和', '⚇'], ['love', '姻缘', '♡'], ['stock', '股票', '⇡'], ['lotto', '万字', '萬'], ['number', '好数', '#']]],
     ['tan', '✶', '探索', '生肖·星象·本心', [['zodiac', '生肖', '◎'], ['astro', '星象', '✶'], ['mbti', '本心', '◑'], ['life', '开运', '❀']]]];
   const GOF = k => (GROUPS.find(g => g[4].some(s => s[0] === k)) || GROUPS[0]);
@@ -2385,6 +2385,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     work: ['事业 · 官禄卷', '取法《子平》官星为禄', '君子藏器于身，待时而动。', '《易经 · 系辞下》'],
     team: ['合和 · 众生卷', '同气相求，同声相应', '二人同心，其利断金。', '《易经 · 系辞上》'],
     love: ['月老 · 红线卷', '姻缘天定，经营在人', '执子之手，与子偕老。', '《诗经 · 邶风 · 击鼓》'],
+    other: ['命盘 · 补遗卷', '十神 · 五行 · 体质 · 运程表', '观天之道，执天之行。', '《黄帝阴符经》'],
     lotto: ['万字 · 求签卷', '取意民间求字', '心诚则灵，量力而为。', '求字之道'],
     stock: ['股市 · 货殖卷', '取意《史记 · 货殖列传》', '贵出如粪土，贱取如珠玉。', '《史记 · 货殖列传》'],
     number: ['河洛 · 数理卷', '取法《河图》《洛书》', '参伍以变，错综其数。', '《易经 · 系辞上》'],
@@ -2426,7 +2427,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     document.documentElement.classList.add('bz-tr');
   }
   const EN = { 运程: 'Fortune', '今日·周·月·年': 'Day to Year', 命盘: 'Destiny', '本命·流年·大运': 'Chart & Luck', 求事: 'Pursuits', '财运·事业·姻缘': 'Money & Love', 探索: 'Explore', '生肖·星象·本心': 'Stars & Self',
-    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
+    今日: 'Today', 本周: 'This Week', 本月: 'This Month', 今年: 'This Year', 本命: 'Natal Chart', 其他: 'More', 流年: 'Annual Luck', 大运: 'Luck Pillars', 九运: 'Period 9', 财运: 'Wealth', 事业: 'Career', 人和: 'Team', 姻缘: 'Love', 股票: 'Stocks', 万字: '4D', 好数: 'Numbers', 生肖: 'Zodiac', 星象: 'Astrology', 本心: 'Personality', 开运: 'Boost Luck',
     人缘: 'People', 财富: 'Wealth', 健康: 'Health', 感情: 'Love', 感情家庭: 'Love & Family', '☼ 活在当下': '☼ Now' };
   const isEN = () => curLang() === 'en';
   const TX = s => isEN() && EN[s] ? `<span class="notranslate" translate="no">${EN[s]}</span>` : s;
@@ -2927,7 +2928,17 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
       <div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div>
       <p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p><p class="bz-muted">喜用神按“调候优先、扶抑为辅”简化推算，仅供参考。</p></div>`
       + gejuCard(ch)
-      + wordsCard(ch)
+      + wordsCard(ch);
+  }
+  function vOther() {
+    const ch = S.ch; const sh = {}; ELS.forEach(e => sh[e] = Math.round(ch.share[e] * 100));
+    const lab = l => ELS.filter(e => ch.label(e) === l).map(gzc).join('、') || '—';
+    const special = []; if (['庚辰', '庚戌', '壬辰', '戊戌'].includes(ch.P.d)) special.push('日柱为魁罡');
+    const nb = [ch.P.y, ch.P.m, ch.P.d, ch.P.h].filter(Boolean).map(x => x[1]);
+    for (let i = 0; i < nb.length; i++) for (let j = i + 1; j < nb.length; j++) { if (E.chong(nb[i], nb[j])) special.push(`${nb[i]}${nb[j]}相冲`); if (E.LIUHE[nb[i]] === nb[j]) special.push(`${nb[i]}${nb[j]}六合`); }
+    const ty = S.B.syOf(TODAY); const cur = ch.dayun.find(d => ty >= d.yearFrom && ty <= d.yearTo);
+    const pl = ELS.filter(e => ch.label(e) === '平');
+    return ''
       + card('c-deep', '全盘十神解析', ZEN_D(E).deep(ch).map(sec => `<div class="bz-dsec"><h3>${sec.title}</h3><ul class="bz-dlist">${sec.items.map(i => `<li class="bz-d-${i.tone}"><b>${gzc(i.h)}</b><span>${esc(i.t)}</span></li>`).join('')}</ul></div>`).join('') + '<p class="bz-muted">按十神、干支生克和冲合刑害自动推演，绿色为有利、红色为需留意、金色为中性。复杂命局建议再请人细看。</p>', 'bz-deepcard')
       + wxCard('c-wx', '原局五行', sh)
       + tcmBodyCard()
@@ -3516,7 +3527,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_SK;
     setH(app.querySelector('#bz-tabs'), GROUPS.map(([g, ic, n, cap]) => `<button class="bz-tab bz-gtab ${g === curG ? 'bz-on' : ''}" data-act="grp:${g}" role="tab" aria-selected="${g === curG}"><i>${ic}</i><span>${TX(n)}</span><small>${TX(cap)}</small></button>`).join(''));
     const showNav = ['day', 'week', 'month', 'year', 'zodiac', 'work', 'astro'].includes(S.tab);
     app.querySelector('#bz-nav').hidden = !showNav; app.querySelector('.bz-date').value = S.date;
-    const V = { lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
+    const V = { other: vOther, lotto: vLotto, stock: vStock, wealth: vWealth, astro: vAstro, work: vWork, team: vTeam, zodiac: vZodiac, love: vLove, mbti: vMbti, number: vNumber, day: vDay, week: vWeek, month: vMonth, year: vYear, liunian: vLiunian, dayun: vDayun, chart: vChart, life: vLife, nine: vNine }[S.tab];
     let html; try { html = V(); } catch (e) { html = card('err', '出错了', `<p>这个日期超出了可推算范围，请换一个日期。</p><p class="bz-muted">${esc(e.message)}</p>`); }
     const G = GOF(S.tab);
     let sub = app.querySelector('#bz-sub'); if (!sub) { sub = document.createElement('div'); sub.id = 'bz-sub'; app.querySelector('#bz-nav').before(sub); }
