@@ -3035,7 +3035,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const tou = vis.includes(ben) ? 2 : hid.slice(1).some(s => vis.includes(s)) ? 1 : 0;
     const xh = xi.map(([t, d]) => [t, d, cnt(t)]), jh = ji.map(([t, d]) => [t, d, cnt(t)]);
     let sc = 2 + tou * 0.5 + xh.filter(x => x[2] >= 1).length - jh.filter(x => x[2] >= 1).length - (needStrong && ch.weak ? 1 : 0);
-    const lv = sc >= 3 ? ['格局清纯 · 成格', 'bz-good', '格局干净，用神有力。顺着格局的方向发展，最容易出成绩。'] : sc >= 1.5 ? ['格局可用 · 略有瑕疵', '', '格局成立，但有一两处牵制。补上缺的那一块，就能发挥。'] : ['格局受制 · 待运扶', 'bz-bad', '格局受到明显牵制，单靠原局较吃力，要靠大运流年补位。现在用心累积，等运到时就能接住。'];
+    const lv = sc >= 3 ? ['格局清纯 · 成格', 'bz-good', '格局干净，用神有力。顺着格局的方向发展，最容易出成绩。'] : sc >= 1.5 ? ['格局成立 · 尚可精进', 'bz-good', '格局成立，但有一两处牵制。补上缺的那一块，就能发挥。'] : ['格局蓄势 · 待运而发', 'bz-bad', '格局受到明显牵制，单靠原局较吃力，要靠大运流年补位。现在用心累积，等运到时就能接住。'];
     const body = needStrong ? (ch.weak ? ['身弱担格', 'bz-bad', `${ch.geju.slice(0, 2)}要身强才担得起。你身弱，好比本事有了、体力不够：先养自己（学习、贵人、团队、健康），走印比运时最能发挥。`] : ['身强能担', 'bz-good', `${ch.geju.slice(0, 2)}要身强才担得起，你身强，扛得住，可以积极去争取。`]) : (ch.weak ? ['身弱得扶', 'bz-good', '这个格局本身就带扶身的力量，身弱也不怕，重点是找到能让你发挥的舞台。'] : ['身强宜泄', '', '格局本身已经偏强，喜欢有财、官、食伤来消耗，才不会空有力气没处用。']);
     const ty = S.B.syOf(TODAY);
     const dy = ch.dayun.map(d => { const tg = E.tenGod(ch.dm, d.gz[0]); const good = xi.some(([t]) => t.includes(tg)) || (needStrong && ch.weak && ['比肩', '劫财', '正印', '偏印'].includes(tg)) || ['用', '喜'].includes(ch.label(E.elOf(d.gz[0]))); const bad = ji.some(([t]) => t.includes(tg)) && !good; return { d, tg, good, bad, cur: ty >= d.yearFrom && ty <= d.yearTo }; });
