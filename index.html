@@ -481,6 +481,16 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-fhead{display:flex;flex-direction:column;align-items:center;gap:6px}.bz-fback{align-self:flex-start;background:none;border:0;color:#f5d77a;font-size:15px;padding:4px 0;cursor:pointer}
 .bz-fbtn{margin-left:6px}
 .bz-files .bz-fh2{font-size:19px!important;margin:4px 0 12px;color:#f5d77a;font-family:"Songti SC","STSong",serif;letter-spacing:2px}
+.bz-bk{border:1px solid rgba(232,199,102,.35);border-radius:16px;padding:14px;margin-bottom:20px;background:rgba(255,255,255,.03)}
+.bz-bk.warn{border-color:#e8a94a;background:rgba(232,169,74,.08)}
+.bz-bkh{display:flex;justify-content:space-between;align-items:center;gap:8px}.bz-bkh b{color:var(--gold,#e8c766)}.bz-bkh span{font-size:.8em;opacity:.75}
+.bz-bk.warn .bz-bkh span{color:#f0b35a;opacity:1}
+.bz-bkb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.bz-bkb button{padding:10px 4px;border-radius:12px;border:1px solid rgba(232,199,102,.4);background:rgba(0,0,0,.2);color:inherit;font-size:.85em}
+.bz-bkb button.on{background:rgba(232,199,102,.2)}
+.bz-bkr{margin-top:12px;display:grid;gap:8px}
+.bz-bkfile{display:block;padding:10px;border:1px dashed rgba(232,199,102,.6);border-radius:12px;text-align:center}.bz-bkfile input{display:block;margin:8px auto 0;max-width:100%}
+.bz-bkta{width:100%;min-height:70px;border-radius:12px;background:rgba(0,0,0,.3);color:inherit;border:1px solid rgba(232,199,102,.4);padding:8px;font-size:.75em;word-break:break-all}
 .bz-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
 .bz-tool{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:#efe6ff;cursor:pointer;padding:4px 0}
 .bz-tool i{font-style:normal;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:radial-gradient(circle at 35% 30%,#6b58c9,#3a2a86 70%);border:1.5px solid rgba(245,215,122,.55);box-shadow:0 6px 18px rgba(80,50,180,.45),inset 0 1px 0 rgba(255,255,255,.25)}
@@ -3409,6 +3419,53 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     app.addEventListener('touchend', () => { if (!st) return; const { r, dx, h, base } = st, m = r.querySelector('.bz-fmain'); st = null; if (!h) return; m.style.transition = ''; const open = base + dx < -46; r.classList.toggle('sw', open); m.style.transform = open ? 'translateX(-92px)' : ''; r._swiped = Date.now(); });
     app.addEventListener('click', e => { const r = e.target.closest('.bz-file'); if (r && r._swiped && Date.now() - r._swiped < 350 && e.target.closest('.bz-fmain')) { e.stopPropagation(); e.preventDefault(); return; } if (r && r.classList.contains('sw') && e.target.closest('.bz-fmain')) { e.stopPropagation(); e.preventDefault(); close(); } }, true);
   }
+  const BK = 'zen-backup-at';
+  function bkJson() { const d = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('zen') && k !== BK) d[k] = localStorage.getItem(k); } } catch (e) { } return JSON.stringify({ app: '玄镜', v: 1, at: new Date().toISOString(), data: d }); }
+  function bkMark() { try { localStorage.setItem(BK, String(Date.now())); } catch (e) { } }
+  function bkAge() { try { const t = +localStorage.getItem(BK); return t ? Math.floor((Date.now() - t) / 864e5) : null; } catch (e) { return null; } }
+  function bkFile() {
+    const j = bkJson(), name = `玄镜档案备份-${TODAY}.json`, file = new File([j], name, { type: 'application/json' });
+    const dl = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); bkMark(); toast('备份文件已下载'); render(); };
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: '玄镜档案备份' }).then(() => { bkMark(); toast('已备份'); render(); }).catch(e => { if (e && e.name !== 'AbortError') dl(); }); }
+    else dl();
+  }
+  function bkCode() {
+    const c = 'XJ1:' + btoa(unescape(encodeURIComponent(bkJson())));
+    const ok = () => { bkMark(); toast('备份码已复制，贴到备忘录或发给自己保存'); render(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c).then(ok).catch(() => { S.bkShow = c; render(); });
+    else { S.bkShow = c; render(); }
+  }
+  function bkRestore(txt) {
+    let o; txt = String(txt || '').trim();
+    try { if (txt.startsWith('XJ1:')) txt = decodeURIComponent(escape(atob(txt.slice(4).replace(/\s/g, '')))); o = JSON.parse(txt); } catch (e) { toast('看不懂这个备份，请确认是完整的备份文件或备份码'); return; }
+    const d = o && o.data; if (!d || typeof d !== 'object') { toast('这不是玄镜的备份'); return; }
+    let addF = 0;
+    Object.entries(d).forEach(([k, v]) => {
+      if (!k.startsWith('zen')) return;
+      try {
+        if (k === FK) {
+          const inc = JSON.parse(v) || {}, cur = fLoad() || { list: [], cur: null }, key = f => [(f.raw || {}).name, (f.raw || {}).date, (f.raw || {}).time || '', (f.raw || {}).shichen ?? ''].join('|');
+          const have = new Set(cur.list.map(key)), ids = new Set(cur.list.map(f => f.id));
+          (inc.list || []).forEach(f => { if (!f || !f.raw || have.has(key(f))) return; if (ids.has(f.id)) f.id = fid(); cur.list.push(f); have.add(key(f)); addF++; });
+          if (!cur.cur && cur.list[0]) cur.cur = inc.cur && cur.list.some(f => f.id === inc.cur) ? inc.cur : cur.list[0].id;
+          localStorage.setItem(FK, JSON.stringify(cur));
+        } else if (k === TK) {
+          const a = JSON.parse(localStorage.getItem(TK) || '[]') || [], b = JSON.parse(v) || [], kk = m => m.name + '|' + m.date;
+          const h = new Set(a.map(kk)); b.forEach(m => { if (m && !h.has(kk(m))) { a.push(m); h.add(kk(m)); } }); localStorage.setItem(TK, JSON.stringify(a));
+        } else if (localStorage.getItem(k) == null) localStorage.setItem(k, v);
+      } catch (e) { }
+    });
+    bkMark(); toast(`已恢复 ${addF} 个档案`); setTimeout(() => location.reload(), 900);
+  }
+  function bkCard() {
+    const n = (S.files || []).length, age = bkAge(), warn = n && (age == null || age >= 7);
+    const st = age == null ? '还没备份过' : age === 0 ? '今天已备份' : `上次备份：${age} 天前`;
+    return `<div class="bz-bk ${warn ? 'warn' : ''}"><div class="bz-bkh"><b>💾 备份与恢复</b><span>${st}</span></div>
+      <p class="bz-small">档案只存在这台手机的浏览器里。清除浏览记录、换手机、换浏览器，或 iPhone 长时间没打开，都可能让档案消失。${warn ? '<b>建议现在备份一次。</b>' : '有新增档案时记得再备份。'}</p>
+      <div class="bz-bkb"><button data-act="bkfile">📤 备份成文件</button><button data-act="bkcode">📋 复制备份码</button><button class="${S.fbk ? 'on' : ''}" data-act="bkopen">📥 恢复</button></div>
+      ${S.bkShow ? `<p class="bz-small">自动复制失败，请长按全选复制：</p><textarea class="bz-bkta" readonly onclick="this.select()">${S.bkShow}</textarea>` : ''}
+      ${S.fbk ? `<div class="bz-bkr"><label class="bz-bkfile">选择备份文件<input type="file" id="bz-bkin" accept=".json,.txt,application/json,text/plain"></label><textarea id="bz-bkt" class="bz-bkta" placeholder="或把备份码（XJ1: 开头）贴在这里"></textarea><button class="bz-go" data-act="bkgo">恢复档案</button><p class="bz-muted">恢复只会加回缺少的档案，不会覆盖现有的。</p></div>` : ''}</div>`;
+  }
   function filesHtml() {
     const L = S.files || [], tag = S.ftag || '全部', show = L.filter(f => tag === '全部' || (f.raw.tag || '自己') === tag), used = FTAGS.filter(t => L.some(f => (f.raw.tag || '自己') === t));
     const tool = (ic, n, a, d) => `<button class="bz-tool" data-act="${a}"><i>${ic}</i><b>${n}</b><small>${d}</small></button>`;
@@ -3422,6 +3479,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     return `<div class="bz-files">
       <h2 class="bz-fh2">工具</h2>
       <div class="bz-tools">${tool('☯', '八字排盘', 'fnew', '新建一个命盘')}${tool('💞', '八字合婚', 'ftool:love', '看两人合不合')}${tool('🤝', '团队合盘', 'ftool:team', '同事上司搭配')}${tool('📥', '批量导入', 'fimp', '从其他 app 搬档案')}</div>${S.fimp ? `<div class="bz-fimp"><p class="bz-small">每行一个人，格式例如：<br><code>Adrian 1982年04月23日09時【男】</code><br>也可以写 <code>Adrian, 男, 1982-04-23, 09</code>。时辰写小时（0–23），不知道就留空。</p><textarea id="bz-fimpt" rows="8" placeholder="把名单贴在这里"></textarea><div class="bz-fimpb"><select id="bz-fimptag" aria-label="关系">${FTAGS.map(t => `<option ${t === '朋友' ? 'selected' : ''}>${t}</option>`).join('')}</select><button type="button" data-act="fimpgo">导入</button></div>${S.fimpMsg ? `<p class="bz-good">${S.fimpMsg}</p>` : ''}</div>` : ''}
+      ${bkCard()}
       <h2 class="bz-fh2">档案管理</h2>
       <div class="bz-fbar"><button data-act="fnew"><i>＋</i>新建档案</button><label class="bz-fsearch"><i>🔍</i><input id="bz-fq" type="search" placeholder="搜索档案" value="${esc(S.fq || '')}"></label><button class="${S.fmng ? 'on' : ''}" data-act="fmng"><i>🗂</i>${S.fmng ? '完成' : '管理'}</button></div>
       <div class="bz-ftags">${['全部', ...used].map(t => `<button class="${t === tag ? 'on' : ''}" data-act="ftag:${t}">${t}</button>`).join('')}</div>
@@ -3853,6 +3911,10 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     if (k === 'stmk') { S.stMk = v; S.stSel = null; render(); const h = document.getElementById('st-mkt'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (k === 'fdelm') { const [kind, i] = v.split(':'), all = famLoad(); (all[kind] || []).splice(+i, 1); famSave(all); render(); return; }
     if (k === 'stdel') { const L = S.stocks || (S.stocks = sLoad()); L.splice(+v, 1); sSave(L); render(); return; }
+    if (k === 'bkfile') { bkFile(); return; }
+    if (k === 'bkcode') { bkCode(); return; }
+    if (k === 'bkopen') { S.fbk = !S.fbk; S.bkShow = null; render(); return; }
+    if (k === 'bkgo') { const t = document.getElementById('bz-bkt'); bkRestore(t && t.value); return; }
     if (k === 'fswdel') { const idx = S.files.findIndex(x => x.id === v); if (idx < 0) return; const f = S.files[idx], wasCur = S.cur === v; S.files.splice(idx, 1); if (wasCur) { if (S.files[0]) useFile(S.files[0]); else { S.cur = null; S.ch = null; S.raw = null; save(null); } } fSave(); render(); undoBar(`已删除「${f.raw.name || '未命名'}」`, () => { S.files.splice(idx, 0, f); if (wasCur) useFile(f); fSave(); render(); }); return; }
     if (k === 'fdel') { if (S.fdel !== v) { S.fdel = v; render(); return; } S.files = S.files.filter(x => x.id !== v); S.fdel = null; if (S.cur === v) { if (S.files[0]) useFile(S.files[0]); else { S.cur = null; S.ch = null; S.raw = null; save(null); } } fSave(); render(); return; }
     if (k === 'fhe') { const f = S.files.find(x => x.id === v), x = f && fChart(f); if (!x) return; S.partner = { date: f.raw.date, sh: f.raw.shichen, gender: x.inp.gender }; S.view = null; S.fmng = false; S.tab = 'love'; render(); setTimeout(() => { const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); }, 50); return; }
@@ -3881,6 +3943,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       const wasNew = S.newFile; S.newFile = false; S.editId = null; S.view = null; fSave(); S.raw = r.raw; save(r.raw); S.editing = false; S.date = TODAY; compute(r.inp);
       if (!wasNew && S.editFrom) { backFrom(); toast('已保存修改'); return; } S.editFrom = null; render(); window.scrollTo(0, 0); });
     app.addEventListener('change', e => { if (e.target.classList && e.target.classList.contains('bz-fpick')) fillPick(e.target); });
+    app.addEventListener('change', e => { if (e.target.id !== 'bz-bkin' || !e.target.files[0]) return; const r = new FileReader(); r.onload = () => bkRestore(r.result); r.readAsText(e.target.files[0]); });
     app.addEventListener('input', e => { if (e.target.id !== 'bz-fq') return; const q = e.target.value.trim().toLowerCase(); S.fq = e.target.value; app.querySelectorAll('.bz-file').forEach(c => { c.hidden = !!q && !c.dataset.n.includes(q); }); });
     $('#bz-undo').addEventListener('click', undo); $('#bz-redo').addEventListener('click', redo);
     document.addEventListener('keydown', e => { if (!(e.ctrlKey || e.metaKey) || !S.ch || S.editing) return; const tag = (document.activeElement || {}).tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
@@ -3901,6 +3964,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     app.addEventListener('pointerout', e => { const g = e.target.closest('.bz-bar'); if (g) { const tt = g.closest('.bz-chart').querySelector('.bz-tt'); tt.hidden = true; } });
     const h = (location.hash || '').slice(1); if (TABS.some(t => t[0] === h)) S.tab = h;
     window.addEventListener('hashchange', () => { const h2 = location.hash.slice(1); if (TABS.some(t => t[0] === h2) && S.ch) { S.tab = h2; render(); } });
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { }
     const fs = fLoad(); S.files = fs && fs.list || []; S.cur = fs && fs.cur;
     const v0 = load(); if (!S.files.length && v0) { S.files = [{ id: fid(), raw: Object.assign({ tag: '自己' }, v0) }]; S.cur = S.files[0].id; fSave(); }
     const cf = S.files.find(x => x.id === S.cur) || S.files[0]; if (cf) S.cur = cf.id;
