@@ -481,6 +481,12 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 .bz-fhead{display:flex;flex-direction:column;align-items:center;gap:6px}.bz-fback{align-self:flex-start;background:none;border:0;color:#f5d77a;font-size:15px;padding:4px 0;cursor:pointer}
 .bz-fbtn{margin-left:6px}
 .bz-files .bz-fh2{font-size:19px!important;margin:4px 0 12px;color:#f5d77a;font-family:"Songti SC","STSong",serif;letter-spacing:2px}
+.bz-cloud{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;padding:6px 14px;border-radius:999px;border:1px solid rgba(232,199,102,.55);background:rgba(0,0,0,.2);color:var(--gold,#e8c766);font:inherit;font-size:.9em}
+.bz-cloud small{font-size:.65em;opacity:.75}.bz-cloud.on{background:rgba(80,200,120,.15);border-color:rgba(80,200,120,.6);color:#9fe0b4}
+.bz-cloudc{border:1px solid rgba(232,199,102,.4);border-radius:16px;padding:14px;margin-bottom:20px;background:rgba(232,169,74,.08)}
+.bz-cloudc.on{background:rgba(80,200,120,.08);border-color:rgba(80,200,120,.45)}.bz-cloudc b{color:var(--gold,#e8c766)}
+.bz-cloudbtn{display:block;width:100%;margin-top:8px;padding:12px;border-radius:14px;border:none;font:inherit;font-weight:700;background:#fff;color:#333}
+.bz-cloudout{margin-top:6px;padding:8px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:none;color:inherit}
 .bz-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
 .bz-tool{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:#efe6ff;cursor:pointer;padding:4px 0}
 .bz-tool i{font-style:normal;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:radial-gradient(circle at 35% 30%,#6b58c9,#3a2a86 70%);border:1.5px solid rgba(245,215,122,.55);box-shadow:0 6px 18px rgba(80,50,180,.45),inset 0 1px 0 rgba(255,255,255,.25)}
@@ -535,6 +541,7 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 <div id="bz-ur" class="bz-ur" hidden><button id="bz-undo" aria-label="撤销" title="撤销 (Ctrl+Z)">↶ 撤销</button><button id="bz-redo" aria-label="重做" title="重做 (Ctrl+Shift+Z)">重做 ↷</button></div>
 <div id="bz-toast" class="bz-toast" role="status" hidden></div>
 <div id="bz-sheet" hidden><div class="bz-sheet-bg" data-act="close"></div><div class="bz-sheet-card" role="dialog" aria-modal="true" aria-label="解读"><button class="bz-x" data-act="close" aria-label="关闭">✕</button><div id="bz-sheet-body"></div></div></div>
+<script>window.XJ_FB = null; /* Firebase web config goes here */</script>
 <script>
 window.ZEN_GUA={"hex":{"乾":{"i":1,"u":"乾","l":"乾","full":"乾为天","text":"元亨利贞。","plain":"天道刚健，运行不息。纯阳之卦，代表开创与领导，时机正强；但阳极易亢，宜自强而不自傲。","mean":"刚健自强，宜主动进取，但忌过亢"},"坤":{"i":2,"u":"坤","l":"坤","full":"坤为地","text":"元亨，利牝马之贞。君子有攸往，先迷后得主。安贞吉。","plain":"大地厚重，承载万物。代表柔顺、包容与配合：跟随正确的方向和领导就有收获，抢先反而迷失。","mean":"厚德载物，宜顺势配合，不宜抢先"},"屯":{"i":3,"u":"坎","l":"震","full":"水雷屯","text":"元亨利贞，勿用有攸往，利建侯。","plain":"草木破土初生之难。事情刚起步、阻碍多，不宜冒进，适合先打根基、找可靠的帮手。","mean":"万事起头难，宜打基础、找帮手"},"蒙":{"i":4,"u":"艮","l":"坎","full":"山水蒙","text":"亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。","plain":"山下出泉，蒙昧未开。代表学习与启蒙：虚心专一地求教才有收获，反复怀疑则得不到指点。","mean":"启蒙求教，宜学习请教，忌自以为是"},"需":{"i":5,"u":"坎","l":"乾","full":"水天需","text":"有孚，光亨，贞吉，利涉大川。","plain":"云上于天，等待降雨。时机未到，要耐心等待，同时保持诚信、做好准备，时机一到就能渡过难关。","mean":"等待时机，宜耐心准备，不宜冒进"},"讼":{"i":6,"u":"乾","l":"坎","full":"天水讼","text":"有孚，窒惕，中吉，终凶。利见大人，不利涉大川。","plain":"天往上、水往下，彼此相背而起争执。适可而止则吉，争到底则凶，宜找有德望的人调解。","mean":"易起争执，宜退让和解，忌硬碰硬"},"师":{"i":7,"u":"坤","l":"坎","full":"地水师","text":"贞，丈人吉，无咎。","plain":"地中藏水，聚众成军。代表组织与带队，目标要正当、领导要有经验，纪律严明才能成事。","mean":"统众行事，宜组织协作，讲章法"},"比":{"i":8,"u":"坎","l":"坤","full":"水地比","text":"吉。原筮元永贞，无咎。不宁方来，后夫凶。","plain":"水在地上，亲密无间。代表亲近与团结，宜主动结盟、拉近关系，迟疑观望会错过机会。","mean":"亲近相辅，宜结盟合作、拉近关系"},"小畜":{"i":9,"u":"巽","l":"乾","full":"风天小畜","text":"亨。密云不雨，自我西郊。","plain":"风行天上，云聚而未雨。力量有所积累但还不够，事情有进展却未到收成，宜继续蓄积，不要急。","mean":"小有积蓄，力量未足，宜蓄势"},"履":{"i":10,"u":"乾","l":"兑","full":"天泽履","text":"履虎尾，不咥人，亨。","plain":"上天下泽，尊卑有序。像踩在老虎尾巴后面走路，有风险，但谨慎守礼、按规矩办事就能平安亨通。","mean":"如履虎尾，谨慎守礼则亨通"},"泰":{"i":11,"u":"坤","l":"乾","full":"地天泰","text":"小往大来，吉亨。","plain":"地气上升、天气下降，天地相交。上下沟通顺畅，付出小、收获大，诸事顺遂，但要居安思危。","mean":"天地交泰，上下通达，诸事顺遂"},"否":{"i":12,"u":"乾","l":"坤","full":"天地否","text":"否之匪人，不利君子贞，大往小来。","plain":"天地不交，上下隔绝。沟通不畅、付出多回报少，宜收敛守正，不与小人纠缠，等待转机。","mean":"上下不通，宜守正待时，少作为"},"同人":{"i":13,"u":"乾","l":"离","full":"天火同人","text":"同人于野，亨。利涉大川，利君子贞。","plain":"天与火同向上。代表志同道合、公开合作，以公心团结众人，可以共渡难关。","mean":"志同道合，宜合作、团队协力"},"大有":{"i":14,"u":"离","l":"乾","full":"火天大有","text":"元亨。","plain":"火在天上，普照万物。代表大丰收、拥有很多，宜与人分享、行善积德，戒骄满。","mean":"收获丰盛，宜分享，戒骄满"},"谦":{"i":15,"u":"坤","l":"艮","full":"地山谦","text":"亨，君子有终。","plain":"高山藏于地下。越有实力越懂得低调退让，谦虚的人最终有好结果。","mean":"谦虚受益，低调做事得人心"},"豫":{"i":16,"u":"震","l":"坤","full":"雷地豫","text":"利建侯行师。","plain":"雷出地上，万物奋发。代表愉悦、顺势而动，适合筹划行动、调动人力，但要防安逸懈怠。","mean":"安乐愉悦，宜筹划行动，防懈怠"},"随":{"i":17,"u":"兑","l":"震","full":"泽雷随","text":"元亨利贞，无咎。","plain":"泽中有雷，随时而动。代表顺应形势、择善而从，跟对人、走对方向就没有过错。","mean":"随时而动，宜顺应变化、择善而从"},"蛊":{"i":18,"u":"艮","l":"巽","full":"山风蛊","text":"元亨，利涉大川。先甲三日，后甲三日。","plain":"山下有风，器物生虫腐坏。积弊需要整治，宜下决心改革、处理旧问题，事前事后都要考虑周全。","mean":"积弊待整，宜整顿革新、处理旧账"},"临":{"i":19,"u":"坤","l":"兑","full":"地泽临","text":"元亨利贞。至于八月有凶。","plain":"泽上有地，居高临下。好运正在来临，适合主动推进、管理指导；但盛运有期限，要提早防备转弱。","mean":"居上临下，宜主动推进，好景要把握"},"观":{"i":20,"u":"巽","l":"坤","full":"风地观","text":"盥而不荐，有孚颙若。","plain":"风行地上，周遍观察。先看清形势、端正自己，以诚意感化他人，不急于行动。","mean":"观察审视，宜看清形势再行动"},"噬嗑":{"i":21,"u":"离","l":"震","full":"火雷噬嗑","text":"亨，利用狱。","plain":"雷电交加，口中有物须咬断。代表排除障碍、明辨是非，适合果断处理问题、订立规矩。","mean":"排除障碍，宜果断处理、立规矩"},"贲":{"i":22,"u":"艮","l":"离","full":"山火贲","text":"亨，小利有攸往。","plain":"山下有火，光照山色。代表修饰与美化，适合打理形象、包装作品；但外表只是小助力，实质更重要。","mean":"修饰打理，宜注重形象，更重实质"},"剥":{"i":23,"u":"艮","l":"坤","full":"山地剥","text":"不利有攸往。","plain":"山附于地，层层剥落。形势在消退，不宜主动出击，宜保存实力、等待转机。","mean":"剥落衰退，宜守不宜进，保存实力"},"复":{"i":24,"u":"坤","l":"震","full":"地雷复","text":"亨。出入无疾，朋来无咎。反复其道，七日来复，利有攸往。","plain":"雷在地中，一阳复生。低谷后的转机，事情开始回暖，适合重新开始、回到正道。","mean":"一阳来复，转机初现，宜重新开始"},"无妄":{"i":25,"u":"乾","l":"震","full":"天雷无妄","text":"元亨利贞。其匪正有眚，不利有攸往。","plain":"天下雷行，万物不敢妄动。守正就亨通，心存侥幸、投机取巧则有灾，宜踏实做事。","mean":"不妄为则吉，宜守正，忌投机"},"大畜":{"i":26,"u":"艮","l":"乾","full":"山天大畜","text":"利贞，不家食吉，利涉大川。","plain":"天藏山中，蓄积宏大。适合大量积累学识与实力、进修储备，出外发展有利。","mean":"大有积蓄，宜进修储备，待时而发"},"颐":{"i":27,"u":"艮","l":"震","full":"山雷颐","text":"贞吉。观颐，自求口实。","plain":"山下有雷，像张开的口。代表颐养：注意饮食和言语，靠正当努力养活自己，修身养性。","mean":"颐养之道，注意饮食言语，养精蓄锐"},"大过":{"i":28,"u":"兑","l":"巽","full":"泽风大过","text":"栋桡，利有攸往，亨。","plain":"泽水淹没树木，栋梁弯曲。负担过重、处于非常时期，需要非常手段，果断行动反而能化解。","mean":"负担过重，宜减压，非常时用非常法"},"坎":{"i":29,"u":"坎","l":"坎","full":"坎为水","text":"习坎，有孚，维心亨，行有尚。","plain":"水流重重，险上加险。处境艰难，但保持诚信和内心坚定，像水一样持续流动不放弃，就能走出困境。","mean":"重重险阻，宜守信沉着，步步为营"},"离":{"i":30,"u":"离","l":"离","full":"离为火","text":"利贞，亨。畜牝牛吉。","plain":"火光明亮，依附而生。代表光明与才华，宜依靠正道和可靠的人展现能力，同时保持柔顺。","mean":"光明依附，宜展现才华，走正道"},"咸":{"i":31,"u":"兑","l":"艮","full":"泽山咸","text":"亨，利贞，取女吉。","plain":"山上有泽，彼此感应。代表感应与沟通，利人际、感情和婚恋，以真诚打动人。","mean":"感应相通，宜沟通交流，利感情"},"恒":{"i":32,"u":"震","l":"巽","full":"雷风恒","text":"亨，无咎，利贞，利有攸往。","plain":"雷风相随，恒久不变。守住正确方向、长期经营，就会亨通。","mean":"持之以恒，宜坚持原有方向"},"遁":{"i":33,"u":"乾","l":"艮","full":"天山遁","text":"亨，小利贞。","plain":"天下有山，适时退避。形势对你不利，宜主动退让、韬光养晦，这是策略而不是失败。","mean":"适时退避，宜韬光养晦"},"大壮":{"i":34,"u":"震","l":"乾","full":"雷天大壮","text":"利贞。","plain":"雷在天上，声势浩大。实力强盛，正是进取之时，但要守正，不可恃强逞能。","mean":"声势强盛，宜正当进取，忌逞强"},"晋":{"i":35,"u":"离","l":"坤","full":"火地晋","text":"康侯用锡马蕃庶，昼日三接。","plain":"太阳升出地面。代表上进与晋升，容易得到上级赏识和提拔，宜积极表现。","mean":"光明上进，利升迁、表现"},"明夷":{"i":36,"u":"坤","l":"离","full":"地火明夷","text":"利艰贞。","plain":"太阳没入地下，光明受伤。才华不被看见、处境不利，宜隐忍藏锋，在艰难中坚守。","mean":"光明受伤，宜隐忍藏锋"},"家人":{"i":37,"u":"巽","l":"离","full":"风火家人","text":"利女贞。","plain":"风自火出，家道和睦。代表家庭与内部秩序，宜各守本分，经营家庭和团队内部。","mean":"家庭和睦，宜顾家、理顺内部"},"睽":{"i":38,"u":"离","l":"兑","full":"火泽睽","text":"小事吉。","plain":"火往上、泽往下，彼此背离。意见不合、关系疏离，大事难成，宜求同存异，从小事着手。","mean":"意见相左，求同存异，小事吉"},"蹇":{"i":39,"u":"坎","l":"艮","full":"水山蹇","text":"利西南，不利东北。利见大人，贞吉。","plain":"山上有水，前路艰难。行动受阻，宜停下反省、寻求贵人帮助，不要硬闯。","mean":"行路艰难，宜止步求援"},"解":{"i":40,"u":"震","l":"坎","full":"雷水解","text":"利西南。无所往，其来复吉；有攸往，夙吉。","plain":"雷雨交作，冰雪消融。困难开始化解，有事尽快处理，没事就回归平常。","mean":"困难缓解，宜把握时机解决问题"},"损":{"i":41,"u":"艮","l":"兑","full":"山泽损","text":"有孚，元吉，无咎，可贞，利有攸往。","plain":"山下有泽，减下益上。有舍才有得，适度减少欲望和投入，诚心付出反而带来好结果。","mean":"有舍才有得，宜节制投入"},"益":{"i":42,"u":"巽","l":"震","full":"风雷益","text":"利有攸往，利涉大川。","plain":"风雷相助。增益之时，适合行动、投资自己、帮助别人，可以大展拳脚。","mean":"增益之时，宜行动，助人亦助己"},"夬":{"i":43,"u":"兑","l":"乾","full":"泽天夬","text":"扬于王庭，孚号有厉。告自邑，不利即戎，利有攸往。","plain":"泽水上天，即将决堤。代表决断，宜光明正大地清除障碍，但不宜硬拼。","mean":"决断之时，宜果断清障，忌急躁"},"姤":{"i":44,"u":"乾","l":"巽","full":"天风姤","text":"女壮，勿用取女。","plain":"天下有风，不期而遇。一阴初生，代表偶遇与诱惑，要防小人和不当关系，不宜轻易承诺。","mean":"不期而遇，宜防诱惑与小人"},"萃":{"i":45,"u":"兑","l":"坤","full":"泽地萃","text":"亨。王假有庙，利见大人，亨，利贞。用大牲吉，利有攸往。","plain":"泽在地上，万物汇聚。利聚会、整合资源、团结人心，有贵人可依。","mean":"人才汇聚，利聚会、整合资源"},"升":{"i":46,"u":"坤","l":"巽","full":"地风升","text":"元亨，用见大人，勿恤，南征吉。","plain":"地中生木，逐渐长高。代表稳步上升，宜循序渐进、主动求见贵人，往南发展吉。","mean":"稳步上升，宜循序渐进"},"困":{"i":47,"u":"兑","l":"坎","full":"泽水困","text":"亨，贞，大人吉，无咎。有言不信。","plain":"泽中无水，处境困乏。困境中说话没人信，宜少说多做、坚守志向，等待转机。","mean":"处境受困，宜守口守志，等待转机"},"井":{"i":48,"u":"坎","l":"巽","full":"水风井","text":"改邑不改井，无丧无得，往来井井。汔至亦未繘井，羸其瓶，凶。","plain":"木上有水，汲水之井。代表稳定的资源和持续付出，宜修养自己、稳定输出，半途而废则前功尽弃。","mean":"源源不绝，宜修德养才、稳定输出"},"革":{"i":49,"u":"兑","l":"离","full":"泽火革","text":"巳日乃孚，元亨利贞，悔亡。","plain":"泽中有火，水火相息。代表变革：时机成熟再改，改得正当就能消除悔恨。","mean":"变革之时，宜除旧布新"},"鼎":{"i":50,"u":"离","l":"巽","full":"火风鼎","text":"元吉，亨。","plain":"木上有火，烹煮食物。代表鼎新立业，适合开创新局面、任用贤才。","mean":"鼎新立业，利开创新局面"},"震":{"i":51,"u":"震","l":"震","full":"震为雷","text":"亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。","plain":"雷声重重。突发变动令人惊惧，但镇定不乱，事后反能谈笑自若。","mean":"雷动惊变，临变不乱则吉"},"艮":{"i":52,"u":"艮","l":"艮","full":"艮为山","text":"艮其背，不获其身；行其庭，不见其人，无咎。","plain":"两山相重，静止不动。代表适可而止，宜冷静思考、控制欲望，不宜躁动。","mean":"适可而止，宜静思，不宜躁动"},"渐":{"i":53,"u":"巽","l":"艮","full":"风山渐","text":"女归吉，利贞。","plain":"山上有木，逐渐成长。按步骤推进就会顺利，利婚嫁。","mean":"循序渐进，稳中有进"},"归妹":{"i":54,"u":"震","l":"兑","full":"雷泽归妹","text":"征凶，无攸利。","plain":"泽上有雷，少女随长男。名分不正或时机不当，贸然行动不利，宜守本分。","mean":"名分不正易生悔，宜守本分"},"丰":{"i":55,"u":"震","l":"离","full":"雷火丰","text":"亨，王假之。勿忧，宜日中。","plain":"雷电皆至，盛大丰满。正处高峰，要把握当下，也要明白盛极必衰。","mean":"盛大丰满，把握当下，防盛极而衰"},"旅":{"i":56,"u":"离","l":"艮","full":"火山旅","text":"小亨，旅贞吉。","plain":"山上有火，如行旅在外。奔波在外、处境不稳，宜谨慎低调，小事可成。","mean":"在外奔波，宜谨慎低调，利出行"},"巽":{"i":57,"u":"巽","l":"巽","full":"巽为风","text":"小亨，利有攸往，利见大人。","plain":"风行相随，无孔不入。代表柔顺渗透，适合沟通协调、以柔克刚，跟随贵人。","mean":"柔顺渗透，宜沟通协调、以柔克刚"},"兑":{"i":58,"u":"兑","l":"兑","full":"兑为泽","text":"亨，利贞。","plain":"两泽相连，喜悦和顺。利交际、谈判、讲学，但要守正，不可巧言取悦。","mean":"喜悦和顺，利交际、谈判"},"涣":{"i":59,"u":"巽","l":"坎","full":"风水涣","text":"亨。王假有庙，利涉大川，利贞。","plain":"风行水上，水波离散。人心涣散时要凝聚人心、化解隔阂，可以渡过难关。","mean":"涣散需聚，宜凝聚人心、化解隔阂"},"节":{"i":60,"u":"坎","l":"兑","full":"水泽节","text":"亨。苦节不可贞。","plain":"泽上有水，满则溢出。代表节制：适度控制开支和情绪，但过分苛刻也不行。","mean":"节制有度，宜控制开支与情绪"},"中孚":{"i":61,"u":"巽","l":"兑","full":"风泽中孚","text":"豚鱼吉，利涉大川，利贞。","plain":"泽上有风，诚信感物。以真诚待人能感动他人，可以渡过难关。","mean":"诚信感人，宜以诚相待"},"小过":{"i":62,"u":"震","l":"艮","full":"雷山小过","text":"亨，利贞。可小事，不可大事。飞鸟遗之音，不宜上宜下，大吉。","plain":"山上有雷，略有过度。小事可做，大事不宜，宜低调向下，不宜好高骛远。","mean":"小事可为，大事不宜，谨小慎微"},"既济":{"i":63,"u":"坎","l":"离","full":"水火既济","text":"亨小，利贞。初吉终乱。","plain":"水在火上，事已办成。各方面都已到位，但成功后容易松懈，宜守成防乱。","mean":"已成之局，宜守成，防初吉终乱"},"未济":{"i":64,"u":"离","l":"坎","full":"火水未济","text":"亨。小狐汔济，濡其尾，无攸利。","plain":"火在水上，事未完成。还没到终点，宜谨慎坚持，不可在最后关头松懈。","mean":"事未完成，宜继续努力，慎终如始"}},"tri":{"乾":{"sym":"☰","img":"天","el":"金","num":1},"兑":{"sym":"☱","img":"泽","el":"金","num":2},"离":{"sym":"☲","img":"火","el":"火","num":3},"震":{"sym":"☳","img":"雷","el":"木","num":4},"巽":{"sym":"☴","img":"风","el":"木","num":5},"坎":{"sym":"☵","img":"水","el":"水","num":6},"艮":{"sym":"☶","img":"山","el":"土","num":7},"坤":{"sym":"☷","img":"地","el":"土","num":8}},"qigua":["中孚","复","屯","谦","睽","升","临","小过","蒙","益","渐","泰","需","随","晋","解","大壮","豫","讼","蛊","革","夬","旅","师","比","小畜","乾","大有","家人","井","咸","姤","鼎","丰","涣","履","遁","恒","节","同人","损","否","巽","萃","大畜","贲","观","归妹","无妄","明夷","困","剥","艮","既济","噬嗑","大过","坤","未济","蹇","颐"],"bigua":{"子":"复","丑":"临","寅":"泰","卯":"大壮","辰":"夬","巳":"乾","午":"姤","未":"遁","申":"否","酉":"观","戌":"剥","亥":"坤"}};
 </script>
@@ -3372,7 +3379,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const ch = S.ch, i = S.inp; const d = S.B.day(TODAY);
     const P = ch.P; const hourTxt = i.time ? i.time : (i.shichen != null ? SHI[i.shichen][0].split(' ')[0] : '时辰不详');
     return `${XJ_MARK(120, "bz-taiji")}
-      <div class="bz-who"><span class="bz-cname notranslate" translate="no">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button>${langSel()}<button class="bz-edit bz-fbtn" data-act="files">📁 档案${S.files && S.files.length > 1 ? ` · ${S.files.length}` : ''}</button></div>
+      <div class="bz-who"><span class="bz-cname notranslate" translate="no">${esc(i.name || '未命名')}</span>${i.en ? `<span class="bz-ename">${esc(i.en)}</span>` : ''}<span class="bz-gender">${i.gender} · ${i.gender === '男' ? '乾造' : '坤造'}</span><span class="bz-gender">属${AN[Z.indexOf(P.y[1])]}</span><button class="bz-edit" data-act="edit">✎ 修改资料</button>${langSel()}<button class="bz-edit bz-fbtn" data-act="files">📁 档案${S.files && S.files.length > 1 ? ` · ${S.files.length}` : ''}</button>${cloudBtn()}</div>
       <div class="bz-birth"><span><b>阳历</b>${i.y}年${i.m}月${i.d}日 · ${esc(hourTxt)}</span></div>
       <h1 class="bz-title"><span class="bz-xjb">玄镜</span>${S.inp && S.inp.name ? `<small class="bz-xjn notranslate" translate="no">${esc(S.inp.name.trim())} 的命盘</small>` : ''}</h1>
       <p class="bz-sub">${gzc(ch.dm)}${ch.de}日主 · ${gzc(P.y)}年 ${gzc(P.m)}月 ${gzc(P.d)}日 ${P.h ? gzc(P.h) + '时' : '时辰不详'} · ${ch.geju}，${ch.weak ? '身弱' : '身强'}，用神${gzc(ch.yong)}</p>`;
@@ -3409,6 +3416,76 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     app.addEventListener('touchend', () => { if (!st) return; const { r, dx, h, base } = st, m = r.querySelector('.bz-fmain'); st = null; if (!h) return; m.style.transition = ''; const open = base + dx < -46; r.classList.toggle('sw', open); m.style.transform = open ? 'translateX(-92px)' : ''; r._swiped = Date.now(); });
     app.addEventListener('click', e => { const r = e.target.closest('.bz-file'); if (r && r._swiped && Date.now() - r._swiped < 350 && e.target.closest('.bz-fmain')) { e.stopPropagation(); e.preventDefault(); return; } if (r && r.classList.contains('sw') && e.target.closest('.bz-fmain')) { e.stopPropagation(); e.preventDefault(); close(); } }, true);
   }
+  // ---------- 云端登录 · Google ----------
+  const FBV = '11.0.2', FBU = n => `https://www.gstatic.com/firebasejs/${FBV}/firebase-${n}.js`;
+  const CL = { on: !!window.XJ_FB, user: null, busy: false, fb: null, t: null, pulling: false, st: '' };
+  function cloudData() { const d = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('zen') && k !== 'zen-guide-v1') d[k] = localStorage.getItem(k); } } catch (e) { } return d; }
+  function cloudMerge(d) {
+    let add = 0; const raw = Storage.prototype.setItem;
+    Object.entries(d || {}).forEach(([k, v]) => {
+      if (!k.startsWith('zen') || typeof v !== 'string') return;
+      try {
+        if (k === FK) {
+          const inc = JSON.parse(v) || {}, cur = fLoad() || { list: [], cur: null }, key = f => { const r = f.raw || {}; return [r.name, r.date, r.time || '', r.shichen ?? ''].join('|'); };
+          const have = new Set(cur.list.map(key)), ids = new Set(cur.list.map(f => f.id));
+          (inc.list || []).forEach(f => { if (!f || !f.raw || have.has(key(f))) return; if (ids.has(f.id)) f.id = fid(); cur.list.push(f); have.add(key(f)); ids.add(f.id); add++; });
+          if (!cur.cur && cur.list[0]) cur.cur = inc.cur && cur.list.some(f => f.id === inc.cur) ? inc.cur : cur.list[0].id;
+          raw.call(localStorage, FK, JSON.stringify(cur));
+        } else if (k === TK) {
+          const a = JSON.parse(localStorage.getItem(TK) || '[]') || [], b = JSON.parse(v) || [], kk = m => m.name + '|' + m.date, h = new Set(a.map(kk));
+          b.forEach(m => { if (m && !h.has(kk(m))) { a.push(m); h.add(kk(m)); } }); raw.call(localStorage, TK, JSON.stringify(a));
+        } else if (localStorage.getItem(k) == null) raw.call(localStorage, k, v);
+      } catch (e) { }
+    });
+    return add;
+  }
+  async function cloudLib() {
+    if (CL.fb) return CL.fb;
+    const [app, auth, fs] = await Promise.all([import(FBU('app')), import(FBU('auth')), import(FBU('firestore'))]);
+    const a = app.initializeApp(window.XJ_FB), au = auth.getAuth(a), db = fs.getFirestore(a);
+    CL.fb = { auth, fs, au, db }; return CL.fb;
+  }
+  async function cloudPush() {
+    if (!CL.user || CL.pulling) return; const { fs, db } = await cloudLib();
+    try { await fs.setDoc(fs.doc(db, 'users', CL.user.uid), { data: cloudData(), at: Date.now(), name: CL.user.displayName || '' }); CL.st = '已同步'; } catch (e) { CL.st = '同步失败，稍后重试'; }
+    const b = document.querySelector('.bz-cloud small'); if (b) b.textContent = CL.st;
+  }
+  function cloudQueue() { if (!CL.user) return; clearTimeout(CL.t); CL.t = setTimeout(cloudPush, 1500); }
+  async function cloudPull(u) {
+    const { fs, db } = await cloudLib(); CL.pulling = true; let add = 0;
+    try { const snap = await fs.getDoc(fs.doc(db, 'users', u.uid)); if (snap.exists()) add = cloudMerge((snap.data() || {}).data); } catch (e) { CL.st = '读取云端失败'; }
+    CL.pulling = false;
+    const f = fLoad(); S.files = f && f.list || []; S.team = null; S.stocks = null;
+    if (!S.ch && S.files.length) { const c = S.files.find(x => x.id === f.cur) || S.files[0]; useFile(c); }
+    await cloudPush(); render(); if (add) toast(`已从云端加回 ${add} 个档案`);
+  }
+  async function cloudInit() {
+    if (!CL.on) return;
+    const raw = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (k, v) { raw.call(this, k, v); if (this === window.localStorage && String(k).startsWith('zen') && k !== 'zen-guide-v1') cloudQueue(); };
+    try {
+      const { auth, au } = await cloudLib();
+      try { await auth.getRedirectResult(au); } catch (e) { }
+      auth.onAuthStateChanged(au, u => { CL.user = u; CL.busy = false; if (u) { CL.st = '同步中…'; render(); cloudPull(u); } else { CL.st = ''; render(); } });
+    } catch (e) { CL.on = false; render(); }
+  }
+  async function cloudLogin() {
+    if (CL.busy) return; CL.busy = true; render();
+    try { const { auth, au } = await cloudLib(); const pv = new auth.GoogleAuthProvider(); pv.setCustomParameters({ prompt: 'select_account' });
+      try { await auth.signInWithPopup(au, pv); } catch (e) { if (/popup|cancelled-popup|operation-not-supported/.test(e.code || '')) await auth.signInWithRedirect(au, pv); else throw e; }
+    } catch (e) { CL.busy = false; render(); toast('登录没有成功，请再试一次'); }
+  }
+  async function cloudLogout() { const { auth, au } = await cloudLib(); await cloudPush(); await auth.signOut(au); toast('已登出，这台手机上的档案仍然保留'); }
+  function cloudBtn() {
+    if (!CL.on) return '';
+    if (CL.user) return `<button class="bz-cloud on" data-act="cloudme">☁ ${esc((CL.user.displayName || CL.user.email || '已登录').split(' ')[0])}<small>${CL.st || '已同步'}</small></button>`;
+    return `<button class="bz-cloud" data-act="cloudin">${CL.busy ? '登录中…' : '☁ Google 登录'}<small>档案存云端</small></button>`;
+  }
+  function cloudCard() {
+    if (!CL.on) return '';
+    if (!CL.user) return `<div class="bz-cloudc"><b>☁ 登录保存档案</b><p class="bz-small">没登录时，档案只存在这台手机的浏览器里，清除记录或换手机就会不见。用 Google 登录后，档案自动存到云端，换手机、换浏览器登录同一个账号就能找回。</p><button class="bz-cloudbtn" data-act="cloudin">${CL.busy ? '登录中…' : '用 Google 登录'}</button></div>`;
+    return `<div class="bz-cloudc on"><b>☁ 已登录 · ${esc(CL.user.email || CL.user.displayName || '')}</b><p class="bz-small">档案会自动同步到云端（${CL.st || '已同步'}）。换手机时用同一个 Google 账号登录就能找回。</p><button data-act="cloudout" class="bz-cloudout">登出</button></div>`;
+  }
   function filesHtml() {
     const L = S.files || [], tag = S.ftag || '全部', show = L.filter(f => tag === '全部' || (f.raw.tag || '自己') === tag), used = FTAGS.filter(t => L.some(f => (f.raw.tag || '自己') === t));
     const tool = (ic, n, a, d) => `<button class="bz-tool" data-act="${a}"><i>${ic}</i><b>${n}</b><small>${d}</small></button>`;
@@ -3422,6 +3499,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     return `<div class="bz-files">
       <h2 class="bz-fh2">工具</h2>
       <div class="bz-tools">${tool('☯', '八字排盘', 'fnew', '新建一个命盘')}${tool('💞', '八字合婚', 'ftool:love', '看两人合不合')}${tool('🤝', '团队合盘', 'ftool:team', '同事上司搭配')}${tool('📥', '批量导入', 'fimp', '从其他 app 搬档案')}</div>${S.fimp ? `<div class="bz-fimp"><p class="bz-small">每行一个人，格式例如：<br><code>Adrian 1982年04月23日09時【男】</code><br>也可以写 <code>Adrian, 男, 1982-04-23, 09</code>。时辰写小时（0–23），不知道就留空。</p><textarea id="bz-fimpt" rows="8" placeholder="把名单贴在这里"></textarea><div class="bz-fimpb"><select id="bz-fimptag" aria-label="关系">${FTAGS.map(t => `<option ${t === '朋友' ? 'selected' : ''}>${t}</option>`).join('')}</select><button type="button" data-act="fimpgo">导入</button></div>${S.fimpMsg ? `<p class="bz-good">${S.fimpMsg}</p>` : ''}</div>` : ''}
+      ${cloudCard()}
       <h2 class="bz-fh2">档案管理</h2>
       <div class="bz-fbar"><button data-act="fnew"><i>＋</i>新建档案</button><label class="bz-fsearch"><i>🔍</i><input id="bz-fq" type="search" placeholder="搜索档案" value="${esc(S.fq || '')}"></label><button class="${S.fmng ? 'on' : ''}" data-act="fmng"><i>🗂</i>${S.fmng ? '完成' : '管理'}</button></div>
       <div class="bz-ftags">${['全部', ...used].map(t => `<button class="${t === tag ? 'on' : ''}" data-act="ftag:${t}">${t}</button>`).join('')}</div>
@@ -3431,7 +3509,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   function formHtml(v) {
     v = v || { name: '', en: '', gender: '男', date: '', shichen: '', time: '', tz: 8, zishi: '换日' };
     const ed = !S.newFile && !!S.ch;
-    return `${ed ? '<div class="bz-edtop"><button type="button" class="bz-cancel" data-act="cancel">‹ 返回</button><h2>修改资料</h2><button type="submit" form="bz-form" class="bz-go bz-edok">✓ 确认</button></div>' : `<h2>${S.newFile ? '新建档案' : '输入出生资料'}</h2>`}<form id="bz-form" class="bz-form">
+    const cl = !S.ch && CL.on ? (CL.user ? `<p class="bz-small">☁ 已登录 ${esc(CL.user.email || '')} · ${CL.st || ''}</p>` : `<div class="bz-cloudc"><b>☁ 已有档案？</b><p class="bz-small">之前用 Google 登录保存过的话，登录就能找回全部档案。</p><button type="button" class="bz-cloudbtn" data-act="cloudin">${CL.busy ? '登录中…' : '用 Google 登录'}</button></div>`) : '';
+    return `${cl}${ed ? '<div class="bz-edtop"><button type="button" class="bz-cancel" data-act="cancel">‹ 返回</button><h2>修改资料</h2><button type="submit" form="bz-form" class="bz-go bz-edok">✓ 确认</button></div>' : `<h2>${S.newFile ? '新建档案' : '输入出生资料'}</h2>`}<form id="bz-form" class="bz-form">
       <label>中文姓名<input name="name" maxlength="20" value="${esc(v.name)}" placeholder="例如：王小明"></label>
       <label>英文名（可选）<input name="en" maxlength="40" value="${esc(v.en)}" placeholder="例如：Alex Wong"></label>
       <div class="bz-seg" role="radiogroup" aria-label="性别"><span>性别</span>${['男', '女'].map(g => `<label class="bz-segbtn"><input type="radio" name="gender" value="${g}" ${v.gender === g ? 'checked' : ''}><span>${g}</span></label>`).join('')}</div>
@@ -3853,6 +3932,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     if (k === 'stmk') { S.stMk = v; S.stSel = null; render(); const h = document.getElementById('st-mkt'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (k === 'fdelm') { const [kind, i] = v.split(':'), all = famLoad(); (all[kind] || []).splice(+i, 1); famSave(all); render(); return; }
     if (k === 'stdel') { const L = S.stocks || (S.stocks = sLoad()); L.splice(+v, 1); sSave(L); render(); return; }
+    if (k === 'cloudin') { cloudLogin(); return; }
+    if (k === 'cloudout') { cloudLogout(); return; }
+    if (k === 'cloudme') { S.view = 'files'; render(); window.scrollTo(0, 0); return; }
     if (k === 'fswdel') { const idx = S.files.findIndex(x => x.id === v); if (idx < 0) return; const f = S.files[idx], wasCur = S.cur === v; S.files.splice(idx, 1); if (wasCur) { if (S.files[0]) useFile(S.files[0]); else { S.cur = null; S.ch = null; S.raw = null; save(null); } } fSave(); render(); undoBar(`已删除「${f.raw.name || '未命名'}」`, () => { S.files.splice(idx, 0, f); if (wasCur) useFile(f); fSave(); render(); }); return; }
     if (k === 'fdel') { if (S.fdel !== v) { S.fdel = v; render(); return; } S.files = S.files.filter(x => x.id !== v); S.fdel = null; if (S.cur === v) { if (S.files[0]) useFile(S.files[0]); else { S.cur = null; S.ch = null; S.raw = null; save(null); } } fSave(); render(); return; }
     if (k === 'fhe') { const f = S.files.find(x => x.id === v), x = f && fChart(f); if (!x) return; S.partner = { date: f.raw.date, sh: f.raw.shichen, gender: x.inp.gender }; S.view = null; S.fmng = false; S.tab = 'love'; render(); setTimeout(() => { const h = document.getElementById('lv-match'); if (h) h.scrollIntoView({ block: 'start' }); }, 50); return; }
@@ -3901,6 +3983,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     app.addEventListener('pointerout', e => { const g = e.target.closest('.bz-bar'); if (g) { const tt = g.closest('.bz-chart').querySelector('.bz-tt'); tt.hidden = true; } });
     const h = (location.hash || '').slice(1); if (TABS.some(t => t[0] === h)) S.tab = h;
     window.addEventListener('hashchange', () => { const h2 = location.hash.slice(1); if (TABS.some(t => t[0] === h2) && S.ch) { S.tab = h2; render(); } });
+    cloudInit();
     const fs = fLoad(); S.files = fs && fs.list || []; S.cur = fs && fs.cur;
     const v0 = load(); if (!S.files.length && v0) { S.files = [{ id: fid(), raw: Object.assign({ tag: '自己' }, v0) }]; S.cur = S.files[0].id; fSave(); }
     const cf = S.files.find(x => x.id === S.cur) || S.files[0]; if (cf) S.cur = cf.id;
