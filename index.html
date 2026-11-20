@@ -2454,6 +2454,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     { n: '寡宿', t: 'w', by: 'y', f: b => ({ 亥: '戌', 子: '戌', 丑: '戌', 寅: '丑', 卯: '丑', 辰: '丑', 巳: '辰', 午: '辰', 未: '辰', 申: '未', 酉: '未', 戌: '未' })[b], m: '自立能力强，宜多和家人沟通，别把心事藏起来。' }
   ];
   const DAYP = { 魁罡: ['庚辰庚戌壬辰戊戌', 'n', '性格刚强果断，聪明有领导力，宜修柔和。'], 阴差阳错: ['丙子丙午丁丑丁未戊寅戊申辛卯辛酉壬辰壬戌癸巳癸亥', 'w', '婚姻、家庭关系要多用心经营，遇事多沟通。'] };
+  F.ssAt = function (ch, gz) {
+    const P = ch.P, out = [];
+    R.forEach(r => { if (r.by === 'm' && !r.all) return;
+      const keys = r.by === 'dg' ? [P.d[0]] : r.by === 'm' ? [P.m[1]] : r.by === 'y' ? [P.y[1]] : [P.y[1], P.d[1]];
+      if (keys.some(k => [...(r.f(k) || '')].some(c => gz[1] === c || (r.all && gz[0] === c)))) out.push(r); });
+    return out;
+  };
   F.shensha = function (ch) {
     const P = ch.P, cols = [['年', P.y], ['月', P.m], ['日', P.d], ['时', P.h]].filter(x => x[1]);
     const out = [];
@@ -2468,6 +2475,37 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const kh = cols.filter(([nm, gz]) => nm !== '日' && kw.includes(gz[1])).map(x => x[0]);
     if (kh.length) out.push({ n: '空亡', t: 'w', at: kh, m: `（${kw.join('')}空）落在这里的事，前期容易落空，宜虚心、重实际，后劲反而足。` });
     const ord = { g: 0, n: 1, w: 2 }; return out.sort((a, c) => ord[a.t] - ord[c.t]);
+  };
+})();
+
+/* 评语知识库：三命通会（十神喜忌、神煞）× 麻衣相法（流年部位、气色）× 心灵地图（修心功课） */
+(function () {
+  const F = ZEN_F;
+  const TG = {
+    正官: ['正官', '《三命通会》称正官为禄神，喜身旺有印，宜守规矩、按流程办事、争取上级认可', '正官喜身旺有印，你本身气弱，宜借团队和前辈之力，按部就班，不硬扛'],
+    七杀: ['七杀', '古书说七杀有制便是将星，适合迎难而上、处理棘手的事，但要有方法', '七杀压身，古书讲「身弱煞强以印化之」，宜学习求助、先稳后进，少逞强'],
+    正财: ['正财', '身旺能任财，正财来就我，适合谈钱、收款、做实在的生意', '财多身弱，古书叫「富屋贫人」，宜量力而为，少贪多，钱先守住'],
+    偏财: ['偏财', '偏财是众人之财，你身旺能担，适合拓客户、找合作、把握机会', '偏财来而身弱，怕比劫分夺，宜小试即可，别借钱、别赌运气'],
+    正印: ['正印', '印主聪明慈和、贵人庇护，宜学习进修、请教长辈、整理思路', '印来生身正是所需，宜学习进修、请教长辈，贵人会在身边'],
+    偏印: ['偏印', '偏印主灵感与独思，适合研究钻研，但古书说枭能夺食，别想太多错过机会', '偏印生身，宜独处充电、研究学习，灵感多，但别钻牛角尖'],
+    食神: ['食神', '食神主福气与表达，宜创作、分享、享受生活，心宽福自来', '食神泄身，古书说食神怕身弱，宜少应酬、多休息，量力表达'],
+    伤官: ['伤官', '伤官喜身旺有财，才华外露利于展现，但言语要留余地，别顶撞上级', '伤官泄身又克官，宜少说多做，保留体力，防口舌是非'],
+    比肩: ['比肩', '比肩多时防争夺，古书说比劫分财，钱财不借不赌，合作要先讲清楚', '比肩帮身，身弱得助，适合找伙伴合作，一起做事更顺'],
+    劫财: ['劫财', '劫财见财则夺，宜守财、防冲动消费，合伙前先立规矩', '劫财帮身，身弱得助，适合团队行动，但钱财往来要清楚']
+  };
+  const MIND = { 官: '心灵功课：写下一个具体目标，按计划推进', 印: '心灵功课：早晚一分钟自我肯定，相信自己做得到', 比: '心灵功课：先专注 25 分钟做最重要的事', 食: '心灵功课：真心赞美身边一个人，气场自来', 财: '心灵功课：记一笔账，让每分钱都有去处' };
+  const GRP = { 正官: '官', 七杀: '官', 正印: '印', 偏印: '印', 比肩: '比', 劫财: '比', 食神: '食', 伤官: '食', 正财: '财', 偏财: '财' };
+  const SS = { 天乙贵人: '逢天乙贵人，遇难有人帮', 文昌: '逢文昌，利学习、考试、写方案', 太极贵人: '逢太极贵人，悟性高', 天德贵人: '逢天德，凶事易化解', 月德贵人: '逢月德，少是非', 驿马: '逢驿马，主奔波出行、变动', 桃花: '逢桃花，人缘好、异性缘旺', 将星: '逢将星，利带团队、拍板', 华盖: '逢华盖，宜独处思考、学玄理', 禄神: '逢禄神，衣食有靠', 羊刃: '逢羊刃，防冲动和意外破财', 劫煞: '逢劫煞，防小人和损失', 红鸾: '逢红鸾，感情有喜讯', 天喜: '逢天喜，有喜事', 金舆: '逢金舆，得家人支持', 国印: '逢国印，利掌事、守规矩' };
+  // kind: day|week|month|year|dayun|cat ; gz: 该时段干支 ; age: 年份对应虚岁（年运用）
+  F.kb = function (ch, gz, tg, opt) {
+    opt = opt || {}; if (!gz || !tg || !TG[tg]) return '';
+    const t = TG[tg], body = ch.weak ? t[2] : t[1];
+    let out = `${opt.label ? opt.label : opt.kind === 'day' ? '今天' : opt.kind === 'year' ? '这一年' : opt.kind === 'month' ? '这个月' : opt.kind === 'dayun' ? '这步大运' : '此时'}天干是你的${t[0]}，${body}。`;
+    const ss = (F.ssAt ? F.ssAt(ch, gz) : []).map(r => SS[r.n]).filter(Boolean).slice(0, 1);
+    if (ss.length) out += ss[0] + '。';
+    if (opt.age && F.face) { const f = F.face(ch, opt.age); out += `麻衣相法：${opt.age}岁流年走到${f.y[1].replace(/（.*/, '')}，这里气色明润则顺。`; }
+    else if (!ss.length && !opt.noMind) out += (MIND[GRP[tg]] || '') + '。';
+    return out;
   };
 })();
 
@@ -2597,6 +2635,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   const catsGrid = (gz, s, longFn) => { const id = 'ct' + (catSeq++), tips = CATS.map((k, i) => longFn ? longFn(k, s[i + 1]) : A.reasonFor(S.ch, k, gz));
     return `<div class="bz-card bz-cats" id="${id}"><div class="bz-catrow">${CATS.map((k, i) => { const v = s[i + 1], lv = A.level(v); return `<button type="button" class="bz-cati" data-act="cat:${id}:${i}" aria-label="${CATN[i]} ${v}% ${lv}"><i>${CATI[i]}</i><b class="${lvc(lv)}">${v}<small class="bz-pct">%</small></b><small>${TX(CATS2[i])}</small><span class="bz-catbar"><span style="width:${v}%;background:${col(v)}"></span></span></button>`; }).join('')}</div>
       ${tips.map((t, i) => `<p class="bz-catd" data-ci="${i}" hidden><b>${CATI[i]} ${TX(CATN[i])} · ${s[i + 1]}% ${A.level(s[i + 1])}</b>${t}</p>`).join('')}<p class="bz-cathint">👆 点图标看说明</p></div>`; };
+  const KB = (gz, o) => { try { return typeof ZEN_F !== 'undefined' && ZEN_F.kb && S.ch && gz ? ZEN_F.kb(S.ch, gz, E.tenGod(S.ch.dm, gz[0]), o) : ''; } catch (e) { return ''; } };
+  const AGE = y => { const b = +String((S.raw && S.raw.date) || '').slice(0, 4); return b ? y - b + 1 : 0; };
   const P5 = s => CATS.map((k, i) => [CATN[i], s[i + 1]]).sort((a, b) => b[1] - a[1]);
   function summary(gz, s) { const pairs = CATS.map((k, i) => [CATN[i], s[i + 1]]); const b = pairs.slice().sort((a, c) => c[1] - a[1])[0][0], w = pairs.slice().sort((a, c) => a[1] - c[1])[0][0];
     return `${gzc(gz)}（${tenGod(S.ch.dm, gz[0])}·${tenGod(S.ch.dm, HID[gz[1]][0])}），${A.level(s[0])}。${b}最顺，${w}要留意。`; }
@@ -3031,7 +3071,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const d = S.B.day(S.date), m = S.B.monthOf(S.date), ch = S.ch;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
-    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。</p>`])
+    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。${KB(d.p.d, { kind: 'day' })}</p>`])
       + catsGrid(d.p.d, d.s)
       + oneEvent(ch, d)
       + dayWord(ch, d)
@@ -3044,7 +3084,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const sh = {}; ELS.forEach(e => sh[e] = 0); days.forEach(d => { const w = A.wxShare([[d.p.d, 1], [d.p.m, .6], [d.p.y, .3]]); ELS.forEach(e => sh[e] += w[e] / 7); }); ELS.forEach(e => sh[e] = Math.round(sh[e]));
     const notable = days.filter(d => d.notes.length).map(d => `周${d.wd} ${gzc(d.p.d)}（${d.notes.join('、')}）`);
     const pairs = CATS.map((k, i) => [CATN[i], avg[i + 1]]);
-    return hero('本周平均', avg[0], A.level(avg[0]), `<h2>${A.md(mon)} – ${A.md(A.addDays(mon, 6))}</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(mon)} – ${ymdCN(A.addDays(mon, 6))}</p>`, `<p>本周整体${A.level(avg[0])}。${pairs.sort((a, b) => b[1] - a[1])[0][0]}相对最好。${A.md(best.date)}（周${best.wd}）最适合办要事，${A.md(worst.date)}（周${worst.wd}）宜低调。</p>`])
+    return hero('本周平均', avg[0], A.level(avg[0]), `<h2>${A.md(mon)} – ${A.md(A.addDays(mon, 6))}</h2>`, [`<p class="bz-solar">阳历 ${ymdCN(mon)} – ${ymdCN(A.addDays(mon, 6))}</p>`, `<p>本周整体${A.level(avg[0])}。${pairs.sort((a, b) => b[1] - a[1])[0][0]}相对最好。${A.md(best.date)}（周${best.wd}）最适合办要事，${A.md(worst.date)}（周${worst.wd}）宜低调。${KB(best.p.d, { label: `${A.md(best.date)}那天` })}</p>`])
       + card('w-chart', '每天整体分', bars(days.map(d => ({ v: d.s[0], l1: '周' + d.wd, l2: A.md(d.date), sel: d.date === S.date, act: 'day:' + d.date, tip: `${d.date} ${d.p.d} 整体${d.s[0]}（${d.lv[0]}）` })), { label: '本周每天整体分' }) + '<p class="bz-muted">点柱子查看当天详情。</p>')
       + catsGrid(mon ? days[0].p.d : '', avg, (k, s) => `本周平均 ${s} 分：${A.LV[k][A.band(s)]}`)
       + `<div class="bz-grid bz-grid2">${wxCard('w-wx', '五行能量（七天平均）', sh)}${card('w-ss', '本周每日十神', `<p>${days.map(d => `${d.wd} ${gzc(d.p.d[0])}${tenGod(S.ch.dm, d.p.d[0])}`).join(' · ')}</p>`)}${card('w-sx', '本周每日生肖', `<p>${days.map(d => `${d.wd} ${AN[Z.indexOf(d.p.d[1])]}`).join(' · ')}</p><p class="bz-tip">${notable.length ? notable.join('；') : '本周没有特别的冲合日子。'}</p>`)}</div>`
@@ -3056,7 +3096,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const off = (A.parse(m.start), ['一', '二', '三', '四', '五', '六', '日'].indexOf(days[0].wd));
     const top = days.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 4), low = days.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 4);
     const li = d => `<li data-act="day:${d.date}">${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)} · <b class="${lvc(d.lv[0])}">${d.s[0]}</b> 分 · ${d.notes.join('、') || d.lv[0]}</li>`;
-    return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${A.md(m.start)} – ${A.md(m.end)} · ${gzc(m.gz)}月</h2>`, [`<p>本月整体${A.level(m.s[0])}。${P5(m.s)[0][0]}相对最好。${A.md(top[0].date)}（周${top[0].wd}）最适合办要事，${A.md(low[0].date)}（周${low[0].wd}）宜低调。</p>`])
+    return hero('本月整体', m.s[0], A.level(m.s[0]), `<h2>${A.md(m.start)} – ${A.md(m.end)} · ${gzc(m.gz)}月</h2>`, [`<p>本月整体${A.level(m.s[0])}。${P5(m.s)[0][0]}相对最好。${A.md(top[0].date)}（周${top[0].wd}）最适合办要事，${A.md(low[0].date)}（周${low[0].wd}）宜低调。${KB(m.gz, { kind: 'month' })}</p>`])
       + catsGrid(m.gz, m.s)
       + sceneCard('m-scene', '人间百态 · 本月喜怒哀乐', m.gz, m.s, E.pillarRaw(S.ch, m.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('m-wx', '五行能量', A.wxShare([[m.gz, 1], [m.ygz, .5]]))}${ssCard('m-ss', '十神', m.gz)}${zodiacCard('m-sx', '本月生肖', m.gz[1], false, '本月 · 月支生肖')}</div>`
@@ -3068,7 +3108,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const y = S.B.syOf(S.date), x = S.B.yearOf(y); if (!x) return card('x', '', '<p>超出可推算范围。</p>');
     const ms = S.B.months.filter(m => m.sy === y); const lc = A.parse(ms[0].start);
     const ky = ZEN_M.keyYears(S.ch, S.B, E, y, y)[0];
-    return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>今年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${ms.slice().sort((a, b) => b.s[0] - a.s[0])[0].gz}月最旺，${ms.slice().sort((a, b) => a.s[0] - b.s[0])[0].gz}月宜低调。</p>`])
+    return (ky ? card('y-alert', `⚠ ${y}年是重要年份`, ky.tags.map(t => `<div class="bz-kyt bz-d-${t.tone}"><b>${t.h}</b><span>${t.d}</span></div>`).join(''), 'bz-kycard') : '') + hero('本年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>今年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${ms.slice().sort((a, b) => b.s[0] - a.s[0])[0].gz}月最旺，${ms.slice().sort((a, b) => a.s[0] - b.s[0])[0].gz}月宜低调。${KB(x.gz, { kind: 'year', age: AGE(y) })}</p>`])
       + catsGrid(x.gz, x.s)
       + sceneCard('y-scene', '人间百态 · 今年喜怒哀乐', x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + `<div class="bz-grid bz-grid2">${wxCard('y-wx', '五行能量（流年加大运）', A.wxShare([[x.gz, 1], [x.dy && x.dy.gz, .6]]))}${ssCard('y-ss', '十神', x.gz)}${zodiacCard('y-sx', '今年生肖与太岁', x.gz[1], true, '今年 · 太岁生肖')}</div>`
@@ -3087,7 +3127,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const it = A.inter(S.ch, x.gz, x.dy); const yj = A.yiji(x.gz, S.ch); const z = A.zodiacRel(S.ch, x.gz[1], true);
     const over = `${y}年${gzc(x.gz)}，天干${x.gz[0]}为${tenGod(S.ch.dm, x.gz[0])}（${S.ch.label(elOf(x.gz[0]))}），地支${x.gz[1]}本气为${tenGod(S.ch.dm, HID[x.gz[1]][0])}（${S.ch.label(elOf(x.gz[1]))}）${x.dy ? '，行' + gzc(x.dy.gz) + '大运' : ''}。${it.length ? it.join('；') + '。' : ''}整体${A.level(x.s[0])}（${x.s[0]}分）。`;
     return card('ln-pick', '选择流年', chips(list.map(z => ({ top: z.y, gz: z.gz, lv: A.level(z.s[0]), on: z.y === y, act: 'ln:' + z.y }))))
-      + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>${y}年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${b2[0].gz}月最旺，${w2[0].gz}月宜低调。</p>`])
+      + hero('流年整体', x.s[0], A.level(x.s[0]), `<h2>${y} · ${gzc(x.gz)}年</h2>`, [`<p>${y}年整体${A.level(x.s[0])}。${P5(x.s)[0][0]}相对最好。${b2[0].gz}月最旺，${w2[0].gz}月宜低调。${KB(x.gz, { kind: 'year', age: AGE(y) })}</p>`])
       + catsGrid(x.gz, x.s, (k, s) => A.reasonFor(S.ch, k, x.gz) + '。' + A.LV[k][A.band(s)])
       + sceneCard('ln-scene', `人间百态 · ${y}年悲欢离合`, x.gz, x.s, E.pillarRaw(S.ch, x.gz).notes)
       + card('ln-months', '全年十二个月走势', bars(ms.map(m => ({ v: m.s[0], l1: m.gz, l2: A.md(m.start), act: 'month:' + m.start, tip: `${m.gz}月 整体${m.s[0]}（${A.level(m.s[0])}）：${A.reasonFor(S.ch, 'career', m.gz)}` })), { label: '流年各月走势' })
@@ -3102,7 +3142,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const over = `${gzc(d.gz)}大运：天干${d.gz[0]}为${tenGod(ch.dm, d.gz[0])}（${ch.label(elOf(d.gz[0]))}），地支${d.gz[1]}本气为${tenGod(ch.dm, HID[d.gz[1]][0])}（${ch.label(elOf(d.gz[1]))}）。${it.length ? it.join('；') + '。' : ''}这十年整体${A.level(d.s[0])}。`;
     const ADV = ['以守为主，少做大决定，练好内功。', '宜守不宜攻，挑流年好的年份做关键动作。', '平稳过渡，稳中求进。', '顺势而为，可以积极开拓。', '人生高峰期之一，大胆把握机会。'];
     return card('dy-pick', '选择大运', chips(ch.dayun.map(x => ({ top: `${x.ageFrom}–${x.ageTo}岁`, gz: x.gz, lv: A.level(x.s[0]) + (x === cur ? ' · 当前' : ''), on: x === d, act: 'dy:' + x.gz }))))
-      + hero('大运整体', d.s[0], A.level(d.s[0]), `<h2>${gzc(d.gz)}大运 · ${d.ageFrom}–${d.ageTo}岁</h2>`, [`<p><b>${d.yearFrom}–${d.yearTo}${d === cur ? ' · 当前大运' : ''}</b><br>${over}</p>`])
+      + hero('大运整体', d.s[0], A.level(d.s[0]), `<h2>${gzc(d.gz)}大运 · ${d.ageFrom}–${d.ageTo}岁</h2>`, [`<p><b>${d.yearFrom}–${d.yearTo}${d === cur ? ' · 当前大运' : ''}</b><br>${over}${KB(d.gz, { kind: 'dayun' })}</p>`])
       + catsGrid(d.gz, d.s, (k, s) => A.reasonFor(ch, k, d.gz) + '。' + A.LV[k][A.band(s)])
       + card('dy-years', '这十年的流年走势', bars(yrs.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '大运十年走势' })
         + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`)
@@ -3152,7 +3192,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const pl = ELS.filter(e => ch.label(e) === '平');
     const gd = gejuCard(ch, true), score = gd ? Math.max(25, Math.min(95, Math.round(52 + gd.sc * 9))) : 60;
     const dl = rows => `<dl class="bz-kv bz-kvs">${rows.map(([t, d, c]) => `<dt class="${c || ''}">${t}</dt><dd>${d}</dd>`).join('')}</dl>`;
-    return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
+    return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${(() => { try { const M = ZEN_F.mind(ch), hi = M.slice().sort((x, y) => y.sc - x.sc)[0], lo = M.slice().sort((x, y) => x.sc - y.sc)[0]; return `心灵地图看，你的天赋在「${hi.k}」，「${lo.k}」待开发；《三命通会》论命先看月令，用神${ch.yong}是你的补运方向。`; } catch (e) { return ''; } })()}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
       + (() => { const t = S.B.day(TODAY); return card('c-pan', `${ownerName()}八字仪表`, pan(natalCols().concat([['大运', t.dy && t.dy.gz, true], ['流年', t.p.y, true], ['流月', t.p.m, true], ['流日', t.p.d, true]])) + `<p class="bz-muted">前四柱是原局（本命盘），金底的是今天（${A.md(TODAY)}）所在的大运、流年、流月、流日。</p>`); })()
       + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(special.length ? [['特殊', special.join('、')]] : [])]))
       + card('c-yj', '喜用神', `<div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div><p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p>`)
@@ -3654,7 +3694,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const days = Array.from({ length: 30 }, (_, i) => S.B.day(A.addDays(TODAY, i))), best = days.slice().sort((a, b) => b.s[3] - a.s[3]).slice(0, 4).sort((a, b) => a.date < b.date ? -1 : 1), worst = days.slice().sort((a, b) => a.s[3] - b.s[3]).slice(0, 2);
     const tg = E.tenGod(ch.dm, dT.p.d[0]), FS = A.flyStars(sy), where = n => Object.keys(FS.pos).find(k => FS.pos[k].n === n);
     const tip = s => s >= 76 ? '财气旺，可以主动谈钱、成交、收款' : s >= 56 ? '财运顺，适合推进业务与理财规划' : s >= 51 ? '小有进账，量入为出' : s >= 21 ? '开销易增，暂缓大额消费与投资' : '守财为上，不借贷、不投机';
-    return hero('今日财运', dT.s[3], A.level(dT.s[3]), `<h2>财运 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${tg}」。${tip(dT.s[3])}。</p>`, `<p class="bz-muted">本月 ${mo.s[3]} 分 · ${sy}年 ${yr.s[3]} 分</p>`])
+    return hero('今日财运', dT.s[3], A.level(dT.s[3]), `<h2>财运 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${tg}」。${tip(dT.s[3])}。${KB(dT.p.d, { kind: 'day' }).replace(/^今天天干是你的[^，]+，/, '')}</p>`, `<p class="bz-muted">本月 ${mo.s[3]} 分 · ${sy}年 ${yr.s[3]} 分</p>`])
       + card('wl-natal', '先天财格', `<div class="bz-dcmain" style="grid-template-columns:repeat(3,1fr)"><div><small>财星五行</small><b>${gzc(cai)}</b><em>对你是${lab === '平' ? '中性' : lab + '神'}</em></div><div><small>财星比重</small><b>${cP}%</b><em>正财 ${zc} · 偏财 ${pc}</em></div><div><small>求财类型</small><b style="font-size:18px">${kind[0]}</b><em>${zc >= pc ? '稳定收入为主' : '机会收入为主'}</em></div></div>
         <div class="bz-3">${pats.map(([t, d]) => `<div class="bz-3i"><i>💰</i><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div><p class="bz-small">${kind[1]}</p>`)
       + card('wl-way', '怎么求财最顺', `<dl class="bz-kv"><dt>适合行业</dt><dd>${fav.map(e => `<b>${gzc(e)}</b>：${IND[e]}`).join('<br>')}</dd><dt>财方位</dt><dd>本命财方在${A.DIR[cai]}；${sy}年八白财星在${where(8)}、九紫喜庆星在${where(9)}，可把收银、钱包、保险箱放这两方。</dd>
@@ -3713,7 +3753,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   }
   function vLotto() {
     const ch = S.ch, d = S.B.day(S.date);
-    return hero('当日偏财', d.s[3], A.level(d.s[3]), `<h2>万字 · ${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)}日</h2>`, [`<p>今日天干 ${gzc(d.p.d[0])} 对你是「${E.tenGod(ch.dm, d.p.d[0])}」，偏财气场${d.s[3] >= 60 ? '较旺' : d.s[3] >= 45 ? '平稳' : '偏弱，小玩即可'}。</p>`, '<p class="bz-muted">号码只是心意，不是预测。</p>'])
+    return hero('当日偏财', d.s[3], A.level(d.s[3]), `<h2>万字 · ${A.md(d.date)} 周${d.wd} ${gzc(d.p.d)}日</h2>`, [`<p>今日天干 ${gzc(d.p.d[0])} 对你是「${E.tenGod(ch.dm, d.p.d[0])}」，偏财气场${d.s[3] >= 60 ? '较旺' : d.s[3] >= 45 ? '平稳' : '偏弱，小玩即可'}。${KB(d.p.d, { kind: 'day' }).replace(/^今天天干是你的[^，]+，/, '')}</p>`, '<p class="bz-muted">号码只是心意，不是预测。</p>'])
       + luckyCard4D(ch, d);
   }
   function vStock() {
@@ -3735,7 +3775,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       const fit = ['用', '喜'].includes(lb) ? ['合拍', 'bz-good', `它的日主属${se}，正是你的${lb}神。拿着比较安心，适合做长线观察对象。`] : lb === '忌' ? ['不合拍', 'bz-bad', `它的日主属${se}，是你的忌神。就算基本面好，也容易拿不住、买卖时心态乱，仓位放轻。`] : ['中性', '', `它的日主属${se}，对你不好不坏，以基本面为准。`];
       return `<div class="bz-stk"><div class="bz-stkh"><b>${esc(s.name)}</b><span>上市 ${s.date} · ${gzc(sc.P.y)}年 ${gzc(sc.P.m)}月 ${gzc(sc.P.d)}日</span><button class="bz-stkx" data-act="stdel:${i}" aria-label="删除">✕</button></div>
         <p><i class="${fit[1]}">${fit[0]}</i> ${fit[2]}</p><p class="bz-small">今日 ${gzc(dT.p.d)} 日对它是「${r[0]}」：${r[1]}。</p></div>`; };
-    return hero('今日投资心态', dT.s[3], A.level(dT.s[3]), `<h2>股票 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${tg}」，心态关键词：<b>${MOOD[0]}</b>。${MOOD[1]}</p>`, '<p class="bz-muted">八字无法预测股价涨跌。这里只看你的心态与时机，不是投资建议。</p>'])
+    return hero('今日投资心态', dT.s[3], A.level(dT.s[3]), `<h2>股票 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${tg}」，心态关键词：<b>${MOOD[0]}</b>。${MOOD[1]}${KB(dT.p.d, { kind: 'day', noMind: 1 }).replace(/^今天天干是你的[^，]+，/, '')}</p>`, '<p class="bz-muted">八字无法预测股价涨跌。这里只看你的心态与时机，不是投资建议。</p>'])
       + stAnalysis()
       + card('st-type', '你的投资性格', `<p><b style="color:var(--gold2)">${type[0]}</b>：${type[1]}</p><div class="bz-3">${traits.map(([t, d]) => `<div class="bz-3i"><i>📈</i><div><b>${t}</b><span>${d}</span></div></div>`).join('')}</div>`)
       + card('st-sec', '五行与板块', `<dl class="bz-kv">${fav.map(e => `<dt>${gzc(e)} · ${ch.label(e)}神</dt><dd>${SEC[e]}</dd>`).join('')}${bad.length ? `<dt class="bz-bad">${bad.map(gzc).join('')} · 忌神</dt><dd>${bad.map(e => SEC[e]).join('；')}<br><small>不是不能买，而是你在这些板块较难拿得稳，仓位宜轻。</small></dd>` : ''}</dl><p class="bz-small">用神、喜神的板块，你较容易看得懂、拿得住。这是玄学上的偏好，选股仍要看公司本身。</p>`)
@@ -3756,7 +3796,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const good = srt.filter(x => x.ok).slice(0, 3), bad = srt.filter(x => !x.ok).slice(-3).reverse();
     const seg = `<div class="bz-seg">${['日', '月', '年'].map(k => `<button class="${k === md ? 'bz-on' : ''}" data-act="wm:${k}">按${k}</button>`).join('')}</div>`;
     let html = seg + hero(`${unit}工作运`, s[1], A.level(s[1]), `<h2>${when}</h2>`, [
-      `<p>${unit}工作运${A.level(s[1])}。下面分「较顺可做」和「宜避」两组，点任何一项看原因和建议。</p>`]);
+      `<p>${unit}工作运${A.level(s[1])}。${KB(gz, { label: unit, age: md === '年' ? AGE(S.B.syOf(S.date)) : 0 })}</p><p class="bz-muted">下面分「较顺可做」和「宜避」两组，点任何一项看原因和建议。</p>`]);
     const half = Math.ceil(srt.length / 2), GA = srt.slice(0, half), GB = srt.slice(half), wi = S.wi && L.find(x => x.n === S.wi);
     const chip = x => `<button type="button" class="bz-wc ${S.wi === x.n ? 'on' : ''}" data-act="wi:${x.n}"><i>${x.ic}</i><span>${x.n.split(' · ')[0]}</span></button>`;
     html += card('w-items', `${unit}工作事项吉凶`, `<div class="bz-w2">
@@ -3875,7 +3915,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const dT = S.B.day(TODAY), hs = dT.s[2], htg = E.tenGod(ch.dm, dT.p.d[0]);
     const avgT = T.length ? Math.round(T.reduce((a, { pc }) => a + (ZEN_T.pair(ch, pc, E).score + ZEN_T.pair(pc, ch, E).score) / 2, 0) / T.length) : null;
     const htip = hs >= 76 ? '人缘旺，适合约见、谈合作、请人帮忙' : hs >= 56 ? '人际顺，适合开会、沟通、拉近关系' : hs >= 51 ? '人际平稳，按部就班' : hs >= 21 ? '容易误会，说话留余地，少争辩' : '宜低调，重要谈话改天再约';
-    let html = hero('今日人缘', hs, A.level(hs), `<h2>人和 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${htg}」。${htip}。</p>`, `<p class="bz-muted">${avgT != null ? `团队 ${T.length} 人 · 平均合拍 ${avgT} 分（${A.level(avgT)}） · ` : ''}你：${gzc(ch.dm)}${ch.de}日主 · 用神${gzc(ch.yong)} · 擅长${ZEN_T.TALENT[Object.entries(ch.byRel).sort((x, y) => y[1] - x[1])[0][0]]}</p>`]);
+    let html = hero('今日人缘', hs, A.level(hs), `<h2>人和 · ${A.md(TODAY)} ${gzc(dT.p.d)}日</h2>`, [`<p>今日天干 ${gzc(dT.p.d[0])} 对你是「${htg}」。${htip}。${KB(dT.p.d, { kind: 'day' }).replace(/^今天天干是你的[^，]+，/, '')}</p>`, `<p class="bz-muted">${avgT != null ? `团队 ${T.length} 人 · 平均合拍 ${avgT} 分（${A.level(avgT)}） · ` : ''}你：${gzc(ch.dm)}${ch.de}日主 · 用神${gzc(ch.yong)} · 擅长${ZEN_T.TALENT[Object.entries(ch.byRel).sort((x, y) => y[1] - x[1])[0][0]]}</p>`]);
     if (!T.length) return html + form + card('t-how', '怎么看', `<ul class="bz-list2"><li><b>角色：</b>按对方日干是你的哪一种十神，判断他对你是贵人、督促者、资源、支持对象还是同辈竞争。</li><li><b>合拍度：</b>看日干五合与生克、生肖（年支）、工作环境（月支）、私下相处（日支）的冲合刑害，以及彼此能否补对方的用神。</li><li><b>团队：</b>加入两人以上，会显示团队五行配置、最佳搭档和需要留意的组合。</li></ul>`) + trendCards(2);
     T.forEach(({ m, pc }, k) => {
       const r = ZEN_T.pair(ch, pc, E), back = ZEN_T.pair(pc, ch, E), sc = Math.round((r.score + back.score) / 2), lv = A.level(sc);
