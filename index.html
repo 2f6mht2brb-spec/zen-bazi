@@ -2509,6 +2509,44 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
 })();
 
+/* 九运、六亲评语：三命通会 × 麻衣相法 × 心灵地图 */
+(function () {
+  const F = ZEN_F;
+  const GN = { 官: '官杀', 印: '印星', 比: '比劫', 食: '食伤', 财: '财星' };
+  const PH = { 官: ['有压力也有名位，适合承担责任、争取位置', '压力较大，宜以学习和贵人化解，不硬扛'], 印: ['学习资源多，但防依赖、想多做少', '正好生扶你，宜进修学习、多得贵人'], 比: ['同行竞争多，防争财，合作先立规矩', '得朋友同伴帮身，适合结伴合作'], 食: ['才华有出口，适合创作、表达、开新路', '耗神较多，量力表达，注意休养'], 财: ['身旺能任财，财来就我，适合开源', '财多身弱，宜量力守成，不贪快钱'] };
+  const MIND = { 官: '写下一个十年目标，按年拆开', 印: '每天早晚一分钟自我肯定', 比: '每天先专注 25 分钟做最重要的事', 食: '每天真心赞美身边一个人', 财: '坚持记账，让每分钱都有去处' };
+  const pick = (ch, cols, names) => { const L = F.shensha ? F.shensha(ch) : []; return L.filter(x => names.includes(x.n) && (!cols || x.at.some(a => cols.includes(a)))); };
+  F.kbRel = function (ch, kind, E, o) {
+    o = o || {};
+    if (kind === 'nine') {
+      const g = E.relEl(ch.de, '火'), by = +String(o.birth || '').slice(0, 4), a1 = by ? 2024 - by + 1 : 0, a2 = by ? 2043 - by + 1 : 0;
+      let t = `《三命通会》看，火对你是${GN[g]}：${PH[g][ch.weak ? 1 : 0]}。`;
+      if (a1 > 0 && F.face) { const f1 = F.face(ch, a1).y[1].replace(/（.*/, ''), f2 = F.face(ch, a2).y[1].replace(/（.*/, ''); t += `九运期间你 ${a1}–${a2} 岁，麻衣流年从${f1}走到${f2}。`; }
+      return t + `心灵功课：${MIND[g]}。`;
+    }
+    if (kind === 'spouse') {
+      const g = o.male ? '财' : '官', ss = pick(ch, null, ['红鸾', '天喜', '桃花', '金舆', '孤辰', '寡宿', '阴差阳错'])[0];
+      const p = g === '财' ? (ch.weak ? '古书说财多身弱是「富屋贫人」，妻星要靠你身强才能担，先把自己照顾好' : '古书说身旺能任财，你能扛起家庭，妻子也能旺你') : (ch.weak ? '古书说正官喜身旺有印，你需要一个能包容、带你成长的另一半' : '古书说正官配身旺最贵，你能和另一半互相成就');
+      const SS = { 红鸾: '命带红鸾，姻缘来得自然', 天喜: '命带天喜，婚恋多喜事', 桃花: '命带桃花，异性缘好，专一最重要', 金舆: '命带金舆，易得配偶扶持', 孤辰: '命带孤辰，感情上要多主动表达', 寡宿: '命带寡宿，别把心事藏着，多沟通', 阴差阳错: '日柱阴差阳错，婚姻要多花心思经营' };
+      return `${p}。${ss ? SS[ss.n] + '。' : ''}麻衣相法看妻妾宫（眼尾），饱满明润则夫妻和顺。`;
+    }
+    if (kind === 'kids') {
+      const ss = pick(ch, ['时'], ['天乙贵人', '文昌', '天德贵人', '月德贵人', '太极贵人', '将星'])[0];
+      return `《三命通会》以时柱为子女宫、${o.male ? '官杀' : '食伤'}为子女星，时柱也管 50 岁后的晚运。${ss ? `你的时柱带${ss.n}，孩子${ss.n === '文昌' ? '聪明好学' : '有福有贵人'}。` : ''}麻衣相法看男女宫（眼下泪堂），平满明润，子女缘就好。`;
+    }
+    if (kind === 'parents') {
+      const ss = pick(ch, ['年', '月'], ['天乙贵人', '天德贵人', '月德贵人', '国印', '太极贵人'])[0];
+      return `《三命通会》说印是「我气之源」、如父母护我；年、月柱管早年与家庭。${ss ? `你的${ss.at.filter(a => a === '年' || a === '月').join('')}柱带${ss.n}，早年得家人庇护。` : ''}麻衣相法看父母宫（额头两角日月角），饱满明亮，主父母扶持。`;
+    }
+    if (kind === 'ances') {
+      const ss = pick(ch, ['年'], ['华盖', '天德贵人', '月德贵人', '天乙贵人', '空亡'])[0];
+      const SS = { 华盖: '年柱带华盖，祖上多读书人或修行人，你也有灵性', 天德贵人: '年柱带天德，祖上积德，福荫到你', 月德贵人: '年柱带月德，祖德厚，一生少大灾', 天乙贵人: '年柱带天乙，祖上有贵人缘', 空亡: '年柱逢空亡，祖业难靠，要白手起家，反而更有成就' };
+      return `《三命通会》以年柱为祖上，「年管十五」以前。${ss ? SS[ss.n] + '。' : ''}麻衣相法以额头（上停）和福德宫（天仓）看祖荫，额宽明润主祖德护佑。`;
+    }
+    return '';
+  };
+})();
+
 </script>
 <script>
 (function () {
@@ -3309,7 +3347,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const avg = ys.length ? ys.reduce((a, x) => a + x.s[0], 0) / ys.length : 60, base = { 用: 80, 喜: 70, 平: 58, 忌: 40 }[l] || 58;
     const sc = Math.round(avg * 0.5 + base * 0.5);
     const best = ys.slice().sort((a, b) => b.s[0] - a.s[0]).slice(0, 3), worst = ys.slice().sort((a, b) => a.s[0] - b.s[0]).slice(0, 2);
-    return hero('九运整体', sc, A.level(sc), '<h2>九紫离火运 · 2024–2043</h2>', [`<p>三元九运把 180 年分成九个 20 年。2024 年起进入九运，由九紫星当令，对应离卦，五行属火，方位正南。火在你的八字里是<b class="${l === '忌' ? 'bz-bad' : 'bz-good'}">${{ 用: '用神', 喜: '喜神', 平: '平', 忌: '忌神' }[l]}</b>，${l === '用' || l === '喜' ? '世界大势正合你的需要，等于顺风而行。' : l === '忌' ? '大势与你的喜忌相反，宜顺势借力、守住本业，避开过热的投机。' : '大势对你中性，按自己的节奏发展即可。'}</p>`])
+    return hero('九运整体', sc, A.level(sc), '<h2>九紫离火运 · 2024–2043</h2>', [`<p>三元九运把 180 年分成九个 20 年。2024 年起进入九运，由九紫星当令，对应离卦，五行属火，方位正南。火在你的八字里是<b class="${l === '忌' ? 'bz-bad' : 'bz-good'}">${{ 用: '用神', 喜: '喜神', 平: '平', 忌: '忌神' }[l]}</b>，${l === '用' || l === '喜' ? '世界大势正合你的需要，等于顺风而行。' : l === '忌' ? '大势与你的喜忌相反，宜顺势借力、守住本业，避开过热的投机。' : '大势对你中性，按自己的节奏发展即可。'}</p>`, `<p>${(() => { try { return ZEN_F.kbRel(S.ch, 'nine', E, { birth: S.raw && S.raw.date }); } catch (e) { return ''; } })()}</p>`])
       + (ys.length ? card('n-years', '九运二十年走势', bars(ys.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '九运二十年走势' })
         + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`) : '')
       + `<div class="bz-grid bz-grid2">${card('n-basic', '九运基本资料', '<dl class="bz-kv"><dt>当令星</dt><dd>九紫右弼星</dd><dt>卦</dt><dd>离 ☲：火、光明、文明、心与眼</dd><dt>旺方</dt><dd>正南</dd><dt>旺色</dt><dd>红、紫</dd><dt>交运</dt><dd>2044 年交接一运（一白水运）</dd></dl>')}
@@ -3464,7 +3502,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       const a = ZEN_T.pair(ch, pc, E), b = ZEN_T.pair(pc, ch, E), sc = Math.round((a.score + b.score) / 2), lv = A.level(sc), it = a.items.concat(b.items).filter(x => x.tone !== 'mid').slice(0, 3);
       return `<div class="bz-stk"><div class="bz-stkh"><b>${esc(m.name || m.rel)}</b><span>${m.rel} · ${m.date} · ${gzc(pc.P.y)}年 ${gzc(pc.dm)}日主</span><button class="bz-stkx" data-act="fdelm:${kind}:${i}" aria-label="删除">✕</button></div><p><i class="${lvc(lv)}">亲缘 ${sc} 分 · ${lv}</i></p>${it.map(x => `<p class="bz-small"><b class="${x.tone === 'good' ? 'bz-good' : 'bz-bad'}">${x.tone === 'good' ? '✓' : '!'}</b> ${esc(x.t.replace(/工作环境/g, '相处').replace(/合作/g, '相处'))}</p>`).join('')}</div>`; }).join('');
     cards += card(K ? 'fk-add' : 'fp-add', K ? '加入孩子 · 看亲子缘' : '加入父母 · 看亲缘', `<form id="bz-famform" data-kind="${kind}" class="bz-famf">${filePick('fam')}<input name="fn" maxlength="16" placeholder="称呼（可不填）"><select name="fr" aria-label="关系">${rel.map(r => `<option>${r}</option>`).join('')}</select><input type="date" name="fd" required min="1900-01-01" max="${TODAY}" aria-label="出生日期"><select name="fs" aria-label="出生时辰"><option value="">时辰不详</option>${SHI.map((s, i) => `<option value="${i}">${s[0]}</option>`).join('')}</select><button type="submit">加入</button></form>${rows || '<p class="bz-muted">还没有加入。资料只保存在这台设备里。</p>'}`);
-    return hero(K ? '子女缘' : '父母缘', F.score, A.level(F.score), `<h2>${K ? '子女 · 亲子缘' : '父母 · 孝亲缘'}</h2>`, lines) + cards + '<p class="bz-muted">按八字子女星、父母星与宫位简化推算，仅供参考；亲情最终靠陪伴与沟通。</p>';
+    return hero(K ? '子女缘' : '父母缘', F.score, A.level(F.score), `<h2>${K ? '子女 · 亲子缘' : '父母 · 孝亲缘'}</h2>`, lines.concat([`<p>${(() => { try { return ZEN_F.kbRel(S.ch, K ? 'kids' : 'parents', E, { male: F.male }); } catch (e) { return ''; } })()}</p>`])) + cards + '<p class="bz-muted">按八字子女星、父母星与宫位简化推算，仅供参考；亲情最终靠陪伴与沟通。</p>';
   }
   function vAnces() {
     const ch = S.ch, ty = S.B.syOf(TODAY), [yg, yz] = ch.P.y, mz = ch.P.m[1], dz = ch.P.d[1];
@@ -3480,7 +3518,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const days = [['清明', qm, '扫墓、献花、整理祖坟'], ['冬至', dzd, '家中祭祖、团圆吃饭']].sort((a, b) => a[1] < b[1] ? -1 : 1);
     const ys = []; for (let y = ty; y <= ty + 12; y++) { const x = S.B.yearOf(y); if (!x) continue; const t = []; if (E.chong(x.gz[1], yz)) t.push(['冲年柱 · 宜回乡祭祖、关心族中长辈', 'bad']); if (E.LIUHE[x.gz[1]] === yz) t.push(['合年柱 · 家族团聚、续族谱的好年', 'good']); if (x.gz[1] === yz) t.push(['值年柱 · 宜修缮祖居或祖坟', 'good']); if (t.length) ys.push({ y, gz: x.gz, t }); }
     const dir = A.DIR[E.elOf(yz)];
-    return hero('祖荫', sc, A.level(sc), '<h2>祖先 · 根源与传承</h2>', [`<p>${yin}</p>`])
+    return hero('祖荫', sc, A.level(sc), '<h2>祖先 · 根源与传承</h2>', [`<p>${yin}</p>`, `<p>${(() => { try { return ZEN_F.kbRel(S.ch, 'ances', E, {}); } catch (e) { return ''; } })()}</p>`])
       + card('an-pil', '祖上宫 · 年柱', `<dl class="bz-kv"><dt>年柱</dt><dd>${gzc(ch.P.y)}（天干${tg}，地支本气${tz}）</dd><dt>祖上特点</dt><dd>${GM[g1]}${g2 !== g1 ? GM[g2] : ''}</dd>${rel.length ? `<dt>与家族</dt><dd>${rel.join('<br>')}</dd>` : ''}</dl>`)
       + card('an-days', '慎终追远 · 祭祖时节', `<div class="bz-fyrs">${days.map(([n, d, t]) => `<button type="button" data-act="day:${d}"><b>${n}</b><small>${A.md(d)} 周${S.B.day(d).wd}</small><i>${t}</i></button>`).join('')}</div><p class="bz-small">年柱地支属${gzc(E.elOf(yz))}，祭祖或安放祖先牌位宜朝${dir}方。中元节（农历七月十五）也可追思。</p>`)
       + (ys.length ? card('an-years', '与祖先相关的年份', `<div class="bz-fyrs">${ys.map(x => `<button type="button" data-act="ln:${x.y}"><b>${x.y}</b><small>${gzc(x.gz)}</small>${x.t.map(([t, c]) => `<i class="${c === 'good' ? 'bz-good' : 'bz-bad'}">${t}</i>`).join('')}</button>`).join('')}</div><p class="bz-small">点年份看那一年的流年运程。</p>`) : '')
@@ -3495,7 +3533,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const sc = Math.max(20, Math.min(95, Math.round(60 + LBV[slb] + (tone(st.items) + tone(pa.items)) * 5)));
     const dl = items => `<dl class="bz-kv bz-kvs">${items.map(i => `<dt class="${i.tone === 'good' ? 'bz-good' : i.tone === 'bad' ? 'bz-bad' : ''}">${gzc(i.h || '')}</dt><dd>${esc(i.t)}</dd>`).join('')}</dl>`;
     const lbT = l => l === '平' ? '中性' : l + '神', ok = slb === '用' || slb === '喜';
-    let html = hero('配偶缘', sc, A.level(sc), `<h2>配偶 · 姻缘</h2>`, [`<p>${male ? '男命以财星为妻星' : '女命以官星为夫星'}，配偶星属${gzc(sel)}，是你的${lbT(slb)}。${ok ? '另一半是你的助力，婚姻能助运。' : slb === '忌' ? '感情需要多经营，互相包容会越来越好。' : '感情平稳，用心经营就会幸福。'}</p>`]);
+    let html = hero('配偶缘', sc, A.level(sc), `<h2>配偶 · 姻缘</h2>`, [`<p>${male ? '男命以财星为妻星' : '女命以官星为夫星'}，配偶星属${gzc(sel)}，是你的${lbT(slb)}。${ok ? '另一半是你的助力，婚姻能助运。' : slb === '忌' ? '感情需要多经营，互相包容会越来越好。' : '感情平稳，用心经营就会幸福。'}</p>`, `<p>${(() => { try { return ZEN_F.kbRel(S.ch, 'spouse', E, { male }); } catch (e) { return ''; } })()}</p>`]);
     html += card('lv-star', '配偶星', dl(st.items));
     html += card('lv-palace', '夫妻宫 · 日支', dl(pa.items));
     if (th.items.length || fit.items.length) html += card('lv-fit', '桃花与适合的伴侣', dl(th.items.concat(fit.items)));
