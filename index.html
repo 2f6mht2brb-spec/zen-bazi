@@ -2649,6 +2649,28 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
 })();
 
+/* 生肖 × 知识库：太岁关系（三命通会卷二）+ 年支神煞 + 十神 + 相法 */
+(function () {
+  const F = ZEN_F, Z = '子丑寅卯辰巳午未申酉戌亥';
+  const TRI = { 申: 0, 子: 0, 辰: 0, 寅: 1, 午: 1, 戌: 1, 巳: 2, 酉: 2, 丑: 2, 亥: 3, 卯: 3, 未: 3 };
+  const TS = { 值: '本命值太岁：宜稳不宜躁，《三命通会》讲太岁当头要守正，多做准备少冒进', 冲: '冲太岁：主变动、搬迁、换环境，主动求变反而顺，出行注意安全', 刑: '刑太岁：防口舌和小磕碰，凡事按规矩来就平安', 害: '害太岁：防小人暗耗，人情往来多留个心', 破: '破太岁：计划容易被打乱，多留后手、预留弹性', 六合: '六合太岁：贵人缘好，合作、谈判、结缘都顺', 三合: '三合太岁：众人相助，适合组队、拓展人脉', 平: '与太岁平和：没有大冲大合，按自己节奏走' };
+  const YS = { 驿马: '遇驿马：适合出差、旅行、跑业务', 桃花: '遇桃花：人缘旺，社交和感情都有好机会', 华盖: '遇华盖：灵感和悟性高，适合学习、修身', 将星: '遇将星：有带头机会，敢站出来', 劫煞: '遇劫煞：防破财和小人，重要的事多核对', 亡神: '遇亡神：凡事光明正大，少走捷径', 红鸾: '遇红鸾：感情有喜讯', 天喜: '遇天喜：有值得庆祝的事' };
+  F.zodiacRows = function (ch, gz, opt) {
+    opt = opt || {}; const e = window.ZEN_E, me = ch.P.y[1], b = gz[1], rows = [];
+    const rel = b === me ? '值' : e.chong(me, b) ? '冲' : (e.XING[me] || []).includes(b) ? '刑' : e.HAI[me] === b ? '害' : e.PO[me] === b ? '破' : e.LIUHE[me] === b ? '六合' : TRI[me] === TRI[b] ? '三合' : '平';
+    rows.push(['🐲', '太岁', TS[rel]]);
+    const t = TRI[me], hit = [];
+    [['驿马', '寅申亥巳'], ['桃花', '酉卯午子'], ['华盖', '辰戌丑未'], ['将星', '子午酉卯'], ['劫煞', '巳亥寅申'], ['亡神', '亥巳申寅']].forEach(([n, L]) => { if (L[t] === b) hit.push(n); });
+    if ('卯寅丑子亥戌酉申未午巳辰'[Z.indexOf(me)] === b) hit.push('红鸾'); if ('酉申未午巳辰卯寅丑子亥戌'[Z.indexOf(me)] === b) hit.push('天喜');
+    if (hit.length) rows.push(['🌟', '神煞', hit.slice(0, 2).map(n => YS[n]).join('；')]);
+    const base = F.kbRows ? F.kbRows(ch, gz, e.tenGod(ch.dm, gz[0]), opt) : [];
+    const tg = base.find(r => r[0] === '🔮'); if (tg) rows.push(tg);
+    rows.push(['🏠', '根基', `生肖就是年柱地支，代表祖上和长辈缘；${['冲', '刑', '害', '破'].includes(rel) ? '与太岁有摩擦时，多陪长辈、多关心家人，家和万事兴' : '与太岁和顺，家里也容易和顺'}`]);
+    base.filter(r => ['🪞', '💪', '🎨'].includes(r[0])).forEach(r => rows.push(r));
+    return rows;
+  };
+})();
+
 </script>
 <script>
 (function () {
@@ -4024,7 +4046,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       <div class="bz-zd"><p class="bz-${x.tone === 'bad' ? 'bad' : x.tone === 'good' ? 'good' : 'muted'}"><b>${x.r}</b> · ${esc(x.rel)}</p><p class="bz-muted">${gzc(x.el)}</p>
       <dl class="bz-kv"><dt>事业</dt><dd>${esc(x.career)}</dd><dt>财运</dt><dd>${esc(x.wealth)}</dd><dt>感情</dt><dd>${esc(x.love)}</dd><dt>健康</dt><dd>${esc(x.health)}</dd><dt>幸运色</dt><dd>${esc(x.color)}</dd></dl><p class="bz-tip">${esc(x.tip)}</p></div></details>`;
     const good = list.filter(x => x.tone === 'good').map(x => x.an), bad = list.filter(x => x.tone === 'bad').map(x => `${x.an}（${x.r}）`);
-    return seg + hero(`你的生肖 ${me.emo}${me.an} · 第 ${me.rank} 名`, me.score, A.level(me.score), `<h2>${when}生肖运势</h2>`, [`<p class="bz-muted">${sub}</p>`, `<p>${esc(me.rel)}。${esc(me.tip)}。</p>`])
+    return seg + hero(`你的生肖 ${me.emo}${me.an} · 第 ${me.rank} 名`, me.score, A.level(me.score), `<h2>${when}生肖运势</h2>`, [`<p class="bz-muted">${sub}</p>`, `<p>${esc(me.rel)}。${esc(me.tip)}。${(() => { try { const yy = S.B.syOf(S.date); return KBR(ZEN_F.zodiacRows(S.ch, gz, { kind: md === '年' ? 'year' : md === '月' ? 'month' : 'day', age: md === '年' ? AGE(yy) : 0, year: yy })); } catch (e) { return ''; } })()}</p>`])
       + (() => { const FACE = { 子: '🐭', 丑: '🐮', 寅: '🐯', 卯: '🐰', 辰: '🐲', 巳: '🐍', 午: '🐴', 未: '🐑', 申: '🐵', 酉: '🐔', 戌: '🐶', 亥: '🐷' }, t3 = list.slice(0, 3), ord = [t3[1], t3[0], t3[2]];
         return card('z-top', '🏆 本期最旺 · 前三名', `<div class="bz-podium">${ord.map(x => `<div class="bz-pd bz-pd${x.rank}${x.a === mine ? ' me' : ''}"><span class="bz-pdf">${FACE[x.a]}</span><b>${x.an}<small>${gzc(x.a)}</small></b><em>${x.score}</em><div class="bz-pdb"><i>${['🥇', '🥈', '🥉'][x.rank - 1]}</i>${x.rank}</div></div>`).join('')}</div>${t3.some(x => x.a === mine) ? '<p class="bz-good" style="text-align:center;margin:6px 0 0">🎉 你的生肖上榜了！</p>' : ''}`); })()
       + card('z-rank', `十二生肖排名 · ${(() => { const p = PER.find(q => q.on); return p ? `${p.lab} ${p.sub}` : md === '年' ? `${S.B.syOf(S.date)}年` : md === '月' ? `${gz}月` : A.md(S.date); })()}`, `<div class="bz-zlist">${list.map(row).join('')}</div><p class="bz-muted">点开任一生肖，看看它这段时间的运势。上下翻页可看其他${md === '年' ? '年份' : md === '月' ? '月份' : '日子'}。</p>`)
