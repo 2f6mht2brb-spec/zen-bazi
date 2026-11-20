@@ -3035,8 +3035,11 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     return card('d-word', '今日品格', `<div class="bz-vrow">${vw(p[0], p[1], 'up')}<i>↔</i>${vw(p[2], p[3], 'dn')}</div><p class="bz-small">今天发挥「${p[1].replace(/的$/, '')}」，别变成「${p[3].replace(/的$/, '')}」。</p><p class="bz-creed">🗡 ${CREED[(h >>> 4) % CREED.length]}</p>`);
   }
   function wrapCN(ctx, t, maxW) { const out = []; let line = ''; for (const ch of t) { if (ctx.measureText(line + ch).width > maxW) { out.push(line); line = ch; } else line += ch; } if (line) out.push(line); return out; }
+  const QR_ROWS = ["111111100111101100110001001111111", "100000100011000101000111001000001", "101110100000001001000001101011101", "101110100111010101010100001011101", "101110100100110010010010001011101", "100000101101101000101111001000001", "111111101010101010101010101111111", "000000000100100001111110100000000", "100101101010110100011110110100000", "001001001100100010001010111100011", "110110111111000001010110011110111", "100010000010101101001000110011000", "110100111010000100000001111001010", "000111001100110111000111001010111", "001101111001010000101111011110010", "110000001010011101110100101010010", "011100111001001001110111111011010", "100001001111001010000101100101010", "011010111000001010100010101000111", "100001000110100101101100110100010", "110011111001110011110011110000001", "010101011011110110111110001101111", "111001100110100101001100011010001", "010011001110000010000100010011000", "101010110011111101011101111110000", "000000001000100000010000100011001", "111111100101000000000100101011110", "100000101101001100000001100010011", "101110100110101110010010111111000", "101110101101001100011100101011010", "101110100100111001000111100011101", "100000100101110111100111101000000", "111111101101100010000100101011010"], SITE = 'https://2f6mht2brb-spec.github.io/zen-bazi/';
+  const QUOTES = [["天行健，君子以自强不息。", "《易经》"], ["地势坤，君子以厚德载物。", "《易经》"], ["穷则变，变则通，通则久。", "《易经》"], ["积善之家，必有余庆。", "《易经》"], ["知人者智，自知者明。", "老子"], ["千里之行，始于足下。", "老子"], ["上善若水，水善利万物而不争。", "老子"], ["合抱之木，生于毫末。", "老子"], ["三人行，必有我师焉。", "《论语》"], ["君子坦荡荡，小人长戚戚。", "《论语》"], ["知之者不如好之者，好之者不如乐之者。", "《论语》"], ["岁寒，然后知松柏之后凋也。", "《论语》"], ["天时不如地利，地利不如人和。", "孟子"], ["生于忧患，死于安乐。", "孟子"], ["心外无物，此心光明，亦复何言。", "王阳明"], ["知是行之始，行是知之成。", "王阳明"], ["天下事，在局外呐喊议论总是无益，必须躬身入局。", "曾国藩"], ["不为圣贤，便为禽兽；莫问收获，但问耕耘。", "曾国藩"], ["命由我作，福自己求。", "《了凡四训》"], ["从前种种，譬如昨日死；从后种种，譬如今日生。", "《了凡四训》"], ["相由心生，相随心转。", "麻衣相法"], ["先照见自己，再看懂天地。", "玄镜"], ["好运不是等来的，是一步一步走出来的。", "玄镜"], ["今天的你，比昨天多懂自己一点，就是赢。", "玄镜"]];
+  const qPick = d => QUOTES[[...String(d)].reduce((a, c) => a * 31 + c.charCodeAt(0) >>> 0, 11) % QUOTES.length];
   async function renderCard(D) {
-    const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
+    const W = 1080, H = 1780, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d');
     const SERIF = '"Noto Serif SC","Songti SC","STSong",serif', SANS = '"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif', GOLD = '#d4af37', GOLD2 = '#f5d77a', INK = '#efe6d2', MUT = '#b9ad97';
     const g = x.createLinearGradient(0, 0, W * .4, H); g.addColorStop(0, '#2a1a4a'); g.addColorStop(1, '#100820'); x.fillStyle = g; x.fillRect(0, 0, W, H);
     x.strokeStyle = 'rgba(212,175,55,.55)'; x.lineWidth = 3; x.strokeRect(36, 36, W - 72, H - 72); x.strokeStyle = 'rgba(212,175,55,.25)'; x.lineWidth = 1.5; x.strokeRect(50, 50, W - 100, H - 100);
@@ -3056,17 +3059,30 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     tiles.forEach(([t, v, c], i) => { const ty = 770 + i * 150; x.fillStyle = 'rgba(12,7,25,.55)'; x.strokeStyle = 'rgba(212,175,55,.3)'; x.lineWidth = 2; x.beginPath(); x.roundRect ? x.roundRect(96, ty, W - 192, 128, 22) : x.rect(96, ty, W - 192, 128); x.fill(); x.stroke();
       x.fillStyle = c; x.font = `700 30px ${SANS}`; x.fillText(t, 130, ty + 50); x.fillStyle = INK; x.font = `500 34px ${SANS}`; wrapCN(x, v, W - 300).slice(0, 2).forEach((l, k) => x.fillText(l, 130, ty + 96 + k * 40)); });
     x.fillStyle = '#7fe0ad'; x.font = `500 32px ${SANS}`; x.fillText(`🕐 吉时 ${D.hours}`, 96, 1250);
-    x.fillStyle = 'rgba(239,230,210,.55)'; x.font = `400 24px ${SANS}`; x.textAlign = 'right'; x.fillText('玄镜 · 传承易经八字文化 · 仅供参考', W - 96, 1300); x.textAlign = 'left';
+    // 今日一句：启发
+    const [qt, qa] = qPick(D.date + (D.name || ''));
+    x.strokeStyle = 'rgba(212,175,55,.35)'; x.lineWidth = 2; x.beginPath(); x.moveTo(96, 1290); x.lineTo(W - 96, 1290); x.stroke();
+    x.fillStyle = GOLD; x.font = `700 26px ${SANS}`; x.fillText('✦ 今日一句', 96, 1336);
+    x.fillStyle = INK; x.font = `700 40px ${SERIF}`; const ql = wrapCN(x, `「${qt}」`, W - 192).slice(0, 2); ql.forEach((l, i) => x.fillText(l, 96, 1392 + i * 54));
+    x.fillStyle = MUT; x.font = `400 26px ${SANS}`; x.textAlign = 'right'; x.fillText(`—— ${qa}`, W - 96, 1392 + ql.length * 54 + 4); x.textAlign = 'left';
+    // QR 与网址
+    const n = QR_ROWS.length, ms = 5, qs = n * ms, qx = 110, qy = 1520;
+    x.fillStyle = '#fff'; x.beginPath(); x.roundRect ? x.roundRect(qx - 14, qy - 14, qs + 28, qs + 28, 14) : x.rect(qx - 14, qy - 14, qs + 28, qs + 28); x.fill();
+    x.fillStyle = '#100820'; QR_ROWS.forEach((r, i) => { for (let j = 0; j < n; j++) if (r[j] === '1') x.fillRect(qx + j * ms, qy + i * ms, ms, ms); });
+    const tx = qx + qs + 50; x.fillStyle = GOLD2; x.font = `700 34px ${SANS}`; x.fillText('扫一扫，照见你的命盘', tx, qy + 50);
+    x.fillStyle = INK; x.font = `400 26px ${SANS}`; x.fillText('免费排八字 · 每日运势 · 大运流年', tx, qy + 96);
+    x.fillStyle = '#9fc3ff'; x.font = `500 22px ${SANS}`; x.fillText(SITE.replace('https://', ''), tx, qy + 140);
+    x.fillStyle = 'rgba(239,230,210,.5)'; x.font = `400 22px ${SANS}`; x.fillText('玄镜 · 传承易经八字文化 · 仅供参考', tx, qy + 178);
     const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
     return { key: JSON.stringify(D), blob, file: new File([blob], `玄镜-${D.date}.png`, { type: 'image/png' }), url: URL.createObjectURL(blob) };
   }
   let cardCache = null, cardBusy = null;
   function prepCard() { const D = S.share; if (!D) return null; const k = JSON.stringify(D); if (cardCache && cardCache.key === k) return Promise.resolve(cardCache); if (cardBusy && cardBusy.k === k) return cardBusy.p; const p = renderCard(D).then(c => (cardCache = c)); cardBusy = { k, p }; return p; }
   function shareFile(c) {
-    const D = S.share || {}; if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [c.file] }))) return navigator.share({ files: [c.file], title: '玄镜 · 今日运势', text: `我的今日运势：${D.ov} 分「${D.mood}」` }).then(() => true, e => e && e.name === 'AbortError');
+    const D = S.share || {}; if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [c.file] }))) return navigator.share({ files: [c.file], title: '玄镜 · 今日运势', text: `我的今日运势：${D.ov} 分「${D.mood}」。你也来照见自己 👉 ${SITE}` }).then(() => true, e => e && e.name === 'AbortError');
     return Promise.resolve(false);
   }
-  function showCardSheet(c) { const s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = `<h3>你的运势卡</h3><img src="${c.url}" alt="今日运势卡" style="width:100%;border-radius:14px;display:block"><button type="button" class="bz-sharebtn" data-act="sharenow" style="margin-top:10px">📤 分享</button><a class="bz-sharebtn" href="${c.url}" download="${c.file.name}">⬇ 下载图片</a><p class="bz-small">也可以长按图片保存到相册。</p>`; s.hidden = false; }
+  function showCardSheet(c) { const s = $('#bz-sheet'); $('#bz-sheet-body').innerHTML = `<h3>你的运势卡</h3><img src="${c.url}" alt="今日运势卡" style="width:100%;border-radius:14px;display:block"><button type="button" class="bz-sharebtn" data-act="sharenow" style="margin-top:10px">📤 分享</button><a class="bz-sharebtn" href="${c.url}" download="${c.file.name}">⬇ 下载图片</a><button type="button" class="bz-sharebtn" data-act="copysite">🔗 复制网站链接，邀请朋友</button><p class="bz-small">也可以长按图片保存到相册。卡片右下角有二维码，朋友扫一扫就能打开玄镜。</p>`; s.hidden = false; }
   function makeShareCard() {
     const D = S.share; if (!D) return; const k = JSON.stringify(D);
     if (cardCache && cardCache.key === k) { shareFile(cardCache).then(ok => { if (!ok) showCardSheet(cardCache); }); return; }
@@ -4257,6 +4273,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     if (k === 'stmk') { S.stMk = v; S.stSel = null; render(); const h = document.getElementById('st-mkt'); if (h) h.scrollIntoView({ block: 'start' }); return; }
     if (k === 'fdelm') { const [kind, i] = v.split(':'), all = famLoad(); (all[kind] || []).splice(+i, 1); famSave(all); render(); return; }
     if (k === 'stdel') { const L = S.stocks || (S.stocks = sLoad()); L.splice(+v, 1); sSave(L); render(); return; }
+    if (k === 'copysite') { const t = `来玄镜看看你的八字和今日运势 ✨ ${SITE}`; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('链接已复制，贴给朋友吧')).catch(() => prompt('复制这个链接：', SITE)); return; }
     if (k === 'cloudin') { cloudLogin(); return; }
     if (k === 'cloudout') { cloudLogout(); return; }
     if (k === 'cloudme') { S.view = 'files'; render(); window.scrollTo(0, 0); return; }
