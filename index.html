@@ -2541,7 +2541,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       const g = o.male ? '财' : '官', ss = pick(ch, null, ['红鸾', '天喜', '桃花', '金舆', '孤辰', '寡宿', '阴差阳错'])[0];
       const p = g === '财' ? (ch.weak ? '古书说财多身弱是「富屋贫人」，妻星要靠你身强才能担，先把自己照顾好' : '古书说身旺能任财，你能扛起家庭，妻子也能旺你') : (ch.weak ? '古书说正官喜身旺有印，你需要一个能包容、带你成长的另一半' : '古书说正官配身旺最贵，你能和另一半互相成就');
       const SS = { 红鸾: '命带红鸾，姻缘来得自然', 天喜: '命带天喜，婚恋多喜事', 桃花: '命带桃花，异性缘好，专一最重要', 金舆: '命带金舆，易得配偶扶持', 孤辰: '命带孤辰，感情上要多主动表达', 寡宿: '命带寡宿，别把心事藏着，多沟通', 阴差阳错: '日柱阴差阳错，婚姻要多花心思经营' };
-      return `${p}。${ss ? SS[ss.n] + '。' : ''}麻衣相法看妻妾宫（眼尾），饱满明润则夫妻和顺。` + F.tail(ch, o.male ? '财' : '官', 25);
+      let mg = ''; try { const M = F.marriage(ch, o.male); mg = `九龙道长看婚姻先看夫妻宫（日支）：你的日支属${M.dzEl}，是${M.palXi ? '喜用，另一半和其家人能帮你' : '忌神，相处要多包容'}；夫妻宫稳固度 ${M.sc} 分（满分 100）${M.sc >= 80 ? '，根基稳' : M.sc >= 50 ? '，用心经营就好' : '，多磨合、多沟通'}。`; } catch (e) { }
+      return `${p}。${mg}${ss ? SS[ss.n] + '。' : ''}麻衣相法看妻妾宫（眼尾），饱满明润则夫妻和顺。` + F.tail(ch, o.male ? '财' : '官', 25).replace(/麻衣养心诀：[^」]*」，心改相随。/, '');
     }
     if (kind === 'kids') {
       const ss = pick(ch, ['时'], ['天乙贵人', '文昌', '天德贵人', '月德贵人', '太极贵人', '将星'])[0];
@@ -2595,6 +2596,27 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const wet = [P.y, P.m, P.d, P.h].filter(Boolean).join('').split('').filter(c => '壬癸子亥辰丑'.includes(c)).length, dry = [P.y, P.m, P.d, P.h].filter(Boolean).join('').split('').filter(c => '丙丁巳午未戌'.includes(c)).length;
     const seat = SEAT.find(s => age <= s[0]), sc = st.chars[seat[2]];
     return { st, dy, xi, ji, g, m, b, lack, goodN, midN, dyN: ch.dayun.length, yy, yin: all - yy, wet, dry, seat, seatTg: sc ? tg(sc) : null, seatXi: sc ? isXi(sc) : null };
+  };
+})();
+
+/* 九龙道长 · 夫妻宫百分法（白话、正向表述） */
+(function () {
+  const F = ZEN_F;
+  F.marriage = function (ch, male) {
+    const e = window.ZEN_E, P = ch.P, dz = P.d[1]; let sc = 100; const why = [];
+    const near = [['月', P.m[1], 1], ['时', P.h && P.h[1], 1], ['年', P.y[1], 0]];
+    near.forEach(([n, b, adj]) => { if (!b) return;
+      if ((e.XING[dz] || []).includes(b) && b !== dz) { sc -= 100 * (adj ? 1 : 0.6); why.push(`日支与${n}支相刑`); }
+      else if (e.chong(dz, b)) { sc -= adj ? 70 : 60; why.push(`日支与${n}支相冲`); }
+      else if (e.HAI[dz] === b) { sc -= adj ? 30 : 20; why.push(`日支与${n}支相害`); }
+      else if (e.PO[dz] === b) { sc -= adj ? 20 : 10; why.push(`日支与${n}支相破`); } });
+    const rv = male ? { 比肩: 1, 劫财: 2 } : { 食神: 1, 伤官: 2 }, Q = [1, 0.6, 0.3];
+    const hid = (b, base) => { if (!b) return; [...e.HID[b]].forEach((h, i) => { const k = rv[e.tenGod(ch.dm, h)]; if (k) sc -= base * k * Q[i]; }); };
+    hid(dz, 10); hid(P.m[1], 10); if (P.h) hid(P.h[1], 5);
+    [P.m[0], P.h && P.h[0]].forEach(g => { const k = g && rv[e.tenGod(ch.dm, g)]; if (k) sc -= 5 * k; });
+    sc = Math.max(0, Math.round(sc));
+    const dzEl = e.elOf(e.HID[dz][0]), palXi = ['用', '喜'].includes(ch.label(dzEl));
+    return { sc, why, palXi, dzEl };
   };
 })();
 
