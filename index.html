@@ -2507,13 +2507,17 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   // kind: day|week|month|year|dayun ; gz: 该时段干支 ; age: 年运用虚岁
   F.kb = function (ch, gz, tg, opt) {
     opt = opt || {}; if (!gz || !tg || !TG[tg]) return '';
-    const t = TG[tg], body = ch.weak ? t[2] : t[1], g = GRP[tg];
+    const t = TG[tg], g = GRP[tg];
+    let weak = ch.weak, stTxt = '';
+    try { const yr = new Date().getFullYear(), dy = window.ZEN_E.dayunAt(ch, (opt.year || yr) + 0.5), st = F.state(ch, dy && dy.gz); weak = !(st.nowN >= 4 && st.nowN <= 5); if (opt.kind === 'year' || opt.kind === 'dayun') stTxt = `按得令、得地、得势，你原局${st.base}，${opt.kind === 'dayun' ? '此运' : '当前大运'}以${st.now}论。`; } catch (e) { }
+    const body = weak ? t[2] : t[1];
     let out = `${opt.label ? opt.label : opt.kind === 'day' ? '今天' : opt.kind === 'year' ? '这一年' : opt.kind === 'month' ? '这个月' : opt.kind === 'dayun' ? '这步大运' : '此时'}天干是你的${t[0]}，${body}。`;
     const ss = (F.ssAt ? F.ssAt(ch, gz) : []).map(r => SS[r.n]).filter(Boolean).slice(0, 2);
     if (ss.length) out += ss.join('；') + '。';
+    if (stTxt) out += stTxt + (opt.kind === 'year' ? '流年天干管上半年、地支管下半年。' : '大运天干管前五年、地支管后五年。');
     if (opt.age && F.face) { const f = F.face(ch, opt.age); out += `麻衣相法：${opt.age}岁流年走到${f.y[1].replace(/（.*/, '')}，这里气色明润则顺。`; }
     else out += `相法上留意${GONG[g]}的气色，明润为吉。`;
-    if (!opt.noMind) out += F.tail(ch, g, gz.charCodeAt(0) + gz.charCodeAt(1));
+    if (!opt.noMind) { let tl = F.tail(ch, g, gz.charCodeAt(0) + gz.charCodeAt(1)); if (stTxt) tl = tl.replace(/麻衣养心诀：[^」]*」，心改相随。/, ''); out += tl; }
     return out;
   };
 })();
@@ -2553,6 +2557,44 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       return `《三命通会》以年柱为祖上，「年管十五」以前。${ss ? SS[ss.n] + '。' : ''}麻衣相法以额头（上停）和福德宫（天仓）看祖荫，额宽明润主祖德护佑。` + F.tail(ch, '印', 12);
     }
     return '';
+  };
+})();
+
+/* 九龙道长笔记 · 殷志成《四柱八字基础应用》· 九九归一图 —— 全盘批命流程（原创白话整理） */
+(function () {
+  const F = ZEN_F, E = () => window.ZEN_E;
+  const W = { yg: 8, mg: 12, hg: 12, yz: 4, mz: 40, dz: 12, hz: 12 };
+  const LV = ['从弱', '弱', '偏弱', '均衡', '偏强', '强', '从强'];
+  const GOOD10 = ['正印', '食神', '正官', '正财'], MID10 = ['比肩', '偏财'], BAD10 = ['七杀', '偏印', '伤官', '劫财'];
+  const LACK = { 劫财: '不太会借力，常替人做事', 比肩: '知心朋友少，凡事靠自己', 偏财: '对钱较保守，不爱冒险', 正财: '收入来源要刻意经营才稳', 偏印: '分析钻研要多练习', 正印: '学习要靠方法和复习，与长辈多走动', 七杀: '执行力要靠时间表推一把', 正官: '自律要靠外部规则来帮', 伤官: '要给自己更高的目标来激发上进心', 食神: '要学会放松，多练表达' };
+  const SEAT = [[9, '年干', 'yg', '祖上、童年'], [18, '年支', 'yz', '少年、母系家族'], [27, '月干', 'mg', '青年、兄姐'], [36, '月令', 'mz', '青壮年、事业根基'], [45, '日支', 'dz', '中年、夫妻宫'], [54, '时干', 'hg', '中晚年、长子女'], [200, '时支', 'hz', '晚年、子女']];
+  const main = b => window.ZEN_E.HID[b][0];
+  F.state = function (ch, dyGz) {
+    const e = E(), P = ch.P, de = ch.de, rel = c => e.relEl(de, e.elOf(c)), help = c => ['比', '印'].includes(rel(c));
+    const chars = { yg: P.y[0], mg: P.m[0], hg: P.h && P.h[0], yz: main(P.y[1]), mz: main(P.m[1]), dz: main(P.d[1]), hz: P.h && main(P.h[1]) };
+    let tot = 0, hp = 0; Object.entries(chars).forEach(([k, c]) => { if (!c) return; tot += W[k]; if (help(c)) hp += W[k]; });
+    const pct = Math.round(hp / (tot || 1) * 100), list = Object.values(chars).filter(Boolean);
+    const ling = help(chars.mz), di = [P.y, P.m, P.d, P.h].filter(Boolean).some(gz => [...e.HID[gz[1]]].some(h => e.elOf(h) === de)), shi = [P.y[0], P.m[0], P.h && P.h[0]].filter(Boolean).some(g => e.elOf(g) === de);
+    let lv = list.every(help) ? 6 : list.every(c => !help(c)) ? 0 : ling && di && shi ? 5 : (ling && di) || (ling && shi) ? 4 : (ling || (di && shi)) ? 3 : (shi || di) ? 2 : 1;
+    const base = lv; let n = null, now = lv;
+    if (dyGz) { n = [dyGz[0], main(dyGz[1])].filter(help).length;
+      if (lv === 3) now = n ? 4 : 2; else if (lv === 4) now = n ? 5 : 3; else if (lv === 2) now = n ? 3 : 1; else if (lv === 5) now = n === 2 ? 6 : n === 1 ? 5 : 4; else if (lv === 1) now = n === 2 ? 3 : n === 1 ? 2 : 0; }
+    return { pct, ling, di, shi, base: LV[base], now: LV[now], baseN: base, nowN: now, n, chars };
+  };
+  F.jl = function (ch, age, yearF) {
+    const e = E(), P = ch.P, dy = e.dayunAt ? e.dayunAt(ch, yearF) : null, st = F.state(ch, dy && dy.gz);
+    const strongSide = st.nowN >= 4 && st.nowN <= 5 || st.nowN === 0, weakSide = !strongSide;
+    const xi = strongSide ? (st.nowN === 0 ? '财星、官杀、食伤（从弱格顺其势）' : '财星、官杀、食伤') : (st.nowN === 6 ? '印星、比劫（从强格顺其势）' : '印星、比劫');
+    const ji = strongSide ? (st.nowN === 0 ? '印星、比劫' : '印星、比劫') : '财星、官杀、食伤';
+    const tg = c => e.tenGod(ch.dm, c), tens = Object.values(st.chars).filter(Boolean).map(tg);
+    const g = tens.filter(t => GOOD10.includes(t)).length, m = tens.filter(t => MID10.includes(t)).length, b = tens.length - g - m;
+    const lack = Object.keys(LACK).filter(t => !tens.includes(t));
+    const isXi = c => { const r = e.relEl(ch.de, e.elOf(c)); return (strongSide ? ['财', '官', '食'] : ['印', '比']).includes(r); };
+    const dyGood = ch.dayun.map(d => [d.gz[0], main(d.gz[1])].filter(isXi).length), goodN = dyGood.filter(x => x === 2).length, midN = dyGood.filter(x => x === 1).length;
+    const yy = [P.y, P.m, P.d, P.h].filter(Boolean).join('').split('').filter(c => '甲丙戊庚壬子寅辰午申戌'.includes(c)).length, all = [P.y, P.m, P.d, P.h].filter(Boolean).join('').length;
+    const wet = [P.y, P.m, P.d, P.h].filter(Boolean).join('').split('').filter(c => '壬癸子亥辰丑'.includes(c)).length, dry = [P.y, P.m, P.d, P.h].filter(Boolean).join('').split('').filter(c => '丙丁巳午未戌'.includes(c)).length;
+    const seat = SEAT.find(s => age <= s[0]), sc = st.chars[seat[2]];
+    return { st, dy, xi, ji, g, m, b, lack, goodN, midN, dyN: ch.dayun.length, yy, yin: all - yy, wet, dry, seat, seatTg: sc ? tg(sc) : null, seatXi: sc ? isXi(sc) : null };
   };
 })();
 
@@ -2639,7 +2681,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
   const XUAN = {
     'd-pan': '天盘', 'm-pan': '月盘', 'y-pan': '岁盘', 'd-compass': '八门方位', 'd-events': '玄机预示', 'd-other': '趋吉避凶',
-    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-mind': '心灵地图', 'c-face': '麻衣相法', 'c-ss': '三命通会', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
+    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-mind': '心灵地图', 'c-face': '麻衣相法', 'c-jl': '九九归一', 'c-ss': '三命通会', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'wl-natal': '财格', 'wl-way': '财路', 'wl-days': '择吉', 'wl-months': '月令', 'wl-years': '十年', 'wl-act': '开财', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
@@ -3189,7 +3231,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const over = `${gzc(d.gz)}大运：天干${d.gz[0]}为${tenGod(ch.dm, d.gz[0])}（${ch.label(elOf(d.gz[0]))}），地支${d.gz[1]}本气为${tenGod(ch.dm, HID[d.gz[1]][0])}（${ch.label(elOf(d.gz[1]))}）。${it.length ? it.join('；') + '。' : ''}这十年整体${A.level(d.s[0])}。`;
     const ADV = ['以守为主，少做大决定，练好内功。', '宜守不宜攻，挑流年好的年份做关键动作。', '平稳过渡，稳中求进。', '顺势而为，可以积极开拓。', '人生高峰期之一，大胆把握机会。'];
     return card('dy-pick', '选择大运', chips(ch.dayun.map(x => ({ top: `${x.ageFrom}–${x.ageTo}岁`, gz: x.gz, lv: A.level(x.s[0]) + (x === cur ? ' · 当前' : ''), on: x === d, act: 'dy:' + x.gz }))))
-      + hero('大运整体', d.s[0], A.level(d.s[0]), `<h2>${gzc(d.gz)}大运 · ${d.ageFrom}–${d.ageTo}岁</h2>`, [`<p><b>${d.yearFrom}–${d.yearTo}${d === cur ? ' · 当前大运' : ''}</b><br>${over}${KB(d.gz, { kind: 'dayun' })}</p>`])
+      + hero('大运整体', d.s[0], A.level(d.s[0]), `<h2>${gzc(d.gz)}大运 · ${d.ageFrom}–${d.ageTo}岁</h2>`, [`<p><b>${d.yearFrom}–${d.yearTo}${d === cur ? ' · 当前大运' : ''}</b><br>${over}${KB(d.gz, { kind: 'dayun', year: d.yearFrom + 5 })}</p>`])
       + catsGrid(d.gz, d.s, (k, s) => A.reasonFor(ch, k, d.gz) + '。' + A.LV[k][A.band(s)])
       + card('dy-years', '这十年的流年走势', bars(yrs.map(x => ({ v: x.s[0], l1: x.gz, l2: x.y, act: 'ln:' + x.y, tip: `${x.y} ${x.gz} 整体${x.s[0]}（${A.level(x.s[0])}）` })), { label: '大运十年走势' })
         + `<p class="bz-tip">最好：${best.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}；最需小心：${worst.map(x => `${x.y} ${gzc(x.gz)}（${x.s[0]}分）`).join('、')}。</p><p class="bz-muted">点柱子查看那一年的流年运程。</p>`)
@@ -3251,6 +3293,17 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
           [`强项 · ${F.strong[1]}`, `你的「${F.strong[0]}」力量最足，相法对应${F.strong[2]}：${F.strong[3]}。`, 'bz-good'],
           [`留意 · ${F.weak[1]}`, `「${F.weak[0]}」${F.pct < 5 ? "在盘中很少" : `只占约 ${F.pct}%`}，可多养${F.weak[2]}：${F.weak[3]}。气色先由作息和心情养起。`],
           age ? [`${age} 岁流年部位`, `走到${F.y[1]}，属${F.y[2]}。这里气色明润，今年运势较顺；发暗就多休息、少熬夜。（男看左、女看右）`] : null].filter(Boolean)) + `<p class="bz-muted">相法讲「相随心转」：心态、作息、待人改变，气色和运势也会跟着变。仅供参考。</p>`); })()
+      + (() => { try { const by = +String((S.raw && S.raw.date) || '').slice(0, 4), yr = new Date().getFullYear(), age = by ? yr - by + 1 : 30, J = ZEN_F.jl(ch, age, yr + 0.5), T = J.st;
+        const yn = b => b ? '✓' : '✗';
+        return card('c-jl', '九九归一 · 全盘批命', `<p class="bz-small">按九龙道长批八字流程：先过三关（强弱 → 喜用 → 格局），再看平衡、层次、宫位。</p>` + dl([
+          ['第一关 · 日元强弱', `得令${yn(T.ling)} 得地${yn(T.di)} 得势${yn(T.shi)} → 原局<b>${T.base}</b>；帮扶力量约 ${T.pct} 分（满分 100，过 50 为强）。${J.dy ? `当前${gzc(J.dy.gz)}大运有 ${T.n} 个字生助你，这十年以<b>${T.now}</b>论。` : ''}`, ''],
+          ['第二关 · 喜用忌凶', `现在宜补<b>${J.xi}</b>，少碰${J.ji}。古诀「一位为真，二位为争，三位为假」：喜用也不宜过多，平衡最好。`, 'bz-good'],
+          ['第三关 · 格局性格', `${ch.geju}。七个字里四大吉神（正印、食神、正官、正财）${J.g} 个、平神 ${J.m} 个、四大恶神 ${J.b} 个。${J.g >= J.b ? '吉神占优，性格底子稳。' : '个性鲜明有冲劲，修身养性能化刚为柔。'}`],
+          ['平衡', `阴阳 ${J.yy}:${J.yin}${Math.abs(J.yy - J.yin) >= 4 ? '（偏颇，做事易走极端）' : '（较平衡）'}；湿燥 ${J.wet}:${J.dry}${J.wet - J.dry >= 3 ? '（偏湿，宜多晒太阳、运动）' : J.dry - J.wet >= 3 ? '（偏燥，易上火，宜多喝水、静心）' : '（较平衡）'}。`],
+          ['层次 · 运程比例', `${J.dyN} 步大运中，喜用双全的好运 ${J.goodN} 步、半好 ${J.midN} 步。${J.goodN >= 3 ? '一生好运多，抓住时机能成大事。' : '好运要靠自己创造，把握喜用年份发力。'}`],
+          [`宫位年龄 · ${age}岁`, `走在${J.seat[1]}（${J.seat[3]}）${J.seatTg ? `，此位是${J.seatTg}，${J.seatXi ? '属喜用，这段时间有助力' : '属忌凶，这段时间多靠自己、稳中求进'}` : ''}。`],
+          ['十神缺什么', J.lack.length ? J.lack.slice(0, 3).map(t => `缺${t}：${ZEN_F.jlLack ? '' : ''}`).join('') + J.lack.slice(0, 3).map(t => '').join('') : '十神齐全，各方面都有基础。']
+        ].map(r => r[0] === '十神缺什么' && J.lack.length ? [r[0], J.lack.slice(0, 3).map(t => `缺${t}，${({ 劫财: '不太会借力，常替人做事', 比肩: '知心朋友少，凡事靠自己', 偏财: '对钱较保守，不爱冒险', 正财: '收入来源要刻意经营才稳', 偏印: '分析钻研要多练习', 正印: '学习要靠方法和复习', 七杀: '执行力要靠时间表推一把', 正官: '自律要靠外部规则来帮', 伤官: '要给自己更高的目标', 食神: '要学会放松、多练表达' })[t]}`).join('；') + '。缺的可以从大运流年和后天学习补上。'] : r)) + '<p class="bz-muted">参考：九龙道长 365 集笔记、殷志成《四柱八字基础应用》、九九归一图。</p>', 'bz-keep'); } catch (e) { return ''; } })()
       + (() => { if (typeof ZEN_F === 'undefined' || !ZEN_F.shensha) return ''; const L = ZEN_F.shensha(ch); if (!L.length) return '';
         return card('c-ss', '八字神煞 · 三命通会', `<p class="bz-small">神煞是《三命通会》里干支组合的「小标签」，只作锦上添花的参考，轻重还是要看格局和用神。</p>` + dl(L.map(x => [`${x.n} · ${x.at.join('')}柱`, x.m, x.t === 'g' ? 'bz-good' : ''])) + (ch.hourKnown ? '' : '<p class="bz-muted">时辰不详，时柱上的神煞没有算进去。</p>')); })()
       + wordsCard(ch)
