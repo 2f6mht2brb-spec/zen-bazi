@@ -2497,14 +2497,23 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   const GRP = { 正官: '官', 七杀: '官', 正印: '印', 偏印: '印', 比肩: '比', 劫财: '比', 食神: '食', 伤官: '食', 正财: '财', 偏财: '财' };
   const SS = { 天乙贵人: '逢天乙贵人，遇难有人帮', 文昌: '逢文昌，利学习、考试、写方案', 太极贵人: '逢太极贵人，悟性高', 天德贵人: '逢天德，凶事易化解', 月德贵人: '逢月德，少是非', 驿马: '逢驿马，主奔波出行、变动', 桃花: '逢桃花，人缘好、异性缘旺', 将星: '逢将星，利带团队、拍板', 华盖: '逢华盖，宜独处思考、学玄理', 禄神: '逢禄神，衣食有靠', 羊刃: '逢羊刃，防冲动和意外破财', 劫煞: '逢劫煞，防小人和损失', 红鸾: '逢红鸾，感情有喜讯', 天喜: '逢天喜，有喜事', 金舆: '逢金舆，得家人支持', 国印: '逢国印，利掌事、守规矩' };
   // kind: day|week|month|year|dayun|cat ; gz: 该时段干支 ; age: 年份对应虚岁（年运用）
+  const COL = { 木: ['青绿', '东'], 火: ['红紫', '南'], 土: ['黄棕', '中央或本地'], 金: ['白金', '西'], 水: ['黑蓝', '北'] };
+  const GONG = { 官: '额中官禄宫', 财: '鼻头财帛宫', 印: '额角父母宫', 比: '两眉兄弟宫', 食: '眼下男女宫' };
+  const XIN = ['心宽气和，话少福多', '有好东西与人分享', '能济人之急，不助强欺弱', '不记旧恶，受恩不忘', '言语有序，不说大话', '行善不倦，体谅人辛劳'];
+  F.tail = function (ch, g, seed) {
+    const c = COL[ch.yong] || ['', ''];
+    return `心灵功课：${MIND[g] ? MIND[g].replace(/^心灵功课：/, '') : '每天写下一件感恩的事'}。补运：用神${ch.yong}，宜多用${c[0]}色、往${c[1]}方走动。麻衣养心诀：「${XIN[(seed || 0) % XIN.length]}」，心改相随。`;
+  };
+  // kind: day|week|month|year|dayun ; gz: 该时段干支 ; age: 年运用虚岁
   F.kb = function (ch, gz, tg, opt) {
     opt = opt || {}; if (!gz || !tg || !TG[tg]) return '';
-    const t = TG[tg], body = ch.weak ? t[2] : t[1];
+    const t = TG[tg], body = ch.weak ? t[2] : t[1], g = GRP[tg];
     let out = `${opt.label ? opt.label : opt.kind === 'day' ? '今天' : opt.kind === 'year' ? '这一年' : opt.kind === 'month' ? '这个月' : opt.kind === 'dayun' ? '这步大运' : '此时'}天干是你的${t[0]}，${body}。`;
-    const ss = (F.ssAt ? F.ssAt(ch, gz) : []).map(r => SS[r.n]).filter(Boolean).slice(0, 1);
-    if (ss.length) out += ss[0] + '。';
+    const ss = (F.ssAt ? F.ssAt(ch, gz) : []).map(r => SS[r.n]).filter(Boolean).slice(0, 2);
+    if (ss.length) out += ss.join('；') + '。';
     if (opt.age && F.face) { const f = F.face(ch, opt.age); out += `麻衣相法：${opt.age}岁流年走到${f.y[1].replace(/（.*/, '')}，这里气色明润则顺。`; }
-    else if (!ss.length && !opt.noMind) out += (MIND[GRP[tg]] || '') + '。';
+    else out += `相法上留意${GONG[g]}的气色，明润为吉。`;
+    if (!opt.noMind) out += F.tail(ch, g, gz.charCodeAt(0) + gz.charCodeAt(1));
     return out;
   };
 })();
@@ -2522,26 +2531,26 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       const g = E.relEl(ch.de, '火'), by = +String(o.birth || '').slice(0, 4), a1 = by ? 2024 - by + 1 : 0, a2 = by ? 2043 - by + 1 : 0;
       let t = `《三命通会》看，火对你是${GN[g]}：${PH[g][ch.weak ? 1 : 0]}。`;
       if (a1 > 0 && F.face) { const f1 = F.face(ch, a1).y[1].replace(/（.*/, ''), f2 = F.face(ch, a2).y[1].replace(/（.*/, ''); t += `九运期间你 ${a1}–${a2} 岁，麻衣流年从${f1}走到${f2}。`; }
-      return t + `心灵功课：${MIND[g]}。`;
+      return t + F.tail(ch, g, 3).replace(/^心灵功课：[^。]*。/, `心灵功课：${MIND[g]}。`);
     }
     if (kind === 'spouse') {
       const g = o.male ? '财' : '官', ss = pick(ch, null, ['红鸾', '天喜', '桃花', '金舆', '孤辰', '寡宿', '阴差阳错'])[0];
       const p = g === '财' ? (ch.weak ? '古书说财多身弱是「富屋贫人」，妻星要靠你身强才能担，先把自己照顾好' : '古书说身旺能任财，你能扛起家庭，妻子也能旺你') : (ch.weak ? '古书说正官喜身旺有印，你需要一个能包容、带你成长的另一半' : '古书说正官配身旺最贵，你能和另一半互相成就');
       const SS = { 红鸾: '命带红鸾，姻缘来得自然', 天喜: '命带天喜，婚恋多喜事', 桃花: '命带桃花，异性缘好，专一最重要', 金舆: '命带金舆，易得配偶扶持', 孤辰: '命带孤辰，感情上要多主动表达', 寡宿: '命带寡宿，别把心事藏着，多沟通', 阴差阳错: '日柱阴差阳错，婚姻要多花心思经营' };
-      return `${p}。${ss ? SS[ss.n] + '。' : ''}麻衣相法看妻妾宫（眼尾），饱满明润则夫妻和顺。`;
+      return `${p}。${ss ? SS[ss.n] + '。' : ''}麻衣相法看妻妾宫（眼尾），饱满明润则夫妻和顺。` + F.tail(ch, o.male ? '财' : '官', 25);
     }
     if (kind === 'kids') {
       const ss = pick(ch, ['时'], ['天乙贵人', '文昌', '天德贵人', '月德贵人', '太极贵人', '将星'])[0];
-      return `《三命通会》以时柱为子女宫、${o.male ? '官杀' : '食伤'}为子女星，时柱也管 50 岁后的晚运。${ss ? `你的时柱带${ss.n}，孩子${ss.n === '文昌' ? '聪明好学' : '有福有贵人'}。` : ''}麻衣相法看男女宫（眼下泪堂），平满明润，子女缘就好。`;
+      return `《三命通会》以时柱为子女宫、${o.male ? '官杀' : '食伤'}为子女星，时柱也管 50 岁后的晚运。${ss ? `你的时柱带${ss.n}，孩子${ss.n === '文昌' ? '聪明好学' : '有福有贵人'}。` : ''}麻衣相法看男女宫（眼下泪堂），平满明润，子女缘就好。` + F.tail(ch, '食', 13);
     }
     if (kind === 'parents') {
       const ss = pick(ch, ['年', '月'], ['天乙贵人', '天德贵人', '月德贵人', '国印', '太极贵人'])[0];
-      return `《三命通会》说印是「我气之源」、如父母护我；年、月柱管早年与家庭。${ss ? `你的${ss.at.filter(a => a === '年' || a === '月').join('')}柱带${ss.n}，早年得家人庇护。` : ''}麻衣相法看父母宫（额头两角日月角），饱满明亮，主父母扶持。`;
+      return `《三命通会》说印是「我气之源」、如父母护我；年、月柱管早年与家庭。${ss ? `你的${ss.at.filter(a => a === '年' || a === '月').join('')}柱带${ss.n}，早年得家人庇护。` : ''}麻衣相法看父母宫（额头两角日月角），饱满明亮，主父母扶持。` + F.tail(ch, '印', 13);
     }
     if (kind === 'ances') {
       const ss = pick(ch, ['年'], ['华盖', '天德贵人', '月德贵人', '天乙贵人', '空亡'])[0];
       const SS = { 华盖: '年柱带华盖，祖上多读书人或修行人，你也有灵性', 天德贵人: '年柱带天德，祖上积德，福荫到你', 月德贵人: '年柱带月德，祖德厚，一生少大灾', 天乙贵人: '年柱带天乙，祖上有贵人缘', 空亡: '年柱逢空亡，祖业难靠，要白手起家，反而更有成就' };
-      return `《三命通会》以年柱为祖上，「年管十五」以前。${ss ? SS[ss.n] + '。' : ''}麻衣相法以额头（上停）和福德宫（天仓）看祖荫，额宽明润主祖德护佑。`;
+      return `《三命通会》以年柱为祖上，「年管十五」以前。${ss ? SS[ss.n] + '。' : ''}麻衣相法以额头（上停）和福德宫（天仓）看祖荫，额宽明润主祖德护佑。` + F.tail(ch, '印', 12);
     }
     return '';
   };
@@ -3230,7 +3239,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const pl = ELS.filter(e => ch.label(e) === '平');
     const gd = gejuCard(ch, true), score = gd ? Math.max(25, Math.min(95, Math.round(52 + gd.sc * 9))) : 60;
     const dl = rows => `<dl class="bz-kv bz-kvs">${rows.map(([t, d, c]) => `<dt class="${c || ''}">${t}</dt><dd>${d}</dd>`).join('')}</dl>`;
-    return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${(() => { try { const M = ZEN_F.mind(ch), hi = M.slice().sort((x, y) => y.sc - x.sc)[0], lo = M.slice().sort((x, y) => x.sc - y.sc)[0]; return `心灵地图看，你的天赋在「${hi.k}」，「${lo.k}」待开发；《三命通会》论命先看月令，用神${ch.yong}是你的补运方向。`; } catch (e) { return ''; } })()}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
+    return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${(() => { try { const M = ZEN_F.mind(ch), hi = M.slice().sort((x, y) => y.sc - x.sc)[0], lo = M.slice().sort((x, y) => x.sc - y.sc)[0]; return `心灵地图看，你的天赋在「${hi.k}」，「${lo.k}」待开发；《三命通会》论命先看月令，用神${ch.yong}是你的补运方向。${ch.weak ? '身弱宜得印比相助，少逞强、多结伴。' : '身强宜见财官食伤，把力量用在做事上。'}` + ZEN_F.tail(ch, Object.entries(ch.byRel).sort((x, y) => x[1] - y[1])[0][0], 1).replace(/补运：[^。]*。/, ''); } catch (e) { return ''; } })()}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
       + (() => { const t = S.B.day(TODAY); return card('c-pan', `${ownerName()}八字仪表`, pan(natalCols().concat([['大运', t.dy && t.dy.gz, true], ['流年', t.p.y, true], ['流月', t.p.m, true], ['流日', t.p.d, true]])) + `<p class="bz-muted">前四柱是原局（本命盘），金底的是今天（${A.md(TODAY)}）所在的大运、流年、流月、流日。</p>`); })()
       + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(special.length ? [['特殊', special.join('、')]] : [])]))
       + card('c-yj', '喜用神', `<div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div><p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p>`)
