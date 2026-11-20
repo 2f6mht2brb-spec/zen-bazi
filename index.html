@@ -2383,6 +2383,47 @@ const ZEN_F = (function () {
 })();
 if (typeof module !== 'undefined') module.exports = ZEN_F;
 
+/* 知识库：心灵地图七域 × 十神；麻衣相法 × 五行 —— 原创整理，不引原文 */
+(function () {
+  const F = ZEN_F;
+  const DOM = [
+    { k: '野心与方向', r: '官', hi: '目标感强，适合给自己订清楚的十年目标，再拆成每月里程碑。', lo: '容易忙而无向。先写下一个具体、有数字的目标，每天看一次。', ex: '写一张「给十年后自己的支票」，贴在常看的地方。' },
+    { k: '心智与潜能', r: '印', hi: '学习力和悟性好，多读、多想就能把潜能放大。', lo: '容易先说「我做不到」。每天早晚各一分钟，用肯定句讲自己的长处。', ex: '21 天早晚一分钟自我肯定，写下三件做得好的事。' },
+    { k: '环境与反应', r: '_bal', hi: '面对变化能先接受、再调整，逆境里反而成长。', lo: '遇事容易硬碰或逃避。先接受改变不了的，再处理能改变的。', ex: '每次遇到不顺，写下「我能改变的一件事」并当天去做。' },
+    { k: '工作与能量', r: '比', hi: '行动力足，专注起来很能扛事。', lo: '容易拖延、找借口。用「先做五分钟」启动，做着做着就有劲。', ex: '每天第一件事，先专注做 25 分钟最重要的工作。' },
+    { k: '气场与吸引', r: '食', hi: '表达和亲和力是本钱，适合靠口才、作品吸引人。', lo: '不太会展现自己。注意形象、多赞美别人，气场会慢慢出来。', ex: '每天真心赞美一个人，见人先微笑、叫名字。' },
+    { k: '情绪与自控', r: '_even', hi: '情绪稳定，压力来时能自我调节。', lo: '情绪起伏较大。生气时先停十秒、深呼吸，再开口。', ex: '睡前写三句今天的情绪和原因，练习把感受说清楚。' },
+    { k: '财富与成功', r: '财', hi: '对机会和价值敏感，适合主动开源、合作共赢。', lo: '对钱比较被动。从记账开始，让每一分钱都有用途。', ex: '21 天记账，并找出一个可以帮别人解决的问题当作生财点。' }
+  ];
+  F.mind = function (ch) {
+    const tot = Object.values(ch.byRel).reduce((a, b) => a + b, 0) || 1;
+    const sh = Object.values(ch.share), mx = Math.max(...sh), mn = Math.min(...sh);
+    return DOM.map(d => {
+      let sc, over = false;
+      if (d.r === '_bal') sc = Math.round(95 - Math.min(1, Math.abs(ch.support - 0.5) * 2.2) * 60);
+      else if (d.r === '_even') sc = Math.round(95 - Math.min(1, (mx - mn) / 0.45) * 60);
+      else { const p = ch.byRel[d.r] / tot; sc = Math.round(Math.max(30, Math.min(95, 35 + p * 230))); over = p > 0.38; }
+      const lv = over ? '过旺·宜收' : sc >= 75 ? '天赋' : sc >= 55 ? '平衡' : '待开发';
+      return { k: d.k, r: d.r, sc, lv, t: over ? `这方面能量过多，${d.hi.replace(/。$/, '')}，但要防过头。` : sc >= 55 ? d.hi : d.lo, ex: d.ex };
+    });
+  };
+  const SHAPE = {
+    木: { f: '木形', look: '身形修长、骨节挺直、眉目清秀', way: '主仁，重学问、有理想，宜往文教、规划、成长型的路走' },
+    火: { f: '火形', look: '上尖下阔、气色红润、神采外露', way: '主礼，热情有感染力，宜往表达、传播、带动人的路走' },
+    土: { f: '土形', look: '厚重方圆、鼻丰颐满、背厚身稳', way: '主信，稳重可靠，宜往管理、地产、长期经营的路走' },
+    金: { f: '金形', look: '面方骨正、肤色偏白、声音清亮', way: '主义，果断讲原则，宜往法规、金融、技术把关的路走' },
+    水: { f: '水形', look: '圆润柔和、眼神灵动、体态偏丰', way: '主智，灵活善变，宜往贸易、策划、流动性强的路走' }
+  };
+  const GONG = { 财: ['财帛宫', '鼻（准头）', '鼻头圆润有肉、色泽明亮为佳'], 官: ['官禄宫', '额中（中正）', '额头开阔平满、少皱为佳'], 印: ['父母宫', '额角（日月角）', '额角饱满、发际整齐为佳'], 比: ['兄弟宫', '眉', '眉清顺长、不乱不断为佳'], 食: ['男女宫', '眼下（泪堂）', '眼下平润、不陷不黑为佳'] };
+  const YEARS = [[14, '耳', '童年运看耳'], [30, '额头（上停）', '早年运看额：学业、父母、机遇'], [34, '眉', '看眉：人脉、兄弟、意志'], [40, '眼', '看眼：神气、决断、感情'], [43, '山根（两眼之间）', '看山根：转折、健康、根基'], [50, '鼻（中停）', '中年运看鼻：财富、事业、自我'], [60, '人中与口', '看人中、口：晚运起点、福禄'], [75, '下巴（下停）', '晚年运看地阁：田宅、子女、安定'], [120, '耳与颐', '高寿运看耳与下巴']];
+  F.face = function (ch, age) {
+    const s = SHAPE[ch.de], tot = Object.values(ch.byRel).reduce((a, b) => a + b, 0) || 1;
+    const rs = Object.keys(GONG).sort((a, b) => ch.byRel[b] - ch.byRel[a]);
+    const y = YEARS.find(x => age <= x[0]) || YEARS[YEARS.length - 1];
+    return { s, strong: [rs[0], ...GONG[rs[0]]], weak: [rs[4], ...GONG[rs[4]]], age, y, pct: Math.round(ch.byRel[rs[4]] / tot * 100) };
+  };
+})();
+
 </script>
 <script>
 (function () {
@@ -2466,7 +2507,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
   const XUAN = {
     'd-pan': '天盘', 'm-pan': '月盘', 'y-pan': '岁盘', 'd-compass': '八门方位', 'd-events': '玄机预示', 'd-other': '趋吉避凶',
-    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
+    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-mind': '心灵地图', 'c-face': '麻衣相法', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'wl-natal': '财格', 'wl-way': '财路', 'wl-days': '择吉', 'wl-months': '月令', 'wl-years': '十年', 'wl-act': '开财', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
@@ -3069,6 +3110,13 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(special.length ? [['特殊', special.join('、')]] : [])]))
       + card('c-yj', '喜用神', `<div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div><p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p>`)
       + (gd ? card('c-geju', '格局成败', dl(gd.rows.map(([i, c, k, d]) => [`${i} ${k}`, d, c])), 'bz-keep') : '')
+      + (() => { if (typeof ZEN_F === 'undefined' || !ZEN_F.mind) return ''; const M = ZEN_F.mind(ch), lo = M.filter(x => x.r !== '_bal' && x.r !== '_even').sort((a, b) => a.sc - b.sc)[0];
+        return card('c-mind', '心灵地图 · 七个领域', `<p class="bz-small">先照见自己：把八字里的十神力量，对应到人生的七个心灵领域，看哪里是天赋、哪里待开发。</p>` + dl(M.map(x => [`${x.k} · ${x.lv}`, x.t, x.lv === '天赋' ? 'bz-good' : x.lv === '待开发' ? 'bz-bad' : ''])) + `<p class="bz-tip">🌱 21 天练习（${lo.k}）：${lo.ex}</p>`); })()
+      + (() => { if (typeof ZEN_F === 'undefined' || !ZEN_F.face) return ''; const by = +String((S.raw && S.raw.date) || '').slice(0, 4), age = by ? new Date().getFullYear() - by + 1 : 0, F = ZEN_F.face(ch, age);
+        return card('c-face', '麻衣相法 · 相由心生', dl([[`${gzc(ch.dm)}${ch.de}日主 · ${F.s.f}`, `${F.s.look}。${F.s.way}。`],
+          [`强项 · ${F.strong[1]}`, `你的「${F.strong[0]}」力量最足，相法对应${F.strong[2]}：${F.strong[3]}。`, 'bz-good'],
+          [`留意 · ${F.weak[1]}`, `「${F.weak[0]}」${F.pct < 5 ? "在盘中很少" : `只占约 ${F.pct}%`}，可多养${F.weak[2]}：${F.weak[3]}。气色先由作息和心情养起。`],
+          age ? [`${age} 岁行运部位`, `走到${F.y[1]}。${F.y[2]}。`] : null].filter(Boolean)) + `<p class="bz-muted">相法讲「相随心转」：心态、作息、待人改变，气色和运势也会跟着变。仅供参考。</p>`); })()
       + wordsCard(ch)
       + '<p class="bz-muted">格局与喜用神按“调候优先、扶抑为辅”简化推算，仅供参考。</p>';
   }
