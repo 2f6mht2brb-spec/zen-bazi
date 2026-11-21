@@ -542,6 +542,8 @@ button,.bz-chip,[data-act]{transition:transform .12s ease,filter .12s ease}butto
 .bz-card h2{letter-spacing:.04em}
 
 /* === 首页入口 Landing === */
+.lp-about{padding:8px 0 22px}.lp-about>p{color:#cfc7e6;font-size:14.5px;line-height:1.85;margin:0 0 14px}
+.lp-vals{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lp-vals>div{padding:14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(245,215,122,.3)}.lp-vals b{display:block;color:var(--gold2);font-size:15px;margin-bottom:4px}.lp-vals span{font-size:13px;line-height:1.6;color:#c9c3de}
 .lp{margin:-6px 0 18px;text-align:left}
 .lp-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 4px}
 .lp-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:var(--gold2)}.lp-brand small{display:block;font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:600}
@@ -4228,6 +4230,9 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
         <label class="lp-search">⌕ <input id="lp-q" placeholder="搜索，例如：财运、配偶、生肖" value="${esc(q)}"></label></div>
         <div class="lp-chips">${cats.map(x => `<button type="button" class="${x === c ? 'on' : ''}" data-act="lpcat:${x}">${x === '全部' ? '全部功能' : x}</button>`).join('')}</div>
         <div class="lp-grid">${list.map((f, i) => `<button type="button" class="lp-card lp-c${i % 3}" data-act="lpgo:${f[0]}"><span class="lp-ch"><i>${f[2]}</i><em>${f[1]}</em></span><b>${f[3]}</b><span class="lp-d">${f[4]}</span><span class="lp-go">立即查看 →</span></button>`).join('') || '<p class="bz-muted">没有找到，换个关键词试试。</p>'}</div></section>
+      <section class="lp-about"><h2>为什么会有玄镜？ <span>✦</span></h2>
+        <p>八字是老祖宗留下认识自己的工具，但古书难读、术语难懂，很多人只能靠别人一句话定吉凶。我和我的「数字员工」一起，把《三命通会》《麻衣神相》等古籍智慧，做成人人都能用、看得懂的白话看板。</p>
+        <div class="lp-vals"><div><b>🪞 照见自己</b><span>看懂性格、天赋和功课；不迷信，只为更了解自己。</span></div><div><b>🧭 顺势而为</b><span>知道什么时候冲、什么时候守，做决定多一份参考。</span></div><div><b>💛 正向陪伴</b><span>每天一个小功课、一句名句，把好习惯养起来。</span></div><div><b>🚀 持续升级</b><span>目前免费开放给大家使用，后续版本会不断加入新功能。</span></div></div></section>
       <section class="lp-band"><div><h2>古籍智慧，现代白话</h2><p>知识库收录《三命通会》《麻衣神相》《心灵地图》、九龙道长笔记与九九归一批命流程。每一句评语都会配上神煞、相法、小功课和补运建议。</p></div><button type="button" class="lp-pri" data-act="lpgo:">现在开始 →</button></section>
     </div>`;
   }
