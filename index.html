@@ -541,6 +541,9 @@ details.bz-more{margin:6px 0;padding:8px 11px;border-radius:11px;background:rgba
 button,.bz-chip,[data-act]{transition:transform .12s ease,filter .12s ease}button:active,[data-act]:active{transform:scale(.96);filter:brightness(1.15)}
 .bz-card h2{letter-spacing:.04em}
 
+.bz-stars{display:flex;gap:8px;margin:8px 0 4px}.bz-stars span{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:700}.bz-sg{background:rgba(76,211,138,.18);color:#a8f0c4}.bz-sb{background:rgba(255,140,110,.16);color:#ffc2b0}
+.bz-sth{font-size:15px!important;margin:14px 0 4px!important;color:#ffc2b0}.bz-sth.bz-good{color:#a8f0c4}
+.bz-daystars{display:flex!important;flex-direction:column;gap:4px;margin-top:8px}.bz-daystars>span{display:block;padding:6px 10px;border-radius:12px;font-size:13px;line-height:1.55}.bz-dsg{background:rgba(76,211,138,.12);color:#c9f5d9}.bz-dsb{background:rgba(255,140,110,.12);color:#ffd5c8}.bz-daystars b{font-weight:700}
 /* === 首页入口 Landing === */
 .lp-about{padding:8px 0 22px}.lp-about p{color:#cfc8e4;font-size:14.5px;line-height:1.85;margin:0 0 10px}.lp-about p b{color:var(--gold2)}
 .lp-vals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.lp-vals>div{padding:14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:4px}.lp-vals i{font-style:normal;font-size:22px}.lp-vals b{color:#fff;font-size:15px}.lp-vals span{color:#b4b0cc;font-size:12.5px;line-height:1.55}
@@ -2504,11 +2507,15 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     { n: '将星', t: 'g', by: 'yd', f: T3(['子', '午', '酉', '卯']), m: '有领导力，能服众，适合带团队。' },
     { n: '劫煞', t: 'w', by: 'yd', f: T3(['巳', '亥', '寅', '申']), m: '机敏果断，但要防小人和意外损失，做事留后手。' },
     { n: '亡神', t: 'w', by: 'yd', f: T3(['亥', '巳', '申', '寅']), m: '城府深、谋略好，宜光明正大，少用心机。' },
+    { n: '福星贵人', t: 'g', by: 'dg', f: g => ({ 甲: '寅子', 丙: '寅子', 乙: '卯丑', 癸: '卯丑', 戊: '申', 己: '未', 丁: '亥', 庚: '午', 辛: '巳', 壬: '辰' })[g], m: '一生福气足，衣食无忧，易得意外好处。' },
+    { n: '天厨贵人', t: 'g', by: 'dg', f: g => ({ 甲: '巳', 乙: '午', 丙: '巳', 丁: '午', 戊: '申', 己: '酉', 庚: '亥', 辛: '子', 壬: '寅', 癸: '卯' })[g], m: '有口福，懂生活，适合餐饮、美食相关。' },
+    { n: '灾煞', t: 'w', by: 'yd', f: T3(['午', '子', '卯', '酉']), m: '出行、运动多注意安全，重要事情多留一手。' },
     { n: '红鸾', t: 'n', by: 'y', f: b => '卯寅丑子亥戌酉申未午巳辰'[Z.indexOf(b)], m: '主姻缘喜庆，感情易有好消息。' },
     { n: '天喜', t: 'n', by: 'y', f: b => '酉申未午巳辰卯寅丑子亥戌'[Z.indexOf(b)], m: '主喜事、添丁、好心情。' },
     { n: '孤辰', t: 'w', by: 'y', f: b => ({ 亥: '寅', 子: '寅', 丑: '寅', 寅: '巳', 卯: '巳', 辰: '巳', 巳: '申', 午: '申', 未: '申', 申: '亥', 酉: '亥', 戌: '亥' })[b], m: '独立、喜静，感情上要多主动表达。' },
     { n: '寡宿', t: 'w', by: 'y', f: b => ({ 亥: '戌', 子: '戌', 丑: '戌', 寅: '丑', 卯: '丑', 辰: '丑', 巳: '辰', 午: '辰', 未: '辰', 申: '未', 酉: '未', 戌: '未' })[b], m: '自立能力强，宜多和家人沟通，别把心事藏起来。' }
   ];
+  const DAYX = { 孤鸾煞: ['乙巳丁巳辛亥戊申甲寅壬子丙午戊午', 'w', '感情上较有主见，宜多体贴另一半，晚一点成家反而更稳。'], 十恶大败: ['甲辰乙巳壬申丙申丁亥庚辰戊戌癸亥辛巳己丑', 'w', '理财宜保守，不赌不借，靠专业和积累更稳。'] };
   const DAYP = { 魁罡: ['庚辰庚戌壬辰戊戌', 'n', '性格刚强果断，聪明有领导力，宜修柔和。'], 阴差阳错: ['丙子丙午丁丑丁未戊寅戊申辛卯辛酉壬辰壬戌癸巳癸亥', 'w', '婚姻、家庭关系要多用心经营，遇事多沟通。'] };
   F.ssAt = function (ch, gz) {
     const P = ch.P, out = [];
@@ -2527,6 +2534,12 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
       if (hit.size) out.push({ n: r.n, t: r.t, at: [...hit], m: r.m });
     });
     Object.entries(DAYP).forEach(([n, [L, t, m]]) => { for (let i = 0; i < L.length; i += 2) if (L.slice(i, i + 2) === P.d) out.push({ n, t, at: ['日'], m }); });
+    Object.entries(DAYX).forEach(([n, [L, t, m]]) => { for (let i = 0; i < L.length; i += 2) if (L.slice(i, i + 2) === P.d) out.push({ n, t, at: ['日'], m }); });
+    const stems = cols.map(c => c[1][0]).join('');
+    [['甲戊庚', '天上三奇'], ['乙丙丁', '地下三奇'], ['壬癸辛', '人中三奇']].forEach(([k, n]) => { if (stems.includes(k)) out.push({ n: '三奇贵人', t: 'g', at: cols.filter((c, i) => stems.indexOf(k) <= i && i < stems.indexOf(k) + 3).map(c => c[0]), m: `${n}顺排，才华出众，胸襟开阔，易遇奇遇。` }); });
+    const brs = cols.map(c => c[1][1]).join('');
+    if (brs.includes('戌') && brs.includes('亥')) out.push({ n: '天罗', t: 'w', at: cols.filter(c => '戌亥'.includes(c[1][1])).map(c => c[0]), m: '做事易被规矩绑住，耐心按步骤来，困局自然解开。' });
+    if (brs.includes('辰') && brs.includes('巳')) out.push({ n: '地网', t: 'w', at: cols.filter(c => '辰巳'.includes(c[1][1])).map(c => c[0]), m: '遇事别钻牛角尖，多找人商量，路就宽了。' });
     const s = G.indexOf(P.d[0]), b = Z.indexOf(P.d[1]), kw = [Z[(b - s + 22) % 12], Z[(b - s + 23) % 12]];
     const kh = cols.filter(([nm, gz]) => nm !== '日' && kw.includes(gz[1])).map(x => x[0]);
     if (kh.length) out.push({ n: '空亡', t: 'w', at: kh, m: `（${kw.join('')}空）落在这里的事，前期容易落空，宜虚心、重实际，后劲反而足。` });
@@ -2705,6 +2718,26 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
 })();
 
+/* 当日吉星 / 凶星（黄历通用 + 个人神煞） */
+(function () {
+  const F = ZEN_F, Z = '子丑寅卯辰巳午未申酉戌亥';
+  const season = mb => ({ 寅: 0, 卯: 0, 辰: 0, 巳: 1, 午: 1, 未: 1, 申: 2, 酉: 2, 戌: 2, 亥: 3, 子: 3, 丑: 3 })[mb];
+  F.dayStars = function (ch, dGz, mGz, yGz) {
+    const e = window.ZEN_E, good = [], bad = [], mb = mGz[1], sn = season(mb);
+    if (({ 寅: '丁', 卯: '申', 辰: '壬', 巳: '辛', 午: '亥', 未: '甲', 申: '癸', 酉: '寅', 戌: '丙', 亥: '乙', 子: '巳', 丑: '庚' })[mb] && [...dGz].includes(({ 寅: '丁', 卯: '申', 辰: '壬', 巳: '辛', 午: '亥', 未: '甲', 申: '癸', 酉: '寅', 戌: '丙', 亥: '乙', 子: '巳', 丑: '庚' })[mb])) good.push(['天德', '诸事顺，凶事易化']);
+    if (dGz[0] === ({ 寅: '丙', 午: '丙', 戌: '丙', 申: '壬', 子: '壬', 辰: '壬', 亥: '甲', 卯: '甲', 未: '甲', 巳: '庚', 酉: '庚', 丑: '庚' })[mb]) good.push(['月德', '宜办事、求人、行善']);
+    if (dGz === ['戊寅', '甲午', '戊申', '甲子'][sn]) good.push(['天赦', '一年少有的大吉日，宜化解、修复关系']);
+    if (e.chong(dGz[1], mb)) bad.push(['月破', '日冲月令，大事宜缓，不宜签约开张']);
+    if (yGz && e.chong(dGz[1], yGz[1])) bad.push(['岁破', '日冲太岁，避免大动作']);
+    if (['庚申辛酉', '壬子癸亥', '甲寅乙卯', '丙午丁巳'][sn].match(/../g).includes(dGz)) bad.push(['四废', '气场弱，宜休整、不宜开新局']);
+    const DM = { 天乙贵人: '遇难有人帮，宜求人办事', 太极贵人: '悟性高，宜学习思考', 文昌: '利读书、考试、写方案', 国印: '利处理公事、文件', 金舆: '家人支持，宜陪家人', 禄神: '财禄有靠，宜努力工作', 福星贵人: '有小福气、小惊喜', 天厨贵人: '有口福，宜聚餐', 天医: '宜看医生、调养身体', 驿马: '宜出行、跑业务', 桃花: '人缘旺，宜社交', 华盖: '宜独处、学习、修心', 将星: '宜带头、拍板', 红鸾: '感情有好消息', 天喜: '有喜事、好心情', 羊刃: '易冲动，防破财受伤', 劫煞: '防小人和损失', 亡神: '少走捷径，光明正大', 灾煞: '出行运动注意安全', 孤辰: '易觉孤单，多主动联系人', 寡宿: '心事别闷着，多沟通' };
+    (F.ssAt ? F.ssAt(ch, dGz) : []).filter(r => r.n !== '天德贵人' && r.n !== '月德贵人').forEach(r => (r.t === 'w' ? bad : good).push([r.n, DM[r.n] || r.m.replace(/。$/, '')]));
+    if (e.chong(dGz[1], ch.P.d[1])) bad.push(['冲日支', '冲到你的夫妻宫，和伴侣说话多点耐心']);
+    if (e.chong(dGz[1], ch.P.y[1])) bad.push(['冲生肖', '与你的生肖相冲，出行、决策多一分谨慎']);
+    return { good: good.slice(0, 4), bad: bad.slice(0, 3) };
+  };
+})();
+
 </script>
 <script>
 (function () {
@@ -2788,7 +2821,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
   const XUAN = {
     'd-pan': '天盘', 'm-pan': '月盘', 'y-pan': '岁盘', 'd-compass': '八门方位', 'd-events': '玄机预示', 'd-other': '趋吉避凶',
-    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-mind': '心灵地图', 'c-face': '麻衣相法', 'c-jl': '九九归一', 'c-ss': '三命通会', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
+    'd-scene': '红尘卷', 'm-scene': '红尘卷', 'y-scene': '红尘卷', 'c-pan': '四柱天盘', 'c-mind': '心灵地图', 'c-face': '麻衣相法', 'c-jl': '九九归一', 'c-ss': '吉星凶星', 'c-deep': '十神玄解', 'c-dy': '乾坤大运', 'c-ln': '流年天书',
     'y-fly': '九宫飞星', 'd-jq': '节气', 'd-tcm': '养生', 'c-tcm': '体质', 'y-jq': '岁时', 'y-alert': '天机示警', 'y-chart': '岁运图', 'm-cal': '月历', 'm-best': '吉日', 'm-low': '藏锋', 'w-chart': '周天图', 'w-ss': '十神轮值', 'w-sx': '元辰轮值',
     'ln-months': '十二月建', 'ln-adv': '宜忌', 'dy-years': '十年流转', 'dy-adv': '运筹', 'z-rank': '元辰榜', 'z-sum': '总诀',
     'lv-match': '合婚', 'lv-time': '红鸾天喜', 'wl-natal': '财格', 'wl-way': '财路', 'wl-days': '择吉', 'wl-months': '月令', 'wl-years': '十年', 'wl-act': '开财', 'w-items': '官禄吉凶', 'w-days': '择吉', 'w-year': '十二月建', 'w-move': '迁转', 'w-profile': '官禄格局', 'w-fix': '化解', 't-pairs': '合和图', 't-roles': '各司其位', 't-chain': '上下之道', 't-wxn': '五行生克',
@@ -3286,7 +3319,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const d = S.B.day(S.date), m = S.B.monthOf(S.date), ch = S.ch;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
-    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。${KB(d.p.d, { kind: 'day' })}</p>`])
+    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。${(() => { try { const ST = ZEN_F.dayStars(ch, d.p.d, d.p.m, d.p.y); return `<span class="bz-daystars">${ST.good.length ? `<span class="bz-dsg">⭐ 吉星：${ST.good.map(x => `<b>${x[0]}</b>（${x[1]}）`).join('、')}</span>` : ''}${ST.bad.length ? `<span class="bz-dsb">⚠️ 凶星：${ST.bad.map(x => `<b>${x[0]}</b>（${x[1]}）`).join('、')}</span>` : `<span class="bz-dsg">✅ 今天没有明显凶星</span>`}</span>`; } catch (e) { return ''; } })()}${KB(d.p.d, { kind: 'day' })}</p>`])
       + catsGrid(d.p.d, d.s)
       + oneEvent(ch, d)
       + dayWord(ch, d)
@@ -3431,7 +3464,8 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
           ['十神缺什么', J.lack.length ? J.lack.slice(0, 3).map(t => `缺${t}：${ZEN_F.jlLack ? '' : ''}`).join('') + J.lack.slice(0, 3).map(t => '').join('') : '十神齐全，各方面都有基础。']
         ].map(r => r[0] === '十神缺什么' && J.lack.length ? [r[0], J.lack.slice(0, 3).map(t => `缺${t}，${({ 劫财: '不太会借力，常替人做事', 比肩: '知心朋友少，凡事靠自己', 偏财: '对钱较保守，不爱冒险', 正财: '收入来源要刻意经营才稳', 偏印: '分析钻研要多练习', 正印: '学习要靠方法和复习', 七杀: '执行力要靠时间表推一把', 正官: '自律要靠外部规则来帮', 伤官: '要给自己更高的目标', 食神: '要学会放松、多练表达' })[t]}`).join('；') + '。缺的可以从大运流年和后天学习补上。'] : r)) + '<p class="bz-muted">参考：九龙道长 365 集笔记、殷志成《四柱八字基础应用》、九九归一图。</p>', 'bz-keep'); } catch (e) { return ''; } })()
       + (() => { if (typeof ZEN_F === 'undefined' || !ZEN_F.shensha) return ''; const L = ZEN_F.shensha(ch); if (!L.length) return '';
-        return card('c-ss', '八字神煞 · 三命通会', `<p class="bz-small">神煞是《三命通会》里干支组合的「小标签」，只作锦上添花的参考，轻重还是要看格局和用神。</p>` + dl(L.map(x => [`${x.n} · ${x.at.join('')}柱`, x.m, x.t === 'g' ? 'bz-good' : ''])) + (ch.hourKnown ? '' : '<p class="bz-muted">时辰不详，时柱上的神煞没有算进去。</p>')); })()
+        const G = L.filter(x => x.t !== 'w'), W = L.filter(x => x.t === 'w');
+        return card('c-ss', '吉星与凶星 · 三命通会', `<p class="bz-small">神煞是《三命通会》里干支组合的「小标签」：吉星是你的福气和助力，凶星是需要留意的功课。轻重还是要看格局和用神。</p><div class="bz-stars"><span class="bz-sg">⭐ 吉星 ${G.length}</span><span class="bz-sb">⚠️ 凶星 ${W.length}</span></div>` + (G.length ? `<h3 class="bz-sth bz-good">⭐ 吉星 · 你的福气</h3>` + dl(G.map(x => [`${x.n} · ${x.at.join('')}柱`, x.m, 'bz-good'])) : '') + (W.length ? `<h3 class="bz-sth">⚠️ 凶星 · 留意的功课</h3>` + dl(W.map(x => [`${x.n} · ${x.at.join('')}柱`, x.m, ''])) : '<p class="bz-good">命中没有明显凶星，底子清净。</p>') + (ch.hourKnown ? '' : '<p class="bz-muted">时辰不详，时柱上的神煞没有算进去。</p>')); })()
       + wordsCard(ch)
       + '<p class="bz-muted">格局与喜用神按“调候优先、扶抑为辅”简化推算，仅供参考。</p>';
   }
