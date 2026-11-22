@@ -2769,6 +2769,40 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
   };
 })();
 
+/* 原局特殊组合：冲、合、刑、害、天干合、魁罡 —— 以用户为先的白话解释 + 例子 */
+(function () {
+  const F = ZEN_F;
+  const POS = { 年: '年柱（祖上、长辈、1–18 岁）', 月: '月柱（父母兄弟、事业根基、19–36 岁）', 日: '日柱（你自己与另一半、37–45 岁）', 时: '时柱（子女、下属、晚年 46 岁后）' };
+  const CHONG_PAIR = {
+    年月: ['早年家里变动较多，常有搬家、转学或离乡的经历；你和长辈的观念也容易不同。', '例如：小时候跟着家里搬过几次家，或很早就到外地读书、工作。'],
+    年日: ['你和长辈、老家的想法不太一样，更适合出外闯荡，走自己的路。', '例如：离开家乡到大城市发展，反而比留在老家顺。'],
+    年时: ['早年和晚年的生活环境差别大，人生前后两段很不一样。', '例如：年轻时在一个地方打拼，退休后换到完全不同的城市或国家生活。'],
+    月日: ['事业和家庭常常两头拉扯，工作上变动较多；另一半和你父母之间也需要你居中协调。', '例如：为了工作常出差、换公司；逢年过节要在两边家人之间平衡。'],
+    月时: ['事业根基和晚年计划方向不同，中年后容易转行或开创第二事业。', '例如：前半生在公司上班，中年后转做自己的生意或兴趣。'],
+    日时: ['你和孩子（或下属）个性都很有主见，相处需要多点耐心和空间。', '例如：孩子长大后想法和你不同，给他空间，关系反而更好。']
+  };
+  const CHONG_TYPE = { 寅申: '寅申、巳亥属「驿马冲」，主奔波、出行、换环境，动起来反而有机会', 巳亥: '寅申、巳亥属「驿马冲」，主奔波、出行、换环境，动起来反而有机会', 子午: '子午是「水火冲」，情绪容易起伏，心里常有两种声音', 卯酉: '卯酉是「门户冲」，感情、人际和住处变动较多', 辰戌: '辰戌是「库冲」，冲开财库：钱来得快也去得快，宜设固定储蓄', 丑未: '丑未是「库冲」，冲开财库：钱来得快也去得快，也要照顾肠胃' };
+  const HE_PAIR = { 年月: '家里和睦，长辈和父母能给你支持。', 年日: '和长辈缘分好，容易得到祖荫或长辈提携。', 年时: '晚年能回归家族、团聚。', 月日: '工作和家庭能互相成全，父母或上司愿意帮你。', 月时: '事业能传承给下一代或团队，晚运稳。', 日时: '和子女（下属）感情好，晚年有依靠。' };
+  const GANHE = { 甲己: '中正之合（土）', 乙庚: '仁义之合（金）', 丙辛: '威制之合（水）', 丁壬: '淫昵之合（木），重感情', 戊癸: '无情之合（火）' };
+  F.specials = function (ch) {
+    const e = window.ZEN_E, P = ch.P, cols = [['年', P.y], ['月', P.m], ['日', P.d], ['时', P.h]].filter(x => x[1]), out = [];
+    if (['庚辰', '庚戌', '壬辰', '戊戌'].includes(P.d)) out.push(['日柱魁罡', '魁罡是四个特别刚强的日柱（庚辰、庚戌、壬辰、戊戌）。你性格果断、有魄力、不服输，天生适合当带头人；但脾气要收一收，学会柔软，福气会更大。', '例如：在团队里常被推出来做决定；和人争执时先停十秒，再开口。']);
+    for (let i = 0; i < cols.length; i++) for (let j = i + 1; j < cols.length; j++) {
+      const [a, A] = cols[i], [b, B] = cols[j], k = a + b, x = A[1], y = B[1];
+      if (e.chong(x, y)) { const t = CHONG_TYPE[x + y] || CHONG_TYPE[y + x] || '', pr = CHONG_PAIR[k];
+        out.push([`${x}${y}相冲 · ${a}柱 × ${b}柱`, `「冲」是两个地支方向相对、力量互相碰撞，代表变动和推力，<b>不等于坏事</b>。冲在${POS[a].split('（')[0]}与${POS[b].split('（')[0]}之间：${pr ? pr[0] : ''}${t ? t + '。' : ''}<br>👉 给你的建议：顺着变动去规划，主动选择改变，而不是被动被推着走。`, pr ? pr[1] : '']); }
+      if (e.LIUHE[x] === y) out.push([`${x}${y}六合 · ${a}柱 × ${b}柱`, `「合」是两个地支互相吸引、结成伙伴，代表和谐与助力。${HE_PAIR[k] || ''}<br>👉 给你的建议：好好珍惜这份缘分，遇事多借力。`, '']);
+      if (e.HAI && e.HAI[x] === y) out.push([`${x}${y}相害 · ${a}柱 × ${b}柱`, `「害」是表面和气、暗中互相牵制，代表小误会、小摩擦。落在${a}、${b}两柱，相关的人事要多沟通、把话说清楚。<br>👉 给你的建议：重要的事白纸黑字确认，少靠「我以为」。`, '例如：和家人或同事约定的事，事后用讯息再确认一次。']);
+      const g = GANHE[A[0] + B[0]] || GANHE[B[0] + A[0]];
+      if (g) out.push([`${A[0]}${B[0]}相合 · ${a}干 × ${b}干`, `天干相合叫「${g}」，代表两股力量互相牵引、彼此有情。${a === '日' || b === '日' ? (() => { const o = a === '日' ? B[0] : A[0], tg = e.tenGod(ch.dm, o), M = { 正财: '钱财和稳定收入，男命也代表妻子', 偏财: '机会财、生意，男命也代表异性缘', 正官: '工作、上司、名声，女命也代表丈夫', 七杀: '挑战、权力，女命也代表异性缘', 正印: '长辈、贵人、学习', 偏印: '专业技能、玄学与独思', 食神: '表达、享受、子女', 伤官: '才华、创意、子女', 比肩: '朋友、同辈', 劫财: '朋友、竞争者' }[tg] || ''; return `合到你的日主：对方是你的「${tg}」，代表${M}。你和这方面的人事特别有缘，容易被吸引，也容易被牵绊。`; })() : '这两柱代表的人事彼此关系紧密。'}<br>👉 给你的建议：善用这份吸引力，但重要决定保持自己的主见。`, '']);
+    }
+    const br = cols.map(c => c[1][1]).join('');
+    [['寅巳申', '无恩之刑'], ['丑戌未', '恃势之刑']].forEach(([set, n]) => { const hit = [...set].filter(c => br.includes(c)); if (hit.length >= 2) out.push([`${hit.join('')}${hit.length === 3 ? '三刑' : '相刑'}（${n}）`, `「刑」是互相挑剔、磨合的关系，代表压力与考验，也能把人磨得更有本事。${hit.length === 3 ? '三刑齐全，力量较大。' : '只出现两个字，力量较轻。'}<br>👉 给你的建议：遇到规矩、合约、健康检查这类事，认真对待就能化解。`, '例如：签合同前多看一遍条款；定期体检。']); });
+    if (br.includes('子') && br.includes('卯')) out.push(['子卯相刑（无礼之刑）', '子和卯相刑，代表人际上容易一时口快、不够圆融。<br>👉 给你的建议：说话前多想一秒，礼数做足就没事。', '']);
+    return out;
+  };
+})();
+
 </script>
 <script>
 (function () {
@@ -3475,7 +3509,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const dl = rows => `<dl class="bz-kv bz-kvs">${rows.map(([t, d, c]) => `<dt class="${c || ''}">${t}</dt><dd>${d}</dd>`).join('')}</dl>`;
     return hero('格局', score, A.level(score), `<h2>本命 · ${ch.geju}</h2>`, [`<p>${GJDEF[ch.geju] || ''}${(() => { try { const M = ZEN_F.mind(ch), hi = M.slice().sort((x, y) => y.sc - x.sc)[0], lo = M.slice().sort((x, y) => x.sc - y.sc)[0]; return `心灵地图看，你的天赋在「${hi.k}」，「${lo.k}」待开发；《三命通会》论命先看月令，用神${ch.yong}是你的补运方向。${ch.weak ? '身弱宜得印比相助，少逞强、多结伴。' : '身强宜见财官食伤，把力量用在做事上。'}` + ZEN_F.tail(ch, Object.entries(ch.byRel).sort((x, y) => x[1] - y[1])[0][0], 1).replace(/补运：[^。]*。/, ''); } catch (e) { return ''; } })()}${gd ? `<br><b class="${gd.lv[1]}">${gd.lv[0]}</b>` : ''}</p>`])
       + (() => { const t = S.B.day(TODAY); return card('c-pan', `${ownerName()}八字仪表`, pan(natalCols().concat([['大运', t.dy && t.dy.gz, true], ['流年', t.p.y, true], ['流月', t.p.m, true], ['流日', t.p.d, true]])) + `<p class="bz-muted">前四柱是原局（本命盘），金底的是今天（${A.md(TODAY)}）所在的大运、流年、流月、流日。</p>`); })()
-      + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(special.length ? [['特殊', special.join('、')]] : [])]))
+      + card('c-dm', '日主与格局', dl([[`日主 · ${gzc(ch.dm)}${ch.de}`, `生于${gzc(ch.P.m[1])}月，${ch.weak ? '身弱' : '身强'}（生扶力量约 ${Math.round(ch.support * 100)}%）。${ch.weak ? '先养自己，再求外发展。' : '扛得住，适合主动争取。'}`], [`格局 · ${ch.geju}`, `月令本气为${ch.mt}，所以取${ch.geju}。`], ...(() => { try { return ZEN_F.specials(ch).map(([t, d, ex]) => [`✦ ${t}`, d + (ex ? `<br><span class="bz-muted">📍 ${ex}</span>` : '')]); } catch (e) { return special.length ? [['特殊', special.join('、')]] : []; } })()]))
       + card('c-yj', '喜用神', `<div class="bz-gjyj"><span class="y"><small>用神</small>${gzc(ch.yong)}</span><span class="x"><small>喜神</small>${lab('喜')}</span>${pl.length ? `<span><small>平</small>${pl.map(gzc).join('、')}</span>` : ''}<span class="j"><small>忌神</small>${lab('忌')}</span></div><p class="bz-gjwhy">用${gzc(ch.yong)}：${ch.tiaohou || ch.yongWhy}</p>`)
       + (gd ? card('c-geju', '格局成败', dl(gd.rows.map(([i, c, k, d]) => [`${i} ${k}`, d, c])), 'bz-keep') : '')
       + (() => { if (typeof ZEN_F === 'undefined' || !ZEN_F.mind) return ''; const M = ZEN_F.mind(ch), lo = M.filter(x => x.r !== '_bal' && x.r !== '_even').sort((a, b) => a.sc - b.sc)[0];
