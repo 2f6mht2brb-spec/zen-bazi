@@ -544,6 +544,7 @@ button,.bz-chip,[data-act]{transition:transform .12s ease,filter .12s ease}butto
 .bz-stars{display:flex;gap:8px;margin:8px 0 4px}.bz-stars span{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:700}.bz-sg{background:rgba(76,211,138,.18);color:#a8f0c4}.bz-sb{background:rgba(255,140,110,.16);color:#ffc2b0}
 .bz-sth{font-size:15px!important;margin:14px 0 4px!important;color:#ffc2b0}.bz-sth.bz-good{color:#a8f0c4}
 .bz-daystars{display:flex!important;flex-direction:column;gap:4px;margin-top:8px}.bz-daystars>span{display:block;padding:6px 10px;border-radius:12px;font-size:13px;line-height:1.55}.bz-dsg{background:rgba(76,211,138,.12);color:#c9f5d9}.bz-dsb{background:rgba(255,140,110,.12);color:#ffd5c8}.bz-daystars b{font-weight:700}
+.bz-dsv{display:flex!important;flex-direction:column;gap:4px;background:rgba(245,215,122,.10)!important;border:1px solid rgba(245,215,122,.35);color:#f5ecd0}.bz-dsv>b{color:var(--gold2)}.bz-do{color:#b8f2cf}.bz-av{color:#ffc9b8}
 /* === 首页入口 Landing === */
 .lp-about{padding:8px 0 22px}.lp-about p{color:#cfc8e4;font-size:14.5px;line-height:1.85;margin:0 0 10px}.lp-about p b{color:var(--gold2)}
 .lp-vals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.lp-vals>div{padding:14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:4px}.lp-vals i{font-style:normal;font-size:22px}.lp-vals b{color:#fff;font-size:15px}.lp-vals span{color:#b4b0cc;font-size:12.5px;line-height:1.55}
@@ -2584,7 +2585,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const who = opt.label || (opt.kind === 'day' ? '今天' : opt.kind === 'year' ? '这一年' : opt.kind === 'month' ? '这个月' : opt.kind === 'dayun' ? '这步大运' : '此时');
     rows.push(['🔮', `${who}遇${t[0]}`, (weak ? t[2] : t[1])]);
     const ss = (F.ssAt ? F.ssAt(ch, gz) : []).map(r => SS[r.n]).filter(Boolean).slice(0, 2);
-    if (ss.length) rows.push(['🌟', '神煞', ss.join('；')]);
+    if (ss.length && !opt.noSS) rows.push(['🌟', '神煞', ss.join('；')]);
     if (stTxt) rows.push(['⚖️', '强弱', stTxt]);
     if (opt.age && F.face) { const f = F.face(ch, opt.age); rows.push(['🪞', '相法', `${opt.age}岁流年走到${f.y[1].replace(/（.*/, '')}，气色明润就顺`]); }
     else rows.push(['🪞', '相法', `留意${GONG[g]}的气色，明润为吉`]);
@@ -2723,7 +2724,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
 (function () {
   const F = ZEN_F, Z = '子丑寅卯辰巳午未申酉戌亥';
   const season = mb => ({ 寅: 0, 卯: 0, 辰: 0, 巳: 1, 午: 1, 未: 1, 申: 2, 酉: 2, 戌: 2, 亥: 3, 子: 3, 丑: 3 })[mb];
-  F.dayStars = function (ch, dGz, mGz, yGz) {
+  F.dayStars = function (ch, dGz, mGz, yGz, score) {
     const e = window.ZEN_E, good = [], bad = [], mb = mGz[1], sn = season(mb);
     if (({ 寅: '丁', 卯: '申', 辰: '壬', 巳: '辛', 午: '亥', 未: '甲', 申: '癸', 酉: '寅', 戌: '丙', 亥: '乙', 子: '巳', 丑: '庚' })[mb] && [...dGz].includes(({ 寅: '丁', 卯: '申', 辰: '壬', 巳: '辛', 午: '亥', 未: '甲', 申: '癸', 酉: '寅', 戌: '丙', 亥: '乙', 子: '巳', 丑: '庚' })[mb])) good.push(['天德', '诸事顺，凶事易化']);
     if (dGz[0] === ({ 寅: '丙', 午: '丙', 戌: '丙', 申: '壬', 子: '壬', 辰: '壬', 亥: '甲', 卯: '甲', 未: '甲', 巳: '庚', 酉: '庚', 丑: '庚' })[mb]) good.push(['月德', '宜办事、求人、行善']);
@@ -2735,7 +2736,35 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     (F.ssAt ? F.ssAt(ch, dGz) : []).filter(r => r.n !== '天德贵人' && r.n !== '月德贵人').forEach(r => (r.t === 'w' ? bad : good).push([r.n, DM[r.n] || r.m.replace(/。$/, '')]));
     if (e.chong(dGz[1], ch.P.d[1])) bad.push(['冲日支', '冲到你的夫妻宫，和伴侣说话多点耐心']);
     if (e.chong(dGz[1], ch.P.y[1])) bad.push(['冲生肖', '与你的生肖相冲，出行、决策多一分谨慎']);
-    return { good: good.slice(0, 4), bad: bad.slice(0, 3) };
+    const G = good.slice(0, 4), B = bad.slice(0, 3);
+    // 权重：通书大凶（岁破/月破/四废）管「大事」，个人吉星管「日常小事」
+    const W = { 天赦: 3, 天德: 2, 月德: 2, 岁破: 3, 月破: 3, 四废: 2, 冲日支: 1, 冲生肖: 1 };
+    const EX = {
+      天德: [['办重要手续', '求人帮忙', '修复关系'], []], 月德: [['拜访客户', '请教前辈', '做善事'], []], 天赦: [['道歉和好', '化解旧矛盾', '重新开始一件事'], []],
+      天乙贵人: [['约见上司或长辈', '开口请人帮忙'], []], 太极贵人: [['读书学习', '静心规划'], []], 文昌: [['准备考试', '写方案、报告'], []], 国印: [['处理文件、公事', '跑政府手续'], []],
+      金舆: [['陪家人吃饭', '和伴侣商量家事'], []], 禄神: [['专心工作', '跟进收款'], []], 福星贵人: [['参加聚会', '抽空犒赏自己'], []], 天厨贵人: [['请客聚餐', '谈饭局生意'], []],
+      天医: [['看医生、体检', '调理身体'], []], 驿马: [['出差、拜访客户', '跑业务'], []], 桃花: [['社交、认识新朋友', '约会'], []], 华盖: [['独处学习', '写作、修心'], []],
+      将星: [['主持例会', '给团队分工', '决定本周计划'], []], 红鸾: [['表白、约会', '谈婚事'], []], 天喜: [['庆祝、聚会', '分享好消息'], []],
+      岁破: [[], ['签大合同', '辞职换工作', '搬家装修', '大额投资']], 月破: [[], ['签约', '开张', '借钱给人']], 四废: [[], ['开新项目', '谈新合作']],
+      羊刃: [[], ['跟人争执', '冲动消费', '激烈运动']], 劫煞: [[], ['借钱给人', '把重要文件交给不熟的人']], 亡神: [[], ['走捷径、钻空子']], 灾煞: [[], ['长途开快车', '危险运动']],
+      孤辰: [[], ['一个人闷着做决定']], 寡宿: [[], ['把心事藏起来']], 冲日支: [[], ['和伴侣翻旧账']], 冲生肖: [[], ['仓促做重大决定', '远行前不检查']]
+    };
+    const gs = G.reduce((a, x) => a + (W[x[0]] || 1), 0), bs = B.reduce((a, x) => a + (W[x[0]] || 1), 0);
+    const heavy = B.some(x => ['岁破', '月破', '四废'].includes(x[0]));
+    const uniq = a => [...new Set(a)];
+    const BIG = ['办重要手续', '跑政府手续', '谈婚事', '谈饭局生意'];
+    const low = score != null && score < 45, high = score != null && score >= 65;
+    const doL = uniq(G.flatMap(x => (EX[x[0]] || [[]])[0])).filter(x => !(heavy || low) || !BIG.includes(x)).slice(0, 3), avL = uniq(B.flatMap(x => (EX[x[0]] || [[], []])[1])).slice(0, 3);
+    let head;
+    if (!B.length && G.length && low) head = `今天整体分数偏低，但有${G[0][0]}帮忙：<b>小事借贵人之力去办</b>，大事不必急在今天。`;
+    else if (!B.length && G.length) head = high ? '吉星当值、没有凶星，分数也高，今天放心去做，适合主动出击。' : '有吉星、没有凶星：按计划做事会比平常顺一点。';
+    else if (!G.length && B.length) head = high ? `整体分数不错，但逢${B[0][0]}：<b>适合把手上的事做好、做收尾</b>，新计划和大决定换个日子开始。` : '今天以守为主：日常事照常做，重要决定挪到别的日子。';
+    else if (!G.length && !B.length) head = low ? '没有特别的吉凶星，但整体分数偏低：照常做事，少开新局。' : '平常日子，没有特别的吉凶，按计划稳稳推进即可。';
+    else if (heavy && low) head = `今天整体偏弱，又逢${B.find(x => W[x[0]] >= 2)[0]}：<b>只做日常小事</b>（${G[0][0]}帮你把小事办顺），签约、换工、投资这类大事一律延后。`;
+    else if (heavy) head = `吉凶同现，<b>分大小事来看</b>：${G[0][0]}管日常小事，可以放手做；${B.find(x => W[x[0]] >= 2)[0]}管大事，重大决定先缓一缓。`;
+    else if (gs >= bs) head = `吉多于凶：整体可以做事，只要避开${B.map(x => x[0]).join('、')}提醒的那几件事。`;
+    else head = `凶稍重于吉：小事可做，大事多想一步，${B[0][0]}的提醒要放在心上。`;
+    return { good: G, bad: B, heavy, head, doL, avL };
   };
 })();
 
@@ -3320,7 +3349,7 @@ if (typeof module !== 'undefined') module.exports = ZEN_F;
     const d = S.B.day(S.date), m = S.B.monthOf(S.date), ch = S.ch;
     const cols = natalCols().concat([['大运', d.dy && d.dy.gz, true], ['流年', d.p.y, true], ['流月', d.p.m, true], ['流日', d.p.d, true]]);
     const yj = A.yiji(d.p.d, ch);
-    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。${(() => { try { const ST = ZEN_F.dayStars(ch, d.p.d, d.p.m, d.p.y); return `<span class="bz-daystars">${ST.good.length ? `<span class="bz-dsg">⭐ 吉星：${ST.good.map(x => `<b>${x[0]}</b>（${x[1]}）`).join('、')}</span>` : ''}${ST.bad.length ? `<span class="bz-dsb">⚠️ 凶星：${ST.bad.map(x => `<b>${x[0]}</b>（${x[1]}）`).join('、')}</span>` : `<span class="bz-dsg">✅ 今天没有明显凶星</span>`}</span>`; } catch (e) { return ''; } })()}${KB(d.p.d, { kind: 'day' })}</p>`])
+    return hero('今日整体', d.s[0], d.lv[0], `<h2>${A.md(d.date)} 周${d.wd} · ${gzc(d.p.d)}日</h2>`, [`<p>今天整体${d.lv[0]}。${P5(d.s)[0][0]}相对最好，${P5(d.s)[4][0]}要留意。${A.yiji(d.p.d, ch).yi.split('、').slice(0, 2).join('、')}最合适，忌${A.yiji(d.p.d, ch).ji.split('、')[0]}。${(() => { try { const ST = ZEN_F.dayStars(ch, d.p.d, d.p.m, d.p.y, d.s[0]); return `<span class="bz-daystars">${ST.good.length ? `<span class="bz-dsg">⭐ 吉星：${ST.good.map(x => `<b>${x[0]}</b>（${x[1]}${ST.heavy ? '，限日常小事' : ''}）`).join('、')}</span>` : ''}${ST.bad.length ? `<span class="bz-dsb">⚠️ 凶星：${ST.bad.map(x => `<b>${x[0]}</b>（${x[1]}）`).join('、')}</span>` : `<span class="bz-dsg">✅ 今天没有明显凶星</span>`}<span class="bz-dsv"><b>📌 今天怎么做</b><span>${ST.head}</span>${ST.doL.length ? `<span class="bz-do">✅ 可以做：${ST.doL.join('、')}</span>` : ''}${ST.avL.length ? `<span class="bz-av">⛔ 先别做：${ST.avL.join('、')}</span>` : ''}</span></span>`; } catch (e) { return ''; } })()}${KB(d.p.d, { kind: 'day', noSS: 1 })}</p>`])
       + catsGrid(d.p.d, d.s)
       + oneEvent(ch, d)
       + dayWord(ch, d)
