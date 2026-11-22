@@ -873,12 +873,12 @@ const ZEN_A = (function (E, GUA) {
       const yF = parse(start)[0] + (parse(start)[1] - 1) / 12; const dy = dayunOf(yF);
       let v = R(mg).v.map(x => x); v = E.addV(v, R(yg).v, .4); if (dy) v = E.addV(v, R(dy.gz).v, .2);
       months.push({ start, end, gz: mg, ygz: yg, sy: mod(yn - (by - 4), 60) + by, v, dy });
-      j = nj; if (parse(start)[0] > by + 95) break;
+      j = nj; if (parse(start)[0] > Math.max(by + 95, new Date().getFullYear() + 12)) break;
     }
     months.forEach(m => { const [y] = parse(m.start); m.sy = (m.gz[1] === '丑' || m.gz[1] === '子' && parse(m.start)[1] <= 2) ? y - 1 : y; });
     const mStats = stat(months.map(m => m.v)); months.forEach(m => m.s = norm(m.v, mStats));
     const years = [];
-    for (let y = by; y <= by + 95; y++) { const yg = gzOf(mod(y - 4, 60)); const dy = dayunOf(y + 0.5); let v = R(yg).v.map(x => x); if (dy) v = E.addV(v, R(dy.gz).v, .5); years.push({ y, gz: yg, dy, v }); }
+    for (let y = by; y <= Math.max(by + 95, new Date().getFullYear() + 12); y++) { const yg = gzOf(mod(y - 4, 60)); const dy = dayunOf(y + 0.5); let v = R(yg).v.map(x => x); if (dy) v = E.addV(v, R(dy.gz).v, .5); years.push({ y, gz: yg, dy, v }); }
     const yStats = stat(years.map(x => x.v)); years.forEach(x => x.s = norm(x.v, yStats));
     ch.dayun.forEach(d => { const yrs = years.filter(x => x.y >= d.yearFrom && x.y <= d.yearTo); d.s = norm(R(d.gz).v.map((x, i) => x * 1.5), yStats); d.years = yrs; });
     const cache = {};
@@ -888,8 +888,9 @@ const ZEN_A = (function (E, GUA) {
       const info = { date: dIso, wd: wd(dIso), p, dy, s, lv: s.map(level), notes: r.notes };
       cache[dIso] = info; return info;
     }
-    const monthOf = dIso => months.find(m => m.start <= dIso && dIso <= m.end);
-    const yearOf = y => years.find(x => x.y === y);
+    const monthOf = dIso => months.find(m => m.start <= dIso && dIso <= m.end) || (dIso < months[0].start ? months[0] : months[months.length - 1]);
+    const yExtra = {};
+    const yearOf = y => years.find(x => x.y === y) || yExtra[y] || (yExtra[y] = (() => { const yg = gzOf(mod(y - 4, 60)), dy = dayunOf(y + 0.5); let v = R(yg).v.map(x => x); if (dy) v = E.addV(v, R(dy.gz).v, .5); return { y, gz: yg, dy, v, s: norm(v, yStats) }; })());
     const syOf = dIso => pillarsOf(dIso).sy;
     return { ch, day, months, years, monthOf, yearOf, syOf, pillarsOf, dayunOf, LC };
   }
